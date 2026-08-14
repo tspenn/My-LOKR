@@ -2,9 +2,9 @@
 
 Private messaging for the people and information you actually care about.
 
-My Lokr is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is **not** a replacement for normal email. It is a locked, controlled space where messages and files stay under your control — not routed through Google, Microsoft, or the open internet.
+My Lokr is a private communication tool for families, small teams, and businesses. It is **not** a replacement for normal email. It is a locked, controlled space for files and ideas you would not put in Gmail or Outlook — including proprietary work and patent drafts.
 
-It runs as a Friday Canvas app (`my_lokr`) on the shared Supabase project, with `lokr_`-prefixed tables. There are no ads on any plan.
+Messages live in a private **Supabase Postgres** database with **Row Level Security** on every table. Files sit in **private Storage** buckets with short-lived signed download links. They are not routed through Google, Microsoft, or consumer email. Stripe is used only if you pay, and only for billing — never for message or file content. There are no ads on any plan.
 
 ## Stack
 

@@ -14,7 +14,8 @@ export default function AuthLayout({
             <BrandMark size="lg" />
           </Link>
           <p className="text-lg text-muted-foreground">
-            Private messaging for the people and information you actually care about.
+            Private messaging for the files and ideas you would not put in Google
+            or Microsoft mail.
           </p>
         </div>
       </header>

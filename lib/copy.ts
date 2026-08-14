@@ -7,25 +7,27 @@ export const COPY = {
   hookTwo:
     "Like the internet — but not sure you want to share all your secrets with the entire World Wide Web?",
   intro:
-    "My Lokr is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is built for the conversations and documents that don’t belong in regular email or everyday messaging apps.",
+    "My Lokr is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is built for the conversations and documents that don’t belong in regular email or everyday messaging apps — including business plans, patent ideas, and files you would never put in Gmail or Outlook.",
   notEmail: "It is not a replacement for normal email.",
   locked:
-    "It is a locked, controlled space where your messages and files stay under your control — not routed through Google, Microsoft, or the open internet.",
+    "It is a locked, controlled space where your messages and files stay under your control — not sitting in Google or Microsoft corporate mail, not searchable in their clouds, and not traveling the open internet as ordinary email attachments that hackers and scanners already know how to steal.",
+  point:
+    "The whole point is this: send the files and ideas you do not want sitting in email, on a public cloud drive, or inside Google and Microsoft. That includes proprietary work, patent drafts, and business you simply do not want those companies to see.",
   whether:
     "Whether it’s a family coordinating care, a small group handling private matters, or a business protecting proprietary information, My Lokr gives you a simple, controlled alternative.",
   whyTitle: "Why families and teams use it",
   why: [
     "Keep family conversations, medical information, financial details, or personal documents in a private channel",
-    "Share files between trusted people without putting them into regular email",
-    "Give small teams a quiet, secure place for important discussions",
-    "Avoid mixing sensitive information with everyday social or work email",
+    "Share files between trusted people without putting them into regular email, where they can be forwarded, scanned, or stolen",
+    "Give small teams a quiet, secure place for important discussions, patent ideas, and proprietary work",
+    "Avoid mixing sensitive information with everyday social or work email that Google and Microsoft can read",
   ],
   privacyTitle: "Where the privacy actually comes from",
   privacyLead: "Privacy in My Lokr is built into the system:",
   privacy: [
     {
       title: "Your data stays under your control",
-      body: "Messages and files are stored in a private system. They are not sent through Google, Microsoft, or consumer email networks.",
+      body: "Messages and files are stored in a private system. They are not sent through Google, Microsoft, or consumer email networks, and they are not left as ordinary attachments on the open internet.",
     },
     {
       title: "Strict access controls",
@@ -41,7 +43,7 @@ export const COPY = {
     },
     {
       title: "No Big Tech visibility into your content",
-      body: "Because the system does not rely on Google or Microsoft for messaging or storage, those companies do not see the content of your conversations or files.",
+      body: "Google and Microsoft do not carry, store, or scan your My Lokr messages or files. Stripe is used only if you pay for a plan, and only for billing — never for your conversations, attachments, or Vault files. Free never touches a payment processor.",
     },
   ],
   vaultTitle: "Storage benefits — The Vault",
@@ -55,16 +57,41 @@ export const COPY = {
     "Simple, transparent extra storage options",
   ],
   vaultClose:
-    "This makes My Lokr useful for everything from family documents and personal records to contracts, client files, and proprietary business materials.",
+    "This makes My Lokr useful for everything from family documents and personal records to contracts, client files, patent drafts, and proprietary business materials.",
   whoTitle: "Who it’s for",
   who: [
     "Families who want a private place for important conversations and files",
     "Small teams that need a secure side channel",
-    "Businesses handling proprietary or sensitive information",
-    "Anyone who is tired of putting private things into systems that feel too public",
+    "Businesses handling proprietary work, patent ideas, or sensitive information",
+    "Anyone who does not want Google, Microsoft, or everyday email to hold the files that matter",
   ],
   isAndIsNotTitle: "What My Lokr is — and is not",
-  itIs: "A private, secure messaging and file exchange system for the information you don’t want floating around the open internet.",
+  itIs: "A private, secure messaging and file exchange system for the information you don’t want sitting in email, consumer clouds, or the open internet.",
   itIsNot:
-    "A full replacement for Microsoft 365, Google Workspace, or everyday email. Those tools still work well for normal communication. My Lokr exists for the things that need tighter control and real privacy.",
+    "A full replacement for Microsoft 365, Google Workspace, or everyday email. Those tools still work well for normal communication. My Lokr exists for the things that need tighter control — the files and ideas you would not trust to those companies.",
+  securityTitle: "Supabase-level security — how the lock actually works",
+  securityLead:
+    "My Lokr does not use Google or Microsoft for mail or file storage. Messages and files live in a private Supabase system with database and storage rules that keep other people’s data out of reach.",
+  security: [
+    {
+      title: "Private database, not a public inbox",
+      body: "Messages are stored in a private Postgres database. Row Level Security is on every table. The database will not return a conversation or file record unless you are an invited member. That is enforced in the database, not just in the screens.",
+    },
+    {
+      title: "Locked file storage, not a public cloud folder",
+      body: "Attachments and The Vault use private Supabase Storage buckets. There are no public file URLs for hackers to guess or scrape. Downloads use short-lived signed links that expire in seconds, then go dead.",
+    },
+    {
+      title: "Invited people only",
+      body: "You choose who is in your Lokr. Outsiders, search engines, and other My Lokr workspaces cannot open your threads or files. If you are not invited, the system has nothing to show you.",
+    },
+    {
+      title: "Encrypted in transit",
+      body: "Traffic between your browser and My Lokr is encrypted (HTTPS). Files are not emailed as open attachments that sit on mail servers, get copied into backups, and wait for the next inbox breach.",
+    },
+    {
+      title: "What Google, Microsoft, and Stripe never receive",
+      body: "Your message text, attachments, patent drafts, and Vault files are not routed through Gmail, Outlook, Drive, OneDrive, or Stripe. If you subscribe, Stripe only sees what it needs to charge the plan. Stay on Free and there is no payment company in the path at all.",
+    },
+  ],
 } as const;

@@ -26,10 +26,10 @@ export default async function PricingPage() {
       <header className="mb-10 max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight">Plans</h1>
         <p className="mt-3 text-muted-foreground">
-          Private messaging for families, small teams, and businesses. It is not
-          a replacement for normal email. It is a locked, controlled space —
-          not routed through Google, Microsoft, or the open internet. No ads on
-          any plan.
+          A locked space for files and ideas you would not put in Gmail or Outlook —
+          including proprietary work and patent drafts. Messages live in a private
+          Supabase database with Row Level Security. Files sit in locked private
+          storage, not Google, Microsoft, or the open internet. No ads on any plan.
         </p>
       </header>
 

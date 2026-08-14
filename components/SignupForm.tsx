@@ -28,8 +28,9 @@ export function SignupForm() {
       <CardHeader>
         <CardTitle>Create your Lokr</CardTitle>
         <CardDescription>
-          A locked, controlled space for conversations and files that don’t belong
-          in regular email. Not a replacement for normal email.
+          For conversations and files you would not put in Gmail or Outlook —
+          including patent ideas and proprietary work. Not a replacement for
+          normal email.
         </CardDescription>
       </CardHeader>
       <CardContent>

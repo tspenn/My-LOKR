@@ -38,8 +38,8 @@ export function LoginForm({
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>
-          Your messages and files stay under your control — not routed through
-          Google, Microsoft, or the open internet.
+          Messages and files stay in a private Supabase system — not Gmail, not
+          Outlook, not Google Drive. Google and Microsoft do not see your content.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">

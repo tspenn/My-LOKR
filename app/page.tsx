@@ -12,7 +12,7 @@ import { COPY } from "@/lib/copy";
 
 export const metadata = {
   title: "My Lokr",
-  description: COPY.headline,
+  description: COPY.point,
 };
 
 export default function Home() {
@@ -42,6 +42,7 @@ export default function Home() {
           <p className="text-lg">{COPY.intro}</p>
           <p className="text-lg">{COPY.notEmail}</p>
           <p className="text-lg">{COPY.locked}</p>
+          <p className="text-lg font-medium">{COPY.point}</p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Button asChild>
               <Link href="/signup">Open a Lokr</Link>
@@ -69,6 +70,25 @@ export default function Home() {
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {COPY.privacy.map((item) => (
+              <Card key={item.title}>
+                <CardHeader>
+                  <CardTitle className="text-xl">{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{item.body}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="max-w-3xl space-y-3">
+            <h2 className="text-2xl font-semibold tracking-tight">{COPY.securityTitle}</h2>
+            <p className="text-muted-foreground">{COPY.securityLead}</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {COPY.security.map((item) => (
               <Card key={item.title}>
                 <CardHeader>
                   <CardTitle className="text-xl">{item.title}</CardTitle>
