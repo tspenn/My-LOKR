@@ -1,0 +1,87 @@
+@import url("https://fonts.bunny.net/css?family=dm-sans:400,500,600,700");
+@import "tailwindcss";
+
+/* My Lokr visual system — dark chrome, calm, not aggressive.
+   Font: DM Sans (same family as Go Intelligence Agency), loaded from Bunny Fonts, not Google. */
+:root {
+  --background: #1f1f1f;
+  --foreground: #f4f1ea;
+  --card: #333333;
+  --card-foreground: #f4f1ea;
+  --popover: #2a2a2a;
+  --popover-foreground: #f4f1ea;
+  --primary: #c9c2b6;
+  --primary-foreground: #1f1f1f;
+  --secondary: #2a2a2a;
+  --secondary-foreground: #f4f1ea;
+  --muted: #2a2a2a;
+  --muted-foreground: #a39e96;
+  --accent: #333333;
+  --accent-foreground: #f4f1ea;
+  --destructive: #c45c5c;
+  --border: #3f3f3f;
+  --input: #3f3f3f;
+  --ring: #c9c2b6;
+  --sent: #2a2a2a;
+  --sent-foreground: #f4f1ea;
+  --received: #333333;
+  --received-foreground: #f4f1ea;
+  --chrome: #1f1f1f;
+  --chrome-raised: #2a2a2a;
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sent: var(--sent);
+  --color-sent-foreground: var(--sent-foreground);
+  --color-received: var(--received);
+  --color-received-foreground: var(--received-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}

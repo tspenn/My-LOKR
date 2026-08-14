@@ -1,0 +1,281 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+export type Profile = {
+  id: string;
+  email: string;
+  display_name: string;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Conversation = {
+  id: string;
+  workspace_id: string;
+  subject: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ConversationMember = {
+  id: string;
+  conversation_id: string;
+  user_id: string;
+  role: "member" | "admin";
+  joined_at: string;
+  last_read_at: string | null;
+};
+
+export type Message = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MessageAttachment = {
+  id: string;
+  message_id: string;
+  storage_path: string;
+  file_name: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
+};
+
+export type InboxMember = {
+  id: string;
+  display_name: string;
+  email: string;
+  avatar_url: string | null;
+};
+
+export type InboxItem = {
+  id: string;
+  subject: string | null;
+  created_at: string;
+  updated_at: string;
+  last_message_body: string | null;
+  last_message_at: string | null;
+  unread_count: number;
+  members: InboxMember[];
+};
+
+export type MessageWithDetails = Message & {
+  sender: Profile | null;
+  message_attachments: MessageAttachment[];
+};
+
+type ProfileRow = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  company_name: string | null;
+  created_at?: string;
+  updated_at: string;
+};
+
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: ProfileRow;
+        Insert: {
+          id: string;
+          email?: string | null;
+          full_name?: string | null;
+          avatar_url?: string | null;
+        };
+        Update: {
+          email?: string | null;
+          full_name?: string | null;
+          avatar_url?: string | null;
+          company_name?: string | null;
+        };
+        Relationships: [];
+      };
+      lokr_workspaces: {
+        Row: {
+          id: string;
+          name: string;
+          account_type: "personal" | "business";
+          logo_path: string | null;
+          created_by: string;
+          plan: "free" | "business" | "enterprise";
+          vault_addon: "none" | "50" | "100" | "250";
+          storage_used_bytes: number;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          vault_subscription_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          name: string;
+          account_type?: "personal" | "business";
+          logo_path?: string | null;
+          created_by: string;
+        };
+        Update: {
+          name?: string;
+          account_type?: "personal" | "business";
+          logo_path?: string | null;
+          plan?: "free" | "business" | "enterprise";
+          vault_addon?: "none" | "50" | "100" | "250";
+          storage_used_bytes?: number;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          vault_subscription_id?: string | null;
+        };
+        Relationships: [];
+      };
+      lokr_workspace_members: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          role: string;
+        };
+        Insert: {
+          workspace_id: string;
+          user_id: string;
+          role?: string;
+        };
+        Update: {
+          role?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lokr_workspace_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      lokr_conversations: {
+        Row: Conversation;
+        Insert: {
+          workspace_id: string;
+          subject?: string | null;
+          created_by: string;
+        };
+        Update: {
+          subject?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      lokr_conversation_members: {
+        Row: ConversationMember;
+        Insert: {
+          conversation_id: string;
+          user_id: string;
+          role?: "member" | "admin";
+          last_read_at?: string | null;
+        };
+        Update: {
+          last_read_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lokr_conversation_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      lokr_messages: {
+        Row: Message;
+        Insert: {
+          conversation_id: string;
+          sender_id: string;
+          body?: string;
+        };
+        Update: {
+          body?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lokr_messages_sender_id_fkey";
+            columns: ["sender_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lokr_message_attachments_message_id_fkey";
+            columns: ["id"];
+            isOneToOne: false;
+            referencedRelation: "lokr_message_attachments";
+            referencedColumns: ["message_id"];
+          },
+        ];
+      };
+      lokr_message_attachments: {
+        Row: MessageAttachment;
+        Insert: {
+          message_id: string;
+          storage_path: string;
+          file_name: string;
+          mime_type: string;
+          size_bytes: number;
+        };
+        Update: never;
+        Relationships: [
+          {
+            foreignKeyName: "lokr_message_attachments_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "lokr_messages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      lokr_create_workspace: {
+        Args: { p_name: string; p_account_type: string };
+        Returns: string;
+      };
+      lokr_create_conversation: {
+        Args: { p_subject: string | null; p_member_ids: string[] };
+        Returns: string;
+      };
+      lokr_get_inbox: {
+        Args: Record<PropertyKey, never>;
+        Returns: InboxItem[];
+      };
+      lokr_can_upload: {
+        Args: { p_additional_bytes: number };
+        Returns: boolean;
+      };
+      lokr_storage_limit_bytes: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+};
