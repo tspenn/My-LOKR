@@ -28,8 +28,8 @@ export function SignupForm() {
       <CardHeader>
         <CardTitle>Create your Lokr</CardTitle>
         <CardDescription>
-          A locked space for proprietary messages. This is not a replacement for
-          Microsoft or Google mail.
+          A locked, controlled space for conversations and files that don’t belong
+          in regular email. Not a replacement for normal email.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -85,6 +85,10 @@ export function SignupForm() {
           Already have an account?{" "}
           <Link href="/login" className="font-medium text-primary underline-offset-2 hover:underline">
             Sign in
+          </Link>
+          {" · "}
+          <Link href="/" className="font-medium text-primary underline-offset-2 hover:underline">
+            What My Lokr is
           </Link>
         </p>
       </CardContent>

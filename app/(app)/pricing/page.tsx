@@ -26,9 +26,10 @@ export default async function PricingPage() {
       <header className="mb-10 max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight">Plans</h1>
         <p className="mt-3 text-muted-foreground">
-          My Lokr is a locked side channel for proprietary work. It is not a
-          replacement for Microsoft or Google mail. Messages and files stay in
-          your control. There are no ads on any plan.
+          Private messaging for families, small teams, and businesses. It is not
+          a replacement for normal email. It is a locked, controlled space —
+          not routed through Google, Microsoft, or the open internet. No ads on
+          any plan.
         </p>
       </header>
 

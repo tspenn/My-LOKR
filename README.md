@@ -1,10 +1,10 @@
 # My Lokr
 
-My Lokr is a private messaging tool for proprietary and sensitive business information. It is **not** a replacement for Microsoft or Google mail. It is a locked side channel: messages and files never leave the user’s control.
+Private messaging for the people and information you actually care about.
 
-It runs as a Friday Canvas app (`my_lokr`) on the shared Supabase project, with `lokr_`-prefixed tables.
+My Lokr is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is **not** a replacement for normal email. It is a locked, controlled space where messages and files stay under your control — not routed through Google, Microsoft, or the open internet.
 
-There are no ads on any plan.
+It runs as a Friday Canvas app (`my_lokr`) on the shared Supabase project, with `lokr_`-prefixed tables. There are no ads on any plan.
 
 ## Stack
 

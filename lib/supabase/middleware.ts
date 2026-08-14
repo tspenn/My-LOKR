@@ -11,6 +11,7 @@ const PUBLIC_PREFIXES = [
 ];
 
 function isPublicPath(pathname: string) {
+  if (pathname === "/") return true;
   return PUBLIC_PREFIXES.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
@@ -62,6 +63,13 @@ export async function updateSession(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("next", pathname);
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
+  if (user && pathname === "/") {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/inbox";
+    redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 

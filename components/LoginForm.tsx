@@ -38,7 +38,8 @@ export function LoginForm({
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>
-          Enter your private Lokr. Messages stay inside this app.
+          Your messages and files stay under your control — not routed through
+          Google, Microsoft, or the open internet.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -122,6 +123,10 @@ export function LoginForm({
           New here?{" "}
           <Link href="/signup" className="font-medium text-primary underline-offset-2 hover:underline">
             Create an account
+          </Link>
+          {" · "}
+          <Link href="/" className="font-medium text-primary underline-offset-2 hover:underline">
+            What My Lokr is
           </Link>
         </p>
       </CardContent>

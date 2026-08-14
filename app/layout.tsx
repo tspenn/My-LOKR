@@ -6,7 +6,8 @@ export const metadata: Metadata = {
     default: "My Lokr",
     template: "%s · My Lokr",
   },
-  description: "A locked side channel for proprietary messages. Nothing leaves this app.",
+  description:
+    "Private messaging for the people and information you actually care about. A locked, controlled space — not routed through Google, Microsoft, or the open internet.",
 };
 
 export default function RootLayout({

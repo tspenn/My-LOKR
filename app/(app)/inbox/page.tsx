@@ -21,8 +21,8 @@ export default async function InboxPage() {
         <div>
           <h1 className="text-2xl font-semibold">Your private inbox</h1>
           <p className="mt-2 max-w-md text-lg text-muted-foreground">
-            Choose a conversation on the left, or start a new message. Nothing
-            here is sent over internet email.
+            Choose a conversation on the left, or start a new message. This is a
+            locked space — not regular email, and not the open internet.
           </p>
         </div>
       </div>

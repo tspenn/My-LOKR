@@ -15,16 +15,18 @@ export const PLANS = {
     maxUsers: 4,
     storageBytes: 1 * GB,
     storageLabel: "1 GB",
-    purpose: "Personal use and testing only",
+    purpose: "Families and small groups",
     description:
-      "A locked space for a handful of people. Enough to try My Lokr. Not for real proprietary business work.",
+      "A locked space for the people and information you actually care about. Messages and files stay under your control — not routed through Google, Microsoft, or the open internet.",
     features: [
       "Up to 4 people",
       "1 GB private storage",
       "Text messages and attachments",
-      "No ads",
+      "Not routed through Google or Microsoft",
+      "No ads and no ad trackers",
     ],
-    limitations: "Basic features only. Upgrade when you hit the people or storage limit.",
+    limitations:
+      "Sized for a few people. Upgrade when you need more seats or storage. The lock does not change.",
   },
   business: {
     key: "business" as const,
@@ -34,9 +36,9 @@ export const PLANS = {
     maxUsers: 15,
     storageBytes: 50 * GB,
     storageLabel: "50 GB shared",
-    purpose: "Small teams who want privacy for proprietary work",
+    purpose: "Small teams and businesses",
     description:
-      "A secure side channel for the work that should not travel through Microsoft or Google mail. Full messaging, attachments, realtime, and admin basics.",
+      "A quiet, secure side channel for important discussions and proprietary information that don’t belong in regular email. Full messaging, attachments, realtime, and admin basics.",
     features: [
       "Up to 15 people",
       "50 GB shared private storage",
@@ -94,7 +96,7 @@ export const VAULT_ADDONS = {
 } as const;
 
 export const VAULT_DESCRIPTION =
-  "The Vault is extra private storage on top of your plan. Anyone on Free, Business, or Enterprise can add it. Files stay in a locked Supabase bucket and never leave My Lokr.";
+  "The Vault is private cloud storage for important documents and attachments. Files stay inside the same secure system as your messages. Plans include storage; add more when needed.";
 
 export function storageLimitBytes(plan: PlanKey, vault: VaultKey) {
   return PLANS[plan].storageBytes + VAULT_ADDONS[vault].bytes;

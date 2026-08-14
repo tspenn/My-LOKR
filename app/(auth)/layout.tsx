@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 
 export default function AuthLayout({
@@ -9,9 +10,11 @@ export default function AuthLayout({
     <div className="flex min-h-full flex-col">
       <header className="px-6 py-8">
         <div className="mx-auto flex max-w-lg flex-col items-center gap-2 text-center">
-          <BrandMark size="lg" />
+          <Link href="/" className="rounded-md">
+            <BrandMark size="lg" />
+          </Link>
           <p className="text-lg text-muted-foreground">
-            A locked side channel for proprietary work. Not company email.
+            Private messaging for the people and information you actually care about.
           </p>
         </div>
       </header>
