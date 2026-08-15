@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPhoneInvite } from "@/lib/actions/invites";
 import { formatPhoneForOwner, inviteCodeText } from "@/lib/phone";
+import { PRODUCTION_ORIGIN } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -105,7 +106,7 @@ export function PhoneInviteForm({
                     variant="outline"
                     onClick={() =>
                       copy(
-                        `My-LOKR.com — you are invited to LOKR Communications\n${window.location.origin}/join/${invite.token}`,
+                        `My-LOKR.com — you are invited to LOKR Communications\n${PRODUCTION_ORIGIN}/join/${invite.token}`,
                         `link-${invite.id}`,
                       )
                     }

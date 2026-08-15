@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnv } from "@/lib/env";
+import { PRODUCTION_HOST } from "@/lib/site";
 import type { Database } from "@/types/database";
 
 const PUBLIC_PREFIXES = [
@@ -31,6 +32,15 @@ function copyCookies(from: NextResponse, to: NextResponse) {
 }
 
 export async function updateSession(request: NextRequest) {
+  const host = request.headers.get("host")?.split(":")[0] ?? "";
+  if (host === "my-lokr.vercel.app" || host === "my-lokr.com") {
+    const url = request.nextUrl.clone();
+    url.hostname = PRODUCTION_HOST;
+    url.protocol = "https:";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
   const { url, key } = getSupabaseEnv();
 

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { PRODUCTION_ORIGIN } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(PRODUCTION_ORIGIN),
   title: {
     default: "My Lokr",
     template: "%s · My Lokr",

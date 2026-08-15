@@ -4,16 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { clearWorkspaceCookie } from "@/lib/workspace";
 import { normalizePhone } from "@/lib/phone";
-
-function appOrigin() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return "http://localhost:3000";
-}
+import { appOrigin } from "@/lib/site";
 
 export async function signInWithPassword(formData: FormData) {
   const identifier = String(formData.get("email") ?? "").trim();

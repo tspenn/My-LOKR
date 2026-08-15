@@ -24,7 +24,7 @@ Tables: `lokr_workspaces`, `lokr_workspace_members`, `lokr_conversations`, `lokr
 
 Private buckets: `lokr-attachments` (20 MB files) and `lokr-logos` (2 MB).
 
-Auth redirect URLs must include `http://localhost:3000/auth/callback` and `https://YOUR_VERCEL_DOMAIN/auth/callback`.
+Auth redirect URLs must include `http://localhost:3000/auth/callback`, `https://www.my-lokr.com/auth/callback`, and `https://my-lokr.com/auth/callback`.
 
 Do not run `supabase/migrations/20260814120000_init.sql` against Friday Canvas. That file is the unused standalone schema.
 
@@ -72,9 +72,9 @@ Open [http://localhost:3000](http://localhost:3000). After sign-in you set up a 
 
 1. Push `https://github.com/tspenn/My-LOKR.git`.
 2. Import the repo in Vercel (or `vercel link` then `vercel --prod`).
-3. Set the same public env vars, with `NEXT_PUBLIC_SITE_URL` as the production URL.
-4. Update Supabase Site URL and Redirect URLs.
-5. Point `MYLOKR_APP_URL` on the Edge Function secrets to that URL.
+3. Set the same public env vars, with `NEXT_PUBLIC_SITE_URL=https://www.my-lokr.com` in production.
+4. Update Supabase Site URL to `https://www.my-lokr.com` and add Redirect URLs for localhost, `https://www.my-lokr.com/**`, and `https://my-lokr.com/**`.
+5. Point `MYLOKR_APP_URL` on the Edge Function secrets to `https://www.my-lokr.com`.
 
 ## Security notes
 

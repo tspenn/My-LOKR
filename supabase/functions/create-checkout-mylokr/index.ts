@@ -95,7 +95,11 @@ Deno.serve(async (req) => {
 
     const seats = Math.min(15, Math.max(1, count ?? 1))
     const quantity = kind === 'business' ? seats : 1
-    const appUrl = (Deno.env.get('MYLOKR_APP_URL') || Deno.env.get('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000').replace(/\/$/, '')
+    const appUrl = (
+      Deno.env.get('MYLOKR_APP_URL') ||
+      Deno.env.get('NEXT_PUBLIC_SITE_URL') ||
+      'https://www.my-lokr.com'
+    ).replace(/\/$/, '')
     const stripe = new Stripe(stripeKey)
 
     const session = await stripe.checkout.sessions.create({
