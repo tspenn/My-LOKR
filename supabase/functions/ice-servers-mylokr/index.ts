@@ -57,6 +57,13 @@ Deno.serve(async (req) => {
       });
     }
 
+    const cfKeyId = Deno.env.get("LOKR_CF_TURN_KEY_ID");
+    const cfToken = Deno.env.get("LOKR_CF_TURN_API_TOKEN");
+    if (cfKeyId && cfToken) {
+      const extra = await fetchCloudflareTurn(cfKeyId, cfToken);
+      if (extra) iceServers.push(...extra);
+    }
+
     const meteredUrl = Deno.env.get("LOKR_METERED_TURN_URL");
     if (meteredUrl) {
       const res = await fetch(meteredUrl);
@@ -79,3 +86,45 @@ Deno.serve(async (req) => {
     });
   }
 });
+
+/** Browsers block TURN on port 53; Cloudflare still lists it. */
+function withoutPort53(servers: RTCIceServer[]): RTCIceServer[] {
+  return servers
+    .map((server) => {
+      const urls = (Array.isArray(server.urls) ? server.urls : [server.urls]).filter(
+        (url) => url && !url.includes(":53"),
+      );
+      if (urls.length === 0) return null;
+      return { ...server, urls };
+    })
+    .filter((server): server is RTCIceServer => server !== null);
+}
+
+async function fetchCloudflareTurn(
+  keyId: string,
+  token: string,
+): Promise<RTCIceServer[] | null> {
+  const res = await fetch(
+    `https://rtc.live.cloudflare.com/v1/turn/keys/${keyId}/credentials/generate`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ttl: 21600 }),
+    },
+  );
+  if (!res.ok) {
+    console.error("Cloudflare TURN credentials failed:", res.status, await res.text());
+    return null;
+  }
+  const body = (await res.json()) as {
+    iceServers?: RTCIceServer | RTCIceServer[];
+  };
+  const raw = body.iceServers;
+  if (!raw) return null;
+  const extra = Array.isArray(raw) ? raw : [raw];
+  if (extra.length === 0 || !extra[0]?.urls) return null;
+  return withoutPort53(extra);
+}
