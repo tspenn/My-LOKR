@@ -78,12 +78,18 @@ export async function signUp(formData: FormData) {
     return { error: error.message };
   }
 
-  if (data.user) {
-    await supabase
-      .from("profiles")
-      .update({ full_name: displayName, email })
-      .eq("id", data.user.id);
+  // Confirmed emails already in this Auth project return 200 with no identities
+  // and no confirmation mail (anti-enumeration). Treat that as "sign in instead."
+  if (!data.user?.identities?.length) {
+    return {
+      error: "That email already has an account — sign in.",
+    };
   }
+
+  await supabase
+    .from("profiles")
+    .update({ full_name: displayName, email })
+    .eq("id", data.user.id);
 
   return {
     error: null,
