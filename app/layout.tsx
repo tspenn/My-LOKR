@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s · My Lokr",
   },
   description:
-    "Private messaging for files and ideas you would not put in Google or Microsoft mail. Locked Supabase storage, not email attachments on the open internet.",
+    "Private messaging for files and ideas you would not put in Google, Microsoft, Apple, or Samsung mail. Locked Supabase storage, not email attachments on the open internet.",
 };
 
 export default function RootLayout({
