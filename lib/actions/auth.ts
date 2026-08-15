@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { clearWorkspaceCookie } from "@/lib/workspace";
 import { normalizePhone } from "@/lib/phone";
 import { appOrigin } from "@/lib/site";
+import { callLokrAuth, lokrPasswordError } from "@/lib/lokr-auth";
 
 export async function signInWithPassword(formData: FormData) {
   const identifier = String(formData.get("email") ?? "").trim();
@@ -31,7 +32,15 @@ export async function signInWithPassword(formData: FormData) {
     email = resolved;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const result = await callLokrAuth({ action: "login", email, password });
+  if (!result.access_token || !result.refresh_token) {
+    return { error: result.error ?? "That email or password did not work. Please try again." };
+  }
+
+  const { error } = await supabase.auth.setSession({
+    access_token: result.access_token,
+    refresh_token: result.refresh_token,
+  });
   if (error) {
     return { error: "That email or password did not work. Please try again." };
   }
@@ -65,69 +74,23 @@ export async function signUp(formData: FormData) {
   if (!email || !password || !displayName) {
     return { error: "Please fill in your name, email, and password." };
   }
-  if (password.length < 8) {
-    return { error: "Please choose a password with at least 8 characters." };
-  }
-  if (password !== confirm) {
-    return { error: "The two passwords do not match." };
-  }
+  const passwordError = lokrPasswordError(password, confirm);
+  if (passwordError) return { error: passwordError };
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
+  const result = await callLokrAuth({
+    action: "signup",
     email,
     password,
-    options: {
-      data: { full_name: displayName, display_name: displayName },
-      emailRedirectTo: `${appOrigin()}/auth/callback`,
-    },
+    full_name: displayName,
+    redirect_to: `${appOrigin()}/auth/callback`,
   });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  // Confirmed emails already in this Auth project return 200 with no identities
-  // and no confirmation mail (anti-enumeration). Treat that as "sign in instead."
-  if (!data.user?.identities?.length) {
-    return {
-      error: "That email already has an account — sign in.",
-    };
-  }
-
-  await supabase
-    .from("profiles")
-    .update({ full_name: displayName, email })
-    .eq("id", data.user.id);
+  if (result.error) return { error: result.error };
 
   return {
     error: null,
     message:
+      result.message ??
       "Check your email for a confirmation link. Once you confirm, you can sign in.",
-  };
-}
-
-export async function signInWithMagicLink(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  if (!email) {
-    return { error: "Please enter your email address." };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${appOrigin()}/auth/callback`,
-      shouldCreateUser: false,
-    },
-  });
-
-  if (error) {
-    return { error: "We could not send a sign-in link. Please try again." };
-  }
-
-  return {
-    error: null,
-    message: "If that account exists, a sign-in link is on its way to your email.",
   };
 }
 
@@ -137,39 +100,38 @@ export async function requestPasswordReset(formData: FormData) {
     return { error: "Please enter your email address." };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${appOrigin()}/auth/callback?next=/update-password`,
+  const result = await callLokrAuth({
+    action: "reset",
+    email,
+    redirect_to: `${appOrigin()}/auth/callback?next=/update-password`,
   });
-
-  if (error) {
-    return { error: "We could not start a password reset. Please try again." };
+  if (result.error) {
+    return { error: result.error };
   }
 
   return {
     error: null,
-    message: "If that account exists, a reset link is on its way to your email.",
+    message:
+      result.message ??
+      "If that account exists, a reset link is on its way to your email.",
   };
 }
 
 export async function updatePassword(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
-
-  if (password.length < 8) {
-    return { error: "Please choose a password with at least 8 characters." };
-  }
-  if (password !== confirm) {
-    return { error: "The two passwords do not match." };
-  }
+  const passwordError = lokrPasswordError(password, confirm);
+  if (passwordError) return { error: passwordError };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({ password });
+  const { error } = await supabase.rpc("lokr_set_own_password", {
+    p_password: password,
+  });
   if (error) {
-    return { error: "We could not update your password. Please try the reset link again." };
+    return { error: "We could not update your My Lokr password. Please try the reset link again." };
   }
 
-  redirect("/inbox");
+  redirect("/lockrs");
 }
 
 export async function signOut() {

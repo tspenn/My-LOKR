@@ -10,11 +10,13 @@ export function PasswordField({
   name,
   label,
   autoComplete,
+  minLength = 12,
 }: {
   id: string;
   name: string;
   label: string;
   autoComplete: string;
+  minLength?: number;
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -27,7 +29,7 @@ export function PasswordField({
           name={name}
           type={visible ? "text" : "password"}
           autoComplete={autoComplete}
-          minLength={8}
+          minLength={minLength}
           required
           className="pr-12"
         />

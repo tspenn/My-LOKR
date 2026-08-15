@@ -78,6 +78,19 @@ export async function updateSession(request: NextRequest) {
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 
+  let hasLokrPassword: boolean | null = null;
+  if (user) {
+    const { data, error } = await supabase.rpc("lokr_has_password");
+    hasLokrPassword = error ? null : Boolean(data);
+  }
+
+  if (user && hasLokrPassword === false && pathname !== "/update-password") {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/update-password";
+    redirectUrl.search = "";
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
   if (user && pathname === "/") {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/lockrs";

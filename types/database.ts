@@ -393,6 +393,18 @@ export type Database = {
         Args: { p_phone_e164: string };
         Returns: string;
       };
+      lokr_has_password: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      lokr_activate_pending_password: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      lokr_set_own_password: {
+        Args: { p_password: string };
+        Returns: Json;
+      };
     };
     Enums: {
       [_ in never]: never;

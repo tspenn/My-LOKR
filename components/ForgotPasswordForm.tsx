@@ -28,7 +28,9 @@ export function ForgotPasswordForm() {
       <CardHeader>
         <CardTitle>Reset your password</CardTitle>
         <CardDescription>
-          We will email a reset link if that address has a Lokr account.
+          We will email a reset link if that address has a Lokr account. This
+          resets only your My Lokr password — not Friday Canvas or your other
+          apps.
         </CardDescription>
       </CardHeader>
       <CardContent>

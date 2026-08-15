@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { signInWithMagicLink, signInWithPassword } from "@/lib/actions/auth";
+import { signInWithPassword } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,19 +29,15 @@ export function LoginForm({
     async (_prev: AuthResult, formData: FormData) => signInWithPassword(formData),
     null,
   );
-  const [magicState, magicAction, magicPending] = useActionState(
-    async (_prev: AuthResult, formData: FormData) => signInWithMagicLink(formData),
-    null,
-  );
 
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>
-          Use the email you signed up with, or the phone this invite was sent to.
-          Same password. Works on a computer or your phone — you just need wifi
-          (or any internet). Google and Microsoft do not see your content.
+          Use your My Lokr password with the email you signed up with, or the
+          phone this invite was sent to. This password is only for My Lokr — it
+          does not change Friday Canvas or your other apps.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -71,8 +67,9 @@ export function LoginForm({
           <PasswordField
             id="password"
             name="password"
-            label="Password"
+            label="My Lokr password"
             autoComplete="current-password"
+            minLength={1}
           />
           <Button type="submit" className="w-full" disabled={passwordPending}>
             {passwordPending ? "Signing in…" : "Sign in"}
@@ -81,43 +78,9 @@ export function LoginForm({
 
         <p className="text-center">
           <Link href="/forgot-password" className="text-primary underline-offset-2 hover:underline">
-            Forgot password?
+            Forgot your My Lokr password?
           </Link>
         </p>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-border" />
-          </div>
-          <p className="relative mx-auto w-fit bg-card px-3 text-sm text-muted-foreground">
-            Or use a sign-in link
-          </p>
-        </div>
-
-        <form action={magicAction} className="space-y-4">
-          {magicState?.error ? (
-            <Alert variant="destructive">{magicState.error}</Alert>
-          ) : null}
-          {magicState?.message ? <Alert>{magicState.message}</Alert> : null}
-          <div className="space-y-2">
-            <Label htmlFor="magic-email">Email</Label>
-            <Input
-              id="magic-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-            />
-          </div>
-          <Button
-            type="submit"
-            variant="outline"
-            className="w-full"
-            disabled={magicPending}
-          >
-            {magicPending ? "Sending link…" : "Email me a sign-in link"}
-          </Button>
-        </form>
 
         <p className="text-center text-muted-foreground">
           New here?{" "}

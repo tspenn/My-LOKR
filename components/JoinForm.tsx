@@ -183,10 +183,9 @@ export function JoinForm({
                 autoComplete="new-password"
               />
               <p className="text-sm text-muted-foreground">
-                If this is proprietary, use a password you do not use on Google,
-                Microsoft, or other mail. After this, you can sign in with this
-                email or this phone, on a computer or your phone, as long as you
-                have wifi.
+                Use at least 12 characters. This My Lokr password is only for
+                this app — it does not change Friday Canvas or your other apps.
+                After this, you can sign in with this email or this phone.
               </p>
               <Button type="submit" className="w-full" disabled={accountPending}>
                 {accountPending ? "Creating account…" : "Create account and join"}

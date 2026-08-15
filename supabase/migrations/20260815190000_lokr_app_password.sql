@@ -22,14 +22,8 @@ alter table public.lokr_passwords force row level security;
 alter table public.lokr_password_pending enable row level security;
 alter table public.lokr_password_pending force row level security;
 
-drop policy if exists "lokr users see if they have a password" on public.lokr_passwords;
-create policy "lokr users see if they have a password"
-  on public.lokr_passwords for select to authenticated
-  using (user_id = (select auth.uid()));
-
 revoke all on table public.lokr_passwords from anon, authenticated, public;
 revoke all on table public.lokr_password_pending from anon, authenticated, public;
-grant select on table public.lokr_passwords to authenticated;
 
 create or replace function private.lokr_password_ok(p_password text)
 returns boolean
@@ -79,6 +73,14 @@ begin
   if not private.lokr_password_ok(p_password) then
     raise exception 'Choose a My Lokr password with at least 12 characters';
   end if;
+  if exists (
+    select 1
+    from public.profiles pr
+    join public.lokr_passwords pw on pw.user_id = pr.id
+    where lower(btrim(pr.email)) = email
+  ) then
+    raise exception 'That email already has a My Lokr password — sign in';
+  end if;
 
   insert into public.lokr_password_pending (email, password_hash, full_name, expires_at)
   values (
@@ -118,7 +120,25 @@ begin
   where p.id = current_user_id;
 
   if user_email is null then
+    select lower(btrim(u.email)) into user_email
+    from auth.users u
+    where u.id = current_user_id;
+  end if;
+
+  if user_email is null then
     return jsonb_build_object('ok', false);
+  end if;
+
+  insert into public.profiles (id, email, full_name)
+  values (current_user_id, user_email, null)
+  on conflict (id) do update
+    set email = coalesce(nullif(btrim(public.profiles.email), ''), excluded.email);
+
+  if exists (
+    select 1 from public.lokr_passwords pw where pw.user_id = current_user_id
+  ) then
+    delete from public.lokr_password_pending where email = user_email;
+    return jsonb_build_object('ok', true);
   end if;
 
   select * into pending
@@ -127,18 +147,12 @@ begin
     and s.expires_at > now();
 
   if not found then
-    return jsonb_build_object('ok', exists (
-      select 1 from public.lokr_passwords pw where pw.user_id = current_user_id
-    ));
+    return jsonb_build_object('ok', false);
   end if;
 
   insert into public.lokr_passwords (user_id, password_hash, failed_attempts, locked_until, updated_at)
   values (current_user_id, pending.password_hash, 0, null, now())
-  on conflict (user_id) do update
-    set password_hash = excluded.password_hash,
-        failed_attempts = 0,
-        locked_until = null,
-        updated_at = now();
+  on conflict (user_id) do nothing;
 
   delete from public.lokr_password_pending where email = user_email;
 
@@ -194,6 +208,11 @@ security definer
 set search_path = ''
 as $$
 begin
+  if to_regrole('service_role') is not null and current_user <> 'service_role' and current_user <> 'postgres' then
+    if auth.role() is distinct from 'service_role' then
+      raise exception 'Not allowed';
+    end if;
+  end if;
   if p_user_id is null then
     raise exception 'Missing user';
   end if;

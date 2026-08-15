@@ -18,9 +18,15 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      await supabase.rpc("lokr_activate_pending_password");
+      const { data: hasPassword } = await supabase.rpc("lokr_has_password");
       const accepted = await acceptInviteAfterAuth();
       if (accepted.workspaceId) {
-        return NextResponse.redirect(`${origin}/inbox`);
+        const dest = hasPassword ? "/inbox" : "/update-password";
+        return NextResponse.redirect(`${origin}${dest}`);
+      }
+      if (!hasPassword) {
+        return NextResponse.redirect(`${origin}/update-password`);
       }
       return NextResponse.redirect(`${origin}${next}`);
     }

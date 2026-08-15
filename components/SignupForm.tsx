@@ -30,8 +30,8 @@ export function SignupForm() {
         <CardTitle>Create your Lokr</CardTitle>
         <CardDescription>
           For conversations and files you would not put in Gmail or Outlook —
-          including patent ideas and proprietary work. Not a replacement for
-          normal email.
+          including patent ideas and proprietary work. Your My Lokr password is
+          only for this app. It does not change Friday Canvas or your other apps.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -70,7 +70,7 @@ export function SignupForm() {
             autoComplete="new-password"
           />
           <p className="text-sm text-muted-foreground">
-            If this is proprietary, use a password you do not use on Google,
+            Use at least 12 characters, and a password you do not use on Google,
             Microsoft, or other mail.
           </p>
           <Button type="submit" className="w-full" disabled={pending}>

@@ -13,6 +13,7 @@ import {
   newInviteToken,
 } from "@/lib/invite-token";
 import { inviteNoticeText, normalizePhone } from "@/lib/phone";
+import { callLokrAuth, lokrPasswordError } from "@/lib/lokr-auth";
 
 type RpcBag = {
   ok?: boolean;
@@ -175,42 +176,22 @@ export async function finishInviteJoin(formData: FormData) {
   if (!displayName || !email || !password) {
     return { error: "Please fill in your name, email, and password." };
   }
-  if (password.length < 8) {
-    return { error: "Please choose a password with at least 8 characters." };
-  }
-  if (password !== confirm) {
-    return { error: "The two passwords do not match." };
-  }
+  const passwordError = lokrPasswordError(password, confirm);
+  if (passwordError) return { error: passwordError };
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
+  const result = await callLokrAuth({
+    action: "join",
     email,
     password,
-    options: {
-      data: { full_name: displayName, display_name: displayName },
-      emailRedirectTo: `${appOrigin()}/auth/callback?next=/join/${encodeURIComponent(token)}`,
-    },
+    full_name: displayName,
+    redirect_to: `${appOrigin()}/auth/callback?next=/join/${encodeURIComponent(token)}`,
   });
-
-  if (error) return { error: error.message };
-  if (!data.user?.identities?.length) {
-    return { error: "That email already has an account — sign in after you confirm the phone." };
-  }
-
-  await supabase
-    .from("profiles")
-    .update({ full_name: displayName, email })
-    .eq("id", data.user.id);
-
-  if (data.session) {
-    const accepted = await acceptInviteAfterAuth();
-    if (accepted.error) return { error: accepted.error };
-    redirect("/inbox");
-  }
+  if (result.error) return { error: result.error };
 
   return {
     error: null,
     message:
+      result.message ??
       "Check your email for a confirmation link. After you confirm, you will land in this Lokr — only because this phone was verified.",
   };
 }
