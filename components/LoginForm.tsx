@@ -6,6 +6,7 @@ import { signInWithMagicLink, signInWithPassword } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
 import {
   Card,
@@ -64,16 +65,12 @@ export function LoginForm({
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-            />
-          </div>
+          <PasswordField
+            id="password"
+            name="password"
+            label="Password"
+            autoComplete="current-password"
+          />
           <Button type="submit" className="w-full" disabled={passwordPending}>
             {passwordPending ? "Signing in…" : "Sign in"}
           </Button>

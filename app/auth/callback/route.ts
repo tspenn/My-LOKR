@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { acceptInviteAfterAuth } from "@/lib/actions/invites";
 import { createClient } from "@/lib/supabase/server";
 
 function safeNextPath(next: string | null) {
@@ -17,6 +18,10 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      const accepted = await acceptInviteAfterAuth();
+      if (accepted.workspaceId) {
+        return NextResponse.redirect(`${origin}/inbox`);
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

@@ -38,27 +38,39 @@ export function LogoForm() {
 
 export function InviteForm({
   memberCount,
+  pendingCount,
   maxUsers,
 }: {
   memberCount: number;
+  pendingCount: number;
   maxUsers: number | null;
 }) {
   const [state, action, pending] = useActionState(
     async (_prev: Result, formData: FormData) => inviteWorkspaceMember(formData),
     null,
   );
-  const atLimit = maxUsers !== null && memberCount >= maxUsers;
+  const used = memberCount + pendingCount;
+  const atLimit = maxUsers !== null && used >= maxUsers;
 
   return (
     <form action={action} className="space-y-4">
       {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
       {state?.message ? <Alert>{state.message}</Alert> : null}
       <p className="text-sm text-muted-foreground">
-        {memberCount} active {memberCount === 1 ? "account" : "accounts"}
-        {maxUsers ? ` · this plan allows ${maxUsers}` : " · custom seat count"}
+        {memberCount} of {maxUsers ?? "custom"} people already in this Lokr
+        (including you)
+        {pendingCount ? `, plus ${pendingCount} open phone invite${pendingCount === 1 ? "" : "s"}` : ""}
+        .
+        {maxUsers ? ` Remaining: ${Math.max(0, maxUsers - used)}.` : ""}{" "}
+        Invitees do not pay
+        {maxUsers === 4 ? ", and Free cannot issue 14 invites — that needs Business (15)." : "."}
+      </p>
+      <p className="text-sm text-muted-foreground">
+        Already have a Lokr account? Add them by email. New people should use a
+        phone invite above so join is confirmed on that number.
       </p>
       <div className="space-y-2">
-        <Label htmlFor="email">Invite by email</Label>
+        <Label htmlFor="email">Add existing account by email</Label>
         <Input
           id="email"
           name="email"
@@ -69,7 +81,7 @@ export function InviteForm({
         />
       </div>
       <Button type="submit" disabled={pending || atLimit}>
-        {pending ? "Inviting…" : "Add person"}
+        {pending ? "Adding…" : "Add person"}
       </Button>
     </form>
   );

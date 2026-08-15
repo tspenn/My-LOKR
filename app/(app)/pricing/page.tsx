@@ -26,10 +26,11 @@ export default async function PricingPage() {
       <header className="mb-10 max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight">Plans</h1>
         <p className="mt-3 text-muted-foreground">
-          A locked space for files and ideas you would not put in Gmail or Outlook —
-          including proprietary work and patent drafts. Messages live in a private
-          Supabase database with Row Level Security. Files sit in locked private
-          storage, not Google, Microsoft, or the open internet. No ads on any plan.
+          Add as many groups as you need. Each is free with 1–3 invitees (you
+          plus three). Family, work, and a friend can each be their own free
+          Lokr. People you invite do not get a bill. The 4th invitee in any one
+          group is Business for that group only — not 14 people on Free. Groups
+          others invite you into stay free for you.
         </p>
       </header>
 
@@ -80,13 +81,14 @@ export default async function PricingPage() {
               ))}
             </ul>
             <p className="text-sm text-muted-foreground">
-              Billed per active account. Checkout quantity matches the people in this Lokr
-              {workspace ? ` (currently ${Math.max(memberCount, 1)})` : ""}.
+              Billed per active account in this Lokr. Invitees do not get a separate
+              bill
+              {workspace ? ` (currently ${Math.max(memberCount, 1)} ${memberCount === 1 ? "person" : "people"})` : ""}.
             </p>
             {workspace?.plan === "business" ? (
               <p className="text-sm font-medium text-primary">You are on Business.</p>
             ) : (
-              <CheckoutButton kind="business">Start Business</CheckoutButton>
+              <CheckoutButton kind="business">Upgrade this group</CheckoutButton>
             )}
           </CardContent>
         </Card>

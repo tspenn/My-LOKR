@@ -6,6 +6,8 @@ export type PlanKey = "free" | "business" | "enterprise";
 export type VaultKey = "none" | "50" | "100" | "250";
 export type AccountType = "personal" | "business";
 
+export const FREE_INVITEES_PER_GROUP = 3;
+
 export const PLANS = {
   free: {
     key: "free" as const,
@@ -19,14 +21,17 @@ export const PLANS = {
     description:
       "A locked space for the people and information you actually care about. Messages and files stay under your control — not routed through Google, Microsoft, or the open internet.",
     features: [
-      "Up to 4 people",
-      "1 GB private storage",
+      "Dashboard to pick your Lockrs by logo or four letters",
+      "As many groups as you need — each is free with up to 3 invitees",
+      "Groups others invite you to stay free for you",
+      "You plus 3 people per free group (4 total)",
+      "A 4th invitee on a group is Business for that group only",
+      "1 GB private storage per free group",
       "Text messages and attachments",
-      "Not routed through Google or Microsoft",
       "No ads and no ad trackers",
     ],
     limitations:
-      "Sized for a few people. Upgrade when you need more seats or storage. The lock does not change.",
+      "Each free group stops at 3 invitees. You cannot put 14 people in a Free group. Upgrade that group to Business for 15 seats.",
   },
   business: {
     key: "business" as const,
@@ -40,7 +45,9 @@ export const PLANS = {
     description:
       "A quiet, secure side channel for important discussions and proprietary information that don’t belong in regular email. Full messaging, attachments, realtime, and admin basics.",
     features: [
-      "Up to 15 people",
+      "This group, upgraded past 3 invitees",
+      "Up to 15 people in this group, including you",
+      "Invitees still do not pay; they count toward this group’s 15",
       "50 GB shared private storage",
       "Full messaging and attachments",
       "Realtime updates",

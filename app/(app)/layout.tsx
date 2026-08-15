@@ -15,11 +15,11 @@ export default async function AppLayout({
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims) redirect("/login");
 
-  const { workspace, logoUrl, userId, lockrCount } = await getCurrentWorkspace();
+  const { workspace, logoUrl, userId, lockrCount, mark } = await getCurrentWorkspace();
 
   return (
     <div className="flex h-dvh flex-col bg-[#1F1F1F]">
-      <AppHeader workspace={workspace} logoUrl={logoUrl} />
+      <AppHeader workspace={workspace} logoUrl={logoUrl} mark={mark} />
       <WorkspaceGate workspace={workspace} lockrCount={lockrCount}>
         <CallProvider userId={userId ?? data?.claims?.sub ?? ""} workspaceId={workspace?.id ?? null}>
           <div className="flex min-h-0 flex-1">{children}</div>

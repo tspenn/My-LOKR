@@ -35,8 +35,9 @@ export function NewConversationForm({ people }: { people: Profile[] }) {
   if (people.length === 0) {
     return (
       <Alert>
-        Nobody else is in this Lokr yet. Invite them from Settings after they
-        create an account.
+        Nobody else is in this Lokr yet. Invite them by phone above. They must
+        confirm that number before they can join — a forwarded link is not
+        enough.
       </Alert>
     );
   }

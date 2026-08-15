@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/SignOutButton";
+import { LokrMark } from "@/components/LokrMark";
 import { Button } from "@/components/ui/button";
-import { listLockrs, MAX_LOCKRS } from "@/lib/workspace";
+import { listLockrs } from "@/lib/workspace";
 import { selectLokr } from "@/lib/actions/workspace";
 
 export const metadata = { title: "Your Lockrs" };
@@ -17,8 +18,10 @@ export default async function LockrsPage() {
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-semibold tracking-tight">Choose a Lokr</h1>
         <p className="mt-3 text-lg text-muted-foreground">
-          Work, family, and friends stay in separate spaces. People in one Lokr
-          cannot see threads in another. Threads stay here until you delete them.
+          One group you own is free with up to 3 invitees. Add another group —
+          family, work, a friend — and that one is free too, as long as it also
+          stays at 3 invitees. A 4th person in any one group is Business for
+          that group only. Tiles use the owner’s logo, or four letters.
         </p>
       </div>
       <ul className="grid gap-4 sm:grid-cols-2">
@@ -38,13 +41,17 @@ export default async function LockrsPage() {
                     className="h-20 max-w-[12rem] object-contain"
                   />
                 ) : (
-                  <span className="text-2xl font-semibold">{lokr.name}</span>
+                  <LokrMark letters={lokr.mark} />
                 )}
-                {lokr.logoUrl ? (
-                  <span className="text-base font-medium">{lokr.name}</span>
-                ) : null}
+                <span className="text-base font-medium">{lokr.name}</span>
                 <span className="rounded-full border border-[#3F3F3F] px-3 py-0.5 text-sm text-[#C9C2B6]">
-                  {lokr.account_type === "business" ? "Business" : "Private"}
+                  {lokr.invited
+                    ? "Invited · free"
+                    : lokr.plan === "business"
+                      ? "Yours · Business"
+                      : lokr.plan === "enterprise"
+                        ? "Yours · Enterprise"
+                        : "Yours · free (1–3 invitees)"}
                 </span>
               </button>
             </form>
@@ -52,18 +59,14 @@ export default async function LockrsPage() {
         ))}
       </ul>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-        {lockrs.length < MAX_LOCKRS ? (
-          <Button asChild>
-            <Link href="/setup">Create another Lokr</Link>
-          </Button>
-        ) : null}
+        <Button asChild>
+          <Link href="/setup">Create another Lokr</Link>
+        </Button>
         <SignOutButton />
       </div>
-      {lockrs.length >= MAX_LOCKRS ? (
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          This account already has {MAX_LOCKRS} Lockrs, the maximum on Free.
-        </p>
-      ) : null}
+      <p className="mt-4 text-center text-sm text-muted-foreground">
+        Creating another group is free while each stays at 1–3 invitees.
+      </p>
     </main>
   );
 }

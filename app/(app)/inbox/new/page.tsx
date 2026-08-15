@@ -1,5 +1,6 @@
 import { InboxShell } from "@/components/InboxShell";
 import { NewConversationForm } from "@/components/NewConversationForm";
+import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { profileFromRow, type ProfileRow } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
@@ -29,14 +30,27 @@ export default async function NewMessagePage() {
     return rows.map(profileFromRow);
   });
 
+  const { data: inviteRows } = await supabase
+    .from("lokr_phone_invites")
+    .select("id, phone_e164, phone_last4, status, otp_display, token, created_at")
+    .eq("workspace_id", workspace.id)
+    .in("status", ["pending", "awaiting_code", "confirmed"])
+    .order("created_at", { ascending: false });
+  const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
+
   return (
     <InboxShell currentUserId={userId}>
       <div className="overflow-y-auto px-4 py-8 sm:px-8">
         <div className="mx-auto max-w-xl">
           <h1 className="mb-2 text-2xl font-semibold">New message</h1>
           <p className="mb-8 text-muted-foreground">
-            Write only to people already in this Lokr. Invite others from Settings.
+            Write only to people already in this Lokr. Invite by phone below —
+            they must confirm that same number before they can join.
           </p>
+          <div className="mb-10 rounded-xl border border-border bg-card p-5">
+            <h2 className="mb-4 text-lg font-medium">Invite by phone</h2>
+            <PhoneInviteForm pending={pendingInvites} />
+          </div>
           <NewConversationForm people={people} />
         </div>
       </div>

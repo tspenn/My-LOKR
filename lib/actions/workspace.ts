@@ -8,7 +8,6 @@ import { PLANS, type AccountType, type PlanKey } from "@/lib/billing";
 import {
   getCurrentWorkspace,
   listLockrs,
-  MAX_LOCKRS,
   writeWorkspaceCookie,
 } from "@/lib/workspace";
 
@@ -16,11 +15,6 @@ export async function createWorkspace(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const accountType = String(formData.get("account_type") ?? "personal") as AccountType;
   if (!name) return { error: "Please name this Lokr." };
-
-  const { lockrs } = await listLockrs();
-  if (lockrs.length >= MAX_LOCKRS) {
-    return { error: `You can keep up to ${MAX_LOCKRS} separate Lockrs on this account.` };
-  }
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_create_workspace", {
@@ -97,14 +91,21 @@ export async function inviteWorkspaceMember(formData: FormData) {
   const { workspace, memberCount } = await getCurrentWorkspace();
   if (!workspace) return { error: "Set up your Lokr first." };
 
+  const supabase = await createClient();
+  const { count: pendingCount } = await supabase
+    .from("lokr_phone_invites")
+    .select("id", { count: "exact", head: true })
+    .eq("workspace_id", workspace.id)
+    .in("status", ["pending", "awaiting_code", "confirmed"]);
+
   const maxUsers = PLANS[workspace.plan as PlanKey].maxUsers;
-  if (maxUsers && memberCount >= maxUsers) {
+  const used = memberCount + (pendingCount ?? 0);
+  if (maxUsers && used >= maxUsers) {
+    const planName = PLANS[workspace.plan as PlanKey].name;
     return {
-      error: `This plan allows ${maxUsers} people. Upgrade to add more.`,
+      error: `${planName} allows ${maxUsers} people in this Lokr, including you. Upgrade this group to invite more.`,
     };
   }
-
-  const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("id")
@@ -120,25 +121,26 @@ export async function inviteWorkspaceMember(formData: FormData) {
     role: "member",
   });
   if (error) {
-    if (error.message.includes("at most 4")) {
-      return { error: "That person already belongs to 4 Lockrs." };
-    }
     return { error: "That person is already in this Lokr." };
   }
 
   revalidatePath("/profile");
   revalidatePath("/inbox/new");
-  return { error: null, message: "They can now write in this Lokr." };
+  return { error: null, message: "They can now write in this Lokr. They do not pay." };
 }
 
-export async function startCheckout(kind: "business" | "vault50" | "vault100" | "vault250") {
+export async function startCheckout(
+  kind: "business" | "vault50" | "vault100" | "vault250",
+  workspaceId?: string,
+) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) return { error: "Please sign in again.", url: null };
 
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Choose a Lokr first.", url: null };
+  const targetId = workspaceId ?? workspace?.id;
+  if (!targetId) return { error: "Choose a Lokr first.", url: null };
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const res = await fetch(`${url}/functions/v1/create-checkout-mylokr`, {
@@ -147,7 +149,7 @@ export async function startCheckout(kind: "business" | "vault50" | "vault100" | 
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ kind, workspace_id: workspace.id }),
+    body: JSON.stringify({ kind, workspace_id: targetId }),
   });
   const payload = (await res.json()) as { url?: string; error?: string };
   if (!res.ok || !payload.url) {

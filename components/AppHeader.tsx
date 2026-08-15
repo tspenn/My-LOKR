@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { LokrMark } from "@/components/LokrMark";
 import { SignOutButton } from "@/components/SignOutButton";
 import { cn } from "@/lib/utils";
 import type { Workspace } from "@/lib/billing";
@@ -53,9 +54,11 @@ export function WorkspaceGate({
 export function AppHeader({
   workspace,
   logoUrl,
+  mark,
 }: {
   workspace: Workspace | null;
   logoUrl: string | null;
+  mark: string;
 }) {
   const pathname = usePathname();
   const accountLabel =
@@ -76,9 +79,11 @@ export function AppHeader({
             </Link>
           ) : (
             <Link href="/lockrs" className="rounded-md">
-              <p className="text-2xl font-semibold tracking-tight">
-                {workspace?.name ?? "My Lokr"}
-              </p>
+              {workspace ? (
+                <LokrMark letters={mark} size="sm" />
+              ) : (
+                <p className="text-2xl font-semibold tracking-tight">My Lokr</p>
+              )}
             </Link>
           )}
           {workspace ? (

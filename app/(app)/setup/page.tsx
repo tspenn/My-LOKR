@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { WorkspaceSetupForm } from "./WorkspaceSetupForm";
-import { listLockrs, MAX_LOCKRS } from "@/lib/workspace";
+import { listLockrs } from "@/lib/workspace";
 import {
   Card,
   CardContent,
@@ -12,18 +12,17 @@ import {
 export const metadata = { title: "Set up your Lokr" };
 
 export default async function SetupPage() {
-  const { lockrs } = await listLockrs();
-  if (lockrs.length >= MAX_LOCKRS) redirect("/lockrs");
+  const { ownedCount } = await listLockrs();
 
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-10">
       <Card>
         <CardHeader>
-          <CardTitle>{lockrs.length === 0 ? "Set up your Lokr" : "Create another Lokr"}</CardTitle>
+          <CardTitle>{ownedCount === 0 ? "Set up your Lokr" : "Create another Lokr"}</CardTitle>
           <CardDescription>
-            Choose Private or Business, then load a logo. That mark is how you
-            tell this space apart from your others. People invited here cannot
-            see your other Lockrs.
+            Each group is free with up to 3 invitees (you plus 3). Load a logo, or
+            we will use four letters (FAM, TSTP). A 4th invitee in this group is
+            when Business starts — only for this group.
           </CardDescription>
         </CardHeader>
         <CardContent>

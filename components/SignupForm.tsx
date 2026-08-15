@@ -6,6 +6,7 @@ import { signUp } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
 import {
   Card,
@@ -56,28 +57,22 @@ export function SignupForm() {
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              minLength={8}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm">Confirm password</Label>
-            <Input
-              id="confirm"
-              name="confirm"
-              type="password"
-              autoComplete="new-password"
-              minLength={8}
-              required
-            />
-          </div>
+          <PasswordField
+            id="password"
+            name="password"
+            label="Password"
+            autoComplete="new-password"
+          />
+          <PasswordField
+            id="confirm"
+            name="confirm"
+            label="Confirm password"
+            autoComplete="new-password"
+          />
+          <p className="text-sm text-muted-foreground">
+            If this is proprietary, use a password you do not use on Google,
+            Microsoft, or other mail.
+          </p>
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? "Creating account…" : "Create account"}
           </Button>

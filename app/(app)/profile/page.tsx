@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
 import { InviteForm, LogoForm } from "@/components/WorkspaceSettings";
+import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { UsageMeter } from "@/components/UsageMeter";
 import { DistributionListsSettings } from "@/components/DistributionListsSettings";
 import { createClient } from "@/lib/supabase/server";
@@ -42,6 +43,16 @@ export default async function ProfilePage() {
     listWorkspacePeople(),
   ]);
 
+  const { data: inviteRows } = workspace
+    ? await supabase
+        .from("lokr_phone_invites")
+        .select("id, phone_e164, phone_last4, status, otp_display, token, created_at")
+        .eq("workspace_id", workspace.id)
+        .in("status", ["pending", "awaiting_code", "confirmed"])
+        .order("created_at", { ascending: false })
+    : { data: [] as PendingPhoneInvite[] };
+  const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
+
   return (
     <main className="mx-auto w-full max-w-xl space-y-8 overflow-y-auto px-4 py-10">
       <Card>
@@ -77,11 +88,19 @@ export default async function ProfilePage() {
             <CardHeader>
               <CardTitle>People</CardTitle>
               <CardDescription>
-                Per-user pricing applies to active accounts. They must already have a Lokr login.
+                On Free, this group stays at 1–3 invitees (4 people including you).
+                A 4th invitee is Business for this group only. Invitees never get
+                a bill. Phone invites must be confirmed on the number you sent
+                them to — a forwarded link is not enough.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <InviteForm memberCount={memberCount} maxUsers={usage.maxUsers} />
+            <CardContent className="space-y-8">
+              <PhoneInviteForm pending={pendingInvites} />
+              <InviteForm
+                memberCount={memberCount}
+                pendingCount={pendingInvites.length}
+                maxUsers={usage.maxUsers}
+              />
             </CardContent>
           </Card>
 

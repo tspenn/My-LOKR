@@ -8,6 +8,8 @@ const PUBLIC_PREFIXES = [
   "/signup",
   "/forgot-password",
   "/auth/callback",
+  "/join",
+  "/terms",
 ];
 
 function isPublicPath(pathname: string) {
@@ -79,9 +81,15 @@ export async function updateSession(request: NextRequest) {
       pathname === "/signup" ||
       pathname === "/forgot-password")
   ) {
+    const next = request.nextUrl.searchParams.get("next");
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/lockrs";
-    redirectUrl.search = "";
+    if (next && next.startsWith("/join/")) {
+      redirectUrl.pathname = next;
+      redirectUrl.search = "";
+    } else {
+      redirectUrl.pathname = "/lockrs";
+      redirectUrl.search = "";
+    }
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 
