@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { clearWorkspaceCookie } from "@/lib/workspace";
+import { normalizePhone } from "@/lib/phone";
 
 function appOrigin() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -15,15 +16,30 @@ function appOrigin() {
 }
 
 export async function signInWithPassword(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
+  const identifier = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/lockrs");
 
-  if (!email || !password) {
-    return { error: "Please enter your email and password." };
+  if (!identifier || !password) {
+    return { error: "Please enter your email or phone, and your password." };
   }
 
   const supabase = await createClient();
+  let email = identifier;
+  if (!identifier.includes("@")) {
+    const phone = normalizePhone(identifier);
+    if (!phone) {
+      return { error: "That email or password did not work. Please try again." };
+    }
+    const { data: resolved } = await supabase.rpc("lokr_email_for_verified_phone", {
+      p_phone_e164: phone,
+    });
+    if (typeof resolved !== "string" || !resolved.includes("@")) {
+      return { error: "That email or password did not work. Please try again." };
+    }
+    email = resolved;
+  }
+
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     return { error: "That email or password did not work. Please try again." };

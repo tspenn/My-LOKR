@@ -277,6 +277,17 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      lokr_user_phones: {
+        Row: {
+          user_id: string;
+          phone_e164: string;
+          verified_at: string;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       lokr_phone_invites: {
         Row: {
           id: string;
@@ -377,6 +388,10 @@ export type Database = {
       lokr_accept_phone_invite: {
         Args: { p_ticket: string };
         Returns: Json;
+      };
+      lokr_email_for_verified_phone: {
+        Args: { p_phone_e164: string };
+        Returns: string;
       };
     };
     Enums: {

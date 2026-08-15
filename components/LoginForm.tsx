@@ -39,8 +39,9 @@ export function LoginForm({
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>
-          Messages and files stay in a private Supabase system — not Gmail, not
-          Outlook, not Google Drive. Google and Microsoft do not see your content.
+          Use the email you signed up with, or the phone this invite was sent to.
+          Same password. Works on a computer or your phone — you just need wifi
+          (or any internet). Google and Microsoft do not see your content.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -56,12 +57,14 @@ export function LoginForm({
             <Alert variant="destructive">{passwordState.error}</Alert>
           ) : null}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email or phone</Label>
             <Input
               id="email"
               name="email"
-              type="email"
-              autoComplete="email"
+              type="text"
+              inputMode="email"
+              autoComplete="username"
+              placeholder="you@email.com or (555) 123-4567"
               required
             />
           </div>

@@ -184,7 +184,9 @@ export function JoinForm({
               />
               <p className="text-sm text-muted-foreground">
                 If this is proprietary, use a password you do not use on Google,
-                Microsoft, or other mail.
+                Microsoft, or other mail. After this, you can sign in with this
+                email or this phone, on a computer or your phone, as long as you
+                have wifi.
               </p>
               <Button type="submit" className="w-full" disabled={accountPending}>
                 {accountPending ? "Creating account…" : "Create account and join"}

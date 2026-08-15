@@ -7,6 +7,7 @@ import { UsageMeter } from "@/components/UsageMeter";
 import { DistributionListsSettings } from "@/components/DistributionListsSettings";
 import { createClient } from "@/lib/supabase/server";
 import { profileFromRow } from "@/lib/profile";
+import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
@@ -36,6 +37,12 @@ export default async function ProfilePage() {
   if (!row) redirect("/login");
   const profile = profileFromRow(row);
 
+  const { data: phoneRow } = await supabase
+    .from("lokr_user_phones")
+    .select("phone_e164")
+    .eq("user_id", userId)
+    .maybeSingle();
+
   const { workspace, memberCount } = await getCurrentWorkspace();
   const usage = workspace ? workspaceUsage(workspace) : null;
   const [{ lists }, { people }] = await Promise.all([
@@ -60,6 +67,11 @@ export default async function ProfilePage() {
           <CardTitle>Your profile</CardTitle>
           <CardDescription>
             This name is shown to people you write with inside this Lokr.
+            Sign in with this email
+            {phoneRow?.phone_e164
+              ? ` or ${formatPhoneForOwner(phoneRow.phone_e164)}`
+              : " or a phone you confirmed on an invite"}
+            , on a computer or your phone, as long as you have wifi.
           </CardDescription>
         </CardHeader>
         <CardContent>
