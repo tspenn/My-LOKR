@@ -307,15 +307,15 @@ export type Database = {
         Returns: string;
       };
       lokr_create_conversation: {
-        Args: { p_subject: string | null; p_member_ids: string[] };
+        Args: { p_subject: string | null; p_member_ids: string[]; p_workspace_id: string };
         Returns: string;
       };
       lokr_get_inbox: {
-        Args: Record<PropertyKey, never>;
+        Args: { p_workspace_id: string };
         Returns: InboxItem[];
       };
       lokr_can_upload: {
-        Args: { p_additional_bytes: number };
+        Args: { p_additional_bytes: number; p_workspace_id: string };
         Returns: boolean;
       };
       lokr_storage_limit_bytes: {
@@ -327,7 +327,7 @@ export type Database = {
         Returns: string;
       };
       lokr_ensure_direct_conversation: {
-        Args: { p_other_user_id: string };
+        Args: { p_other_user_id: string; p_workspace_id: string };
         Returns: string;
       };
     };

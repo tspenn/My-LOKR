@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { SIGNED_URL_SECONDS } from "@/lib/files";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentWorkspace } from "@/lib/workspace";
 
 export async function sendTextMessage(conversationId: string, body: string) {
   const trimmed = body.trim();
@@ -51,8 +52,13 @@ export async function createMessagePlaceholder(
   }
 
   if (extraBytes > 0) {
+    const { workspace } = await getCurrentWorkspace();
+    if (!workspace) {
+      return { error: "Choose a Lokr first.", messageId: null };
+    }
     const { data: allowed } = await supabase.rpc("lokr_can_upload", {
       p_additional_bytes: extraBytes,
+      p_workspace_id: workspace.id,
     });
     if (!allowed) {
       return {

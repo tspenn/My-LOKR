@@ -68,7 +68,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && pathname === "/") {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/inbox";
+    redirectUrl.pathname = "/lockrs";
     redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
@@ -80,7 +80,7 @@ export async function updateSession(request: NextRequest) {
       pathname === "/forgot-password")
   ) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/inbox";
+    redirectUrl.pathname = "/lockrs";
     redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }

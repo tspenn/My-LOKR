@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentWorkspace } from "@/lib/workspace";
 
 export async function createConversation(formData: FormData) {
   const subject = String(formData.get("subject") ?? "").trim();
@@ -12,10 +13,16 @@ export async function createConversation(formData: FormData) {
     return { error: "Please choose at least one person to write to." };
   }
 
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace) {
+    return { error: "Choose a Lokr first." };
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_create_conversation", {
     p_subject: subject || null,
     p_member_ids: memberIds,
+    p_workspace_id: workspace.id,
   });
 
   if (error || !data) {
@@ -80,8 +87,14 @@ export async function markConversationRead(conversationId: string) {
 }
 
 export async function getInbox() {
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace) {
+    return { items: [], error: null };
+  }
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("lokr_get_inbox");
+  const { data, error } = await supabase.rpc("lokr_get_inbox", {
+    p_workspace_id: workspace.id,
+  });
   if (error) {
     return { items: [], error: error.message };
   }

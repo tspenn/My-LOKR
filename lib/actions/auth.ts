@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { clearWorkspaceCookie } from "@/lib/workspace";
 
 function appOrigin() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -16,7 +17,7 @@ function appOrigin() {
 export async function signInWithPassword(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/inbox");
+  const next = String(formData.get("next") ?? "/lockrs");
 
   if (!email || !password) {
     return { error: "Please enter your email and password." };
@@ -45,7 +46,7 @@ export async function signInWithPassword(formData: FormData) {
       .eq("id", user.id);
   }
 
-  redirect(next.startsWith("/") ? next : "/inbox");
+  redirect(next.startsWith("/") ? next : "/lockrs");
 }
 
 export async function signUp(formData: FormData) {
@@ -167,5 +168,6 @@ export async function updatePassword(formData: FormData) {
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  await clearWorkspaceCookie();
   redirect("/login");
 }

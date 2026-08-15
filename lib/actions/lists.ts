@@ -12,10 +12,14 @@ export type DistributionList = {
 };
 
 export async function listDistributionLists() {
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace) return { lists: [] as DistributionList[], error: null };
+
   const supabase = await createClient();
   const { data: lists, error } = await supabase
     .from("lokr_distribution_lists")
     .select("id, name, created_by")
+    .eq("workspace_id", workspace.id)
     .order("name");
   if (error) return { lists: [] as DistributionList[], error: error.message };
 

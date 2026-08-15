@@ -21,7 +21,7 @@ export default async function ConversationPage({
   if (!userId) redirect("/login");
 
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) redirect("/setup");
+  if (!workspace) redirect("/lockrs");
   const usage = workspaceUsage(workspace);
 
   const { data: conversation } = await supabase
@@ -30,7 +30,7 @@ export default async function ConversationPage({
     .eq("id", id)
     .maybeSingle();
 
-  if (!conversation) notFound();
+  if (!conversation || conversation.workspace_id !== workspace.id) notFound();
 
   const { data: memberRows } = await supabase
     .from("lokr_conversation_members")

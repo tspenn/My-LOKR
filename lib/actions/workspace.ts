@@ -5,12 +5,22 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeFileName } from "@/lib/files";
 import { PLANS, type AccountType, type PlanKey } from "@/lib/billing";
-import { getCurrentWorkspace } from "@/lib/workspace";
+import {
+  getCurrentWorkspace,
+  listLockrs,
+  MAX_LOCKRS,
+  writeWorkspaceCookie,
+} from "@/lib/workspace";
 
 export async function createWorkspace(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const accountType = String(formData.get("account_type") ?? "personal") as AccountType;
   if (!name) return { error: "Please name this Lokr." };
+
+  const { lockrs } = await listLockrs();
+  if (lockrs.length >= MAX_LOCKRS) {
+    return { error: `You can keep up to ${MAX_LOCKRS} separate Lockrs on this account.` };
+  }
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_create_workspace", {
@@ -33,6 +43,19 @@ export async function createWorkspace(formData: FormData) {
     }
   }
 
+  await writeWorkspaceCookie(data);
+  revalidatePath("/inbox");
+  revalidatePath("/lockrs");
+  redirect("/inbox");
+}
+
+export async function selectLokr(formData: FormData) {
+  const workspaceId = String(formData.get("workspace_id") ?? "");
+  const { lockrs } = await listLockrs();
+  if (!lockrs.some((lokr) => lokr.id === workspaceId)) {
+    redirect("/lockrs");
+  }
+  await writeWorkspaceCookie(workspaceId);
   revalidatePath("/inbox");
   redirect("/inbox");
 }
@@ -96,7 +119,12 @@ export async function inviteWorkspaceMember(formData: FormData) {
     user_id: profile.id,
     role: "member",
   });
-  if (error) return { error: "That person is already in this Lokr." };
+  if (error) {
+    if (error.message.includes("at most 4")) {
+      return { error: "That person already belongs to 4 Lockrs." };
+    }
+    return { error: "That person is already in this Lokr." };
+  }
 
   revalidatePath("/profile");
   revalidatePath("/inbox/new");
@@ -109,6 +137,9 @@ export async function startCheckout(kind: "business" | "vault50" | "vault100" | 
   const token = data.session?.access_token;
   if (!token) return { error: "Please sign in again.", url: null };
 
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace) return { error: "Choose a Lokr first.", url: null };
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const res = await fetch(`${url}/functions/v1/create-checkout-mylokr`, {
     method: "POST",
@@ -116,7 +147,7 @@ export async function startCheckout(kind: "business" | "vault50" | "vault100" | 
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ kind }),
+    body: JSON.stringify({ kind, workspace_id: workspace.id }),
   });
   const payload = (await res.json()) as { url?: string; error?: string };
   if (!res.ok || !payload.url) {

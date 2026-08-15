@@ -27,7 +27,10 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { kind } = (await req.json()) as { kind?: string }
+    const { kind, workspace_id: requestedWorkspaceId } = (await req.json()) as {
+      kind?: string
+      workspace_id?: string
+    }
     const envName = kind ? KIND_ENV[kind] : undefined
     const priceId = envName ? Deno.env.get(envName) : undefined
     if (!kind || !priceId) {
@@ -64,11 +67,14 @@ Deno.serve(async (req) => {
     }
 
     const admin = createClient(supabaseUrl, serviceKey)
-    const { data: membership } = await admin
+    let membershipQuery = admin
       .from('lokr_workspace_members')
       .select('workspace_id, role')
       .eq('user_id', user.id)
-      .maybeSingle()
+    if (requestedWorkspaceId) {
+      membershipQuery = membershipQuery.eq('workspace_id', requestedWorkspaceId)
+    }
+    const { data: membership } = await membershipQuery.maybeSingle()
     if (!membership) {
       return new Response(JSON.stringify({ error: 'Set up your Lokr first.' }), {
         status: 400,
