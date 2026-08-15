@@ -1,5 +1,8 @@
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
+export const MAX_VIDEO_BYTES = 80 * 1024 * 1024;
+export const MAX_VIDEO_SECONDS = 180;
 export const SIGNED_URL_SECONDS = 90;
+export const VIDEO_VIEW_SECONDS = 360;
 
 export const ALLOWED_MIME_TYPES = [
   "image/jpeg",
@@ -14,6 +17,8 @@ export const ALLOWED_MIME_TYPES = [
   "text/plain",
   "text/csv",
 ] as const;
+
+export const VIDEO_MIME_TYPES = ["video/webm", "video/mp4", "video/quicktime"] as const;
 
 const ALLOWED_EXTENSIONS = [
   "jpg",
@@ -30,7 +35,21 @@ const ALLOWED_EXTENSIONS = [
   "csv",
 ];
 
+const VIDEO_EXTENSIONS = ["webm", "mp4", "mov"];
+
+export function isVideoFile(file: File) {
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const mimeOk =
+    file.type === "" ||
+    VIDEO_MIME_TYPES.includes(file.type as (typeof VIDEO_MIME_TYPES)[number]) ||
+    file.type.startsWith("video/");
+  return mimeOk && VIDEO_EXTENSIONS.includes(extension);
+}
+
 export function isAllowedFile(file: File) {
+  if (isVideoFile(file)) {
+    return file.size > 0 && file.size <= MAX_VIDEO_BYTES;
+  }
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const mimeOk =
     file.type === "" ||
@@ -41,7 +60,10 @@ export function isAllowedFile(file: File) {
 
 export function fileValidationMessage(file: File) {
   if (file.size <= 0) return `${file.name} looks empty.`;
-  if (file.size > MAX_FILE_BYTES) {
+  if (isVideoFile(file) && file.size > MAX_VIDEO_BYTES) {
+    return `${file.name} is larger than 80 MB.`;
+  }
+  if (!isVideoFile(file) && file.size > MAX_FILE_BYTES) {
     return `${file.name} is larger than 20 MB.`;
   }
   if (!isAllowedFile(file)) {
@@ -53,4 +75,8 @@ export function fileValidationMessage(file: File) {
 export function sanitizeFileName(name: string) {
   const cleaned = name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/_+/g, "_");
   return cleaned.slice(0, 120) || "file";
+}
+
+export function isVideoMime(mime: string) {
+  return mime.startsWith("video/");
 }

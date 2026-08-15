@@ -3,10 +3,13 @@ import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
 import { InviteForm, LogoForm } from "@/components/WorkspaceSettings";
 import { UsageMeter } from "@/components/UsageMeter";
+import { DistributionListsSettings } from "@/components/DistributionListsSettings";
 import { createClient } from "@/lib/supabase/server";
 import { profileFromRow } from "@/lib/profile";
 import { PLANS } from "@/lib/billing";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
+import { listDistributionLists } from "@/lib/actions/lists";
+import { listWorkspacePeople } from "@/lib/actions/calls";
 import {
   Card,
   CardContent,
@@ -34,6 +37,10 @@ export default async function ProfilePage() {
 
   const { workspace, memberCount } = await getCurrentWorkspace();
   const usage = workspace ? workspaceUsage(workspace) : null;
+  const [{ lists }, { people }] = await Promise.all([
+    listDistributionLists(),
+    listWorkspacePeople(),
+  ]);
 
   return (
     <main className="mx-auto w-full max-w-xl space-y-8 overflow-y-auto px-4 py-10">
@@ -75,6 +82,22 @@ export default async function ProfilePage() {
             </CardHeader>
             <CardContent>
               <InviteForm memberCount={memberCount} maxUsers={usage.maxUsers} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Distribution lists</CardTitle>
+              <CardDescription>
+                Send a recorded video to several people as private messages, not a group call.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DistributionListsSettings
+                initialLists={lists}
+                people={people}
+                currentUserId={userId}
+              />
             </CardContent>
           </Card>
 

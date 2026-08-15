@@ -80,7 +80,7 @@ export async function createMessagePlaceholder(
   return { error: null, messageId: data.id };
 }
 
-export async function getAttachmentDownloadUrl(attachmentId: string) {
+export async function getAttachmentDownloadUrl(attachmentId: string, expiresIn = SIGNED_URL_SECONDS) {
   const supabase = await createClient();
   const { data: attachment, error } = await supabase
     .from("lokr_message_attachments")
@@ -94,7 +94,7 @@ export async function getAttachmentDownloadUrl(attachmentId: string) {
 
   const { data, error: signedError } = await supabase.storage
     .from("lokr-attachments")
-    .createSignedUrl(attachment.storage_path, SIGNED_URL_SECONDS);
+    .createSignedUrl(attachment.storage_path, expiresIn);
 
   if (signedError || !data?.signedUrl) {
     return { error: "We could not prepare that download.", url: null, fileName: null };

@@ -9,6 +9,9 @@ import { leaveConversation } from "@/lib/actions/conversations";
 import { conversationTitle } from "@/lib/utils";
 import { profileFromRow, type ProfileRow } from "@/lib/profile";
 import { Button } from "@/components/ui/button";
+import { useCall } from "@/components/CallProvider";
+import { Alert } from "@/components/ui/alert";
+import { Video } from "lucide-react";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
 type RawMessage = {
@@ -61,8 +64,12 @@ export function ConversationView({
   initialMessages: MessageWithDetails[];
 }) {
   const [messages, setMessages] = useState(initialMessages);
+  const [callError, setCallError] = useState<string | null>(null);
   const router = useRouter();
   const title = conversationTitle(members, currentUserId, subject);
+  const { startVideoCall, inCall } = useCall();
+  const directPeer = members.filter((member) => member.id !== currentUserId);
+  const canCall = members.length === 2 && directPeer.length === 1;
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -124,16 +131,38 @@ export function ConversationView({
             {members.map((member) => member.display_name).join(" · ")}
           </p>
         </div>
-        <form
-          action={async () => {
-            await leaveConversation(conversationId);
-          }}
-        >
-          <Button type="submit" variant="outline">
-            Leave conversation
-          </Button>
-        </form>
+        <div className="flex flex-wrap gap-2">
+          {canCall ? (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={inCall}
+              onClick={async () => {
+                setCallError(null);
+                const error = await startVideoCall(conversationId, directPeer[0].display_name);
+                if (error) setCallError(error);
+              }}
+            >
+              <Video />
+              Video call
+            </Button>
+          ) : null}
+          <form
+            action={async () => {
+              await leaveConversation(conversationId);
+            }}
+          >
+            <Button type="submit" variant="outline">
+              Leave conversation
+            </Button>
+          </form>
+        </div>
       </header>
+      {callError ? (
+        <Alert variant="destructive" className="mx-4 mt-3">
+          {callError}
+        </Alert>
+      ) : null}
       <MessageThread messages={messages} currentUserId={currentUserId} />
       <MessageComposer
         conversationId={conversationId}

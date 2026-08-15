@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert } from "@/components/ui/alert";
 import { UsageMeter } from "@/components/UsageMeter";
+import { VideoRecorder } from "@/components/VideoRecorder";
 import { createClient } from "@/lib/supabase/client";
 import { fileValidationMessage, sanitizeFileName } from "@/lib/files";
 import { createMessagePlaceholder } from "@/lib/actions/messages";
@@ -164,7 +165,7 @@ export function MessageComposer({
         }}
       />
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="flex flex-wrap gap-2">
           <input
             ref={fileInputRef}
             id="message-files"
@@ -182,6 +183,7 @@ export function MessageComposer({
             <Paperclip />
             Attach file
           </Button>
+          <VideoRecorder workspaceId={workspaceId} conversationId={conversationId} />
         </div>
         <Button type="submit" disabled={isPending}>
           <Send />

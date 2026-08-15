@@ -225,6 +225,58 @@ export type Database = {
           },
         ];
       };
+      lokr_calls: {
+        Row: {
+          id: string;
+          conversation_id: string;
+          caller_id: string;
+          callee_id: string;
+          status: "ringing" | "active" | "ended";
+          created_at: string;
+          ended_at: string | null;
+        };
+        Insert: {
+          conversation_id: string;
+          caller_id: string;
+          callee_id: string;
+          status?: "ringing" | "active" | "ended";
+        };
+        Update: {
+          status?: "ringing" | "active" | "ended";
+          ended_at?: string | null;
+        };
+        Relationships: [];
+      };
+      lokr_distribution_lists: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          created_by: string;
+          created_at: string;
+        };
+        Insert: {
+          workspace_id: string;
+          name: string;
+          created_by: string;
+        };
+        Update: {
+          name?: string;
+        };
+        Relationships: [];
+      };
+      lokr_distribution_list_members: {
+        Row: {
+          list_id: string;
+          user_id: string;
+        };
+        Insert: {
+          list_id: string;
+          user_id: string;
+        };
+        Update: never;
+        Relationships: [];
+      };
       lokr_message_attachments: {
         Row: MessageAttachment;
         Insert: {
@@ -269,6 +321,14 @@ export type Database = {
       lokr_storage_limit_bytes: {
         Args: Record<PropertyKey, never>;
         Returns: number;
+      };
+      lokr_start_call: {
+        Args: { p_conversation_id: string };
+        Returns: string;
+      };
+      lokr_ensure_direct_conversation: {
+        Args: { p_other_user_id: string };
+        Returns: string;
       };
     };
     Enums: {

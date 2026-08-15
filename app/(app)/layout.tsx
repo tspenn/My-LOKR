@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppHeader, WorkspaceGate } from "@/components/AppHeader";
+import { CallProvider } from "@/components/CallProvider";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
@@ -14,13 +15,15 @@ export default async function AppLayout({
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims) redirect("/login");
 
-  const { workspace, logoUrl } = await getCurrentWorkspace();
+  const { workspace, logoUrl, userId } = await getCurrentWorkspace();
 
   return (
     <div className="flex h-dvh flex-col bg-[#1F1F1F]">
       <AppHeader workspace={workspace} logoUrl={logoUrl} />
       <WorkspaceGate workspace={workspace}>
-        <div className="flex min-h-0 flex-1">{children}</div>
+        <CallProvider userId={userId ?? data?.claims?.sub ?? ""} workspaceId={workspace?.id ?? null}>
+          <div className="flex min-h-0 flex-1">{children}</div>
+        </CallProvider>
       </WorkspaceGate>
     </div>
   );

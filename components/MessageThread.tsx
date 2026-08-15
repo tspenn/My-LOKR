@@ -22,8 +22,8 @@ export function MessageThread({
 
   if (messages.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center px-6 py-12 text-center">
-        <p className="text-lg text-muted-foreground">
+      <div className="flex flex-1 items-center justify-center bg-[#F8F8F7] px-6 py-12 text-center">
+        <p className="text-lg text-[#6F6B66]">
           No messages yet. Write the first one below.
         </p>
       </div>
@@ -31,7 +31,7 @@ export function MessageThread({
   }
 
   return (
-    <ol className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 py-6">
+    <ol className="flex flex-1 flex-col gap-4 overflow-y-auto bg-[#F8F8F7] px-4 py-6 text-[#1F1F1F]">
       {messages.map((message) => {
         const mine = message.sender_id === currentUserId;
         const sender = message.sender as Profile | null;
@@ -46,8 +46,8 @@ export function MessageThread({
           >
             <UserAvatar name={name} src={sender?.avatar_url} className="mt-1" />
             <div className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
-              <p className="mb-1 text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{name}</span>
+              <p className="mb-1 text-sm text-[#6F6B66]">
+                <span className="font-medium text-[#1F1F1F]">{name}</span>
                 {" · "}
                 <time dateTime={message.created_at}>
                   {formatTimestamp(message.created_at)}
@@ -56,8 +56,8 @@ export function MessageThread({
               <div
                 className={`rounded-2xl px-4 py-3 shadow-sm ${
                   mine
-                    ? "rounded-tr-sm bg-sent text-sent-foreground"
-                    : "rounded-tl-sm border border-border bg-received text-received-foreground"
+                    ? "rounded-tr-sm bg-[#E6F4F1] text-[#1F1F1F]"
+                    : "rounded-tl-sm border border-[#D9D6D0] bg-white text-[#1F1F1F]"
                 }`}
               >
                 {message.body ? (
@@ -70,7 +70,7 @@ export function MessageThread({
                         <Paperclip className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                         <div className="min-w-0">
                           <AttachmentPreview attachment={attachment} />
-                          <p className={mine ? "text-sm text-sent-foreground/80" : "text-sm text-muted-foreground"}>
+                          <p className="text-sm text-[#6F6B66]">
                             {formatFileSize(attachment.size_bytes)} · {attachment.mime_type}
                           </p>
                         </div>
