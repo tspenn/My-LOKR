@@ -33,12 +33,24 @@ export async function fetchIceServers(): Promise<RTCIceServer[]> {
   return STUN_SERVERS;
 }
 
+const PEER_CONFIG = {
+  iceCandidatePoolSize: 4,
+  iceTransportPolicy: "all" as const,
+};
+
 export async function createPeerConnection() {
   const iceServers = await fetchIceServers();
   return new RTCPeerConnection({
+    ...PEER_CONFIG,
     iceServers,
-    iceCandidatePoolSize: 4,
-    iceTransportPolicy: "all",
+  });
+}
+
+export async function refreshPeerIceServers(pc: RTCPeerConnection) {
+  const iceServers = await fetchIceServers();
+  pc.setConfiguration({
+    ...PEER_CONFIG,
+    iceServers,
   });
 }
 

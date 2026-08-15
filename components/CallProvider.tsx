@@ -13,7 +13,12 @@ import {
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { Mic, MicOff, PhoneOff, Video, VideoOff, Circle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { createPeerConnection, getCallMedia, stopStream } from "@/lib/webrtc";
+import {
+  createPeerConnection,
+  getCallMedia,
+  refreshPeerIceServers,
+  stopStream,
+} from "@/lib/webrtc";
 import {
   callChannelName,
   signalChannelName,
@@ -72,6 +77,10 @@ export function CallProvider({
   const recorderRef = useRef<MediaRecorder | null>(null);
   const mixStopRef = useRef<(() => void) | null>(null);
   const recordTimerRef = useRef<number | null>(null);
+  const ringTimerRef = useRef<number | null>(null);
+  const reconnectTimerRef = useRef<number | null>(null);
+  const restartingRef = useRef(false);
+  const roleRef = useRef<"caller" | "callee" | null>(null);
   const lastConversationIdRef = useRef<string | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
@@ -82,6 +91,10 @@ export function CallProvider({
 
   const cleanup = useCallback(async () => {
     if (recordTimerRef.current) window.clearTimeout(recordTimerRef.current);
+    if (ringTimerRef.current) window.clearTimeout(ringTimerRef.current);
+    if (reconnectTimerRef.current) window.clearTimeout(reconnectTimerRef.current);
+    restartingRef.current = false;
+    roleRef.current = null;
     if (recorderRef.current && recorderRef.current.state !== "inactive") {
       recorderRef.current.stop();
     }
@@ -122,6 +135,27 @@ export function CallProvider({
     }
   }, []);
 
+  const restartIce = useCallback(
+    async (pc: RTCPeerConnection) => {
+      if (restartingRef.current || pc.connectionState === "closed") return;
+      restartingRef.current = true;
+      setStatus("Reconnecting…");
+      try {
+        await refreshPeerIceServers(pc);
+        const offer = await pc.createOffer({ iceRestart: true });
+        await pc.setLocalDescription(offer);
+        if (callChannelRef.current) {
+          await sendSignal(callChannelRef.current, { type: "offer", sdp: offer });
+        }
+      } catch {
+        setStatus("Connection lost");
+      } finally {
+        restartingRef.current = false;
+      }
+    },
+    [sendSignal],
+  );
+
   const bindPeer = useCallback(
     (pc: RTCPeerConnection, channel: RealtimeChannel) => {
       pc.onicecandidate = (event) => {
@@ -133,18 +167,37 @@ export function CallProvider({
         const stream = event.streams[0] ?? new MediaStream([event.track]);
         remoteStreamRef.current = stream;
         setRemoteStream(stream);
-        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = stream;
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = stream;
+          void remoteVideoRef.current.play().catch(() => {});
+        }
       };
       pc.onconnectionstatechange = () => {
-        if (pc.connectionState === "failed" || pc.connectionState === "disconnected") {
-          setStatus("Connection lost");
-        }
         if (pc.connectionState === "connected") {
           setStatus("");
         }
       };
+      pc.oniceconnectionstatechange = () => {
+        if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
+          setStatus("");
+          return;
+        }
+        if (roleRef.current !== "caller") return;
+        if (pc.iceConnectionState === "failed") {
+          void restartIce(pc);
+          return;
+        }
+        if (pc.iceConnectionState === "disconnected") {
+          if (reconnectTimerRef.current) window.clearTimeout(reconnectTimerRef.current);
+          reconnectTimerRef.current = window.setTimeout(() => {
+            if (pc.iceConnectionState === "disconnected" || pc.iceConnectionState === "failed") {
+              void restartIce(pc);
+            }
+          }, 2500);
+        }
+      };
     },
-    [sendSignal],
+    [restartIce, sendSignal],
   );
 
   const handleSignal = useCallback(
@@ -186,6 +239,7 @@ export function CallProvider({
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         await sendSignal(callChannelRef.current, { type: "offer", sdp: offer });
+        if (ringTimerRef.current) window.clearTimeout(ringTimerRef.current);
         await setCallStatus(payload.callId, "active");
       }
     },
@@ -242,9 +296,14 @@ export function CallProvider({
         });
         await sendSignal(signal, invite);
         await supabase.removeChannel(signal);
+        roleRef.current = "caller";
         setSession({ call: started.call, role: "caller", peerName });
         lastConversationIdRef.current = started.call.conversation_id;
         setStatus("Calling…");
+        if (ringTimerRef.current) window.clearTimeout(ringTimerRef.current);
+        ringTimerRef.current = window.setTimeout(() => {
+          void hangup();
+        }, 45000);
         return null;
       } catch {
         await setCallStatus(started.call.id, "ended");
@@ -252,7 +311,7 @@ export function CallProvider({
         return "Camera or microphone could not be opened.";
       }
     },
-    [attachLocal, bindPeer, cleanup, joinCallChannel, sendSignal, session, supabase, userId],
+    [attachLocal, bindPeer, cleanup, hangup, joinCallChannel, sendSignal, session, supabase, userId],
   );
 
   const acceptIncoming = useCallback(async () => {
@@ -268,6 +327,8 @@ export function CallProvider({
       bindPeer(pc, channel);
       await sendSignal(channel, { type: "join", callId: call.id });
       await setCallStatus(call.id, "active");
+      if (ringTimerRef.current) window.clearTimeout(ringTimerRef.current);
+      roleRef.current = "callee";
       setIncoming(null);
       setSession({ call, role: "callee", peerName: fromName });
       lastConversationIdRef.current = call.conversation_id;
@@ -327,6 +388,7 @@ export function CallProvider({
   useEffect(() => {
     if (remoteVideoRef.current && remoteStream) {
       remoteVideoRef.current.srcObject = remoteStream;
+      void remoteVideoRef.current.play().catch(() => {});
     }
   }, [remoteStream, session]);
 
