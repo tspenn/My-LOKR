@@ -10,7 +10,6 @@ const PUBLIC_PREFIXES = [
   "/forgot-password",
   "/auth/callback",
   "/join",
-  "/terms",
 ];
 
 function isPublicPath(pathname: string) {

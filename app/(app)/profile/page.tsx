@@ -9,6 +9,8 @@ import { createClient } from "@/lib/supabase/server";
 import { profileFromRow } from "@/lib/profile";
 import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
+import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
+import { SAFETY_COPY } from "@/lib/safety";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
 import { listWorkspacePeople } from "@/lib/actions/calls";
@@ -159,6 +161,43 @@ export default async function ProfilePage() {
           to load a logo and invite people.
         </p>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{SAFETY_COPY.title}</CardTitle>
+          <CardDescription>{SAFETY_COPY.short}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          {SAFETY_COPY.bullets.map((bullet) => (
+            <p key={bullet}>{bullet}</p>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{TERMS.title}</CardTitle>
+          <CardDescription>Last updated {TERMS.updated}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6 text-sm">
+          <p>{TERMS.intro}</p>
+          {TERMS.sections.map((section) => (
+            <div key={section.title} className="space-y-2">
+              <h3 className="font-medium text-foreground">{section.title}</h3>
+              <p className="text-muted-foreground">{section.body}</p>
+            </div>
+          ))}
+          <p className="text-muted-foreground">
+            Questions:{" "}
+            <a
+              href={`mailto:${LEGAL_CONTACT}`}
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              {LEGAL_CONTACT}
+            </a>
+          </p>
+        </CardContent>
+      </Card>
     </main>
   );
 }
