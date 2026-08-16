@@ -114,7 +114,7 @@ export function SendVideoDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1F1F1F]/80 p-4 sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 p-4 sm:items-center">
       <div className="w-full max-w-md rounded-xl border border-[#3F3F3F] bg-[#2A2A2A] p-5 text-[#F8F8F7] shadow-xl">
         <h2 className="font-heading text-xl">Send video</h2>
         <p className="mt-1 text-sm text-[#A39E96]">

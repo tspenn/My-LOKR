@@ -1,32 +1,33 @@
 @import url("https://fonts.bunny.net/css?family=inter:400,500,600,700|space-grotesk:500,600,700");
 @import "tailwindcss";
 
-/* My Lokr visual system — dark chrome shell, soft reading pane, teal actions. */
+/* My Lokr visual system — warm wood shell, soft reading pane, cyan actions. */
 :root {
-  --background: #1f1f1f;
+  --background: #452d21;
   --foreground: #f8f8f7;
-  --card: #333333;
+  --card: #5c3f32;
   --card-foreground: #f8f8f7;
-  --popover: #2a2a2a;
+  --popover: #53382c;
   --popover-foreground: #f8f8f7;
-  --primary: #2a9d8f;
-  --primary-foreground: #f8f8f7;
-  --secondary: #2a2a2a;
+  --primary: #73cbdf;
+  --primary-foreground: #1f1f1f;
+  --primary-hover: #5eb9cd;
+  --secondary: #53382c;
   --secondary-foreground: #f8f8f7;
-  --muted: #2a2a2a;
+  --muted: #53382c;
   --muted-foreground: #a39e96;
-  --accent: #333333;
+  --accent: #5c3f32;
   --accent-foreground: #f8f8f7;
   --destructive: #c45c5c;
-  --border: #3f3f3f;
-  --input: #3f3f3f;
-  --ring: #2a9d8f;
-  --sent: #e6f4f1;
+  --border: #7a5a48;
+  --input: #7a5a48;
+  --ring: #73cbdf;
+  --sent: #d5eff5;
   --sent-foreground: #1f1f1f;
   --received: #f8f8f7;
   --received-foreground: #1f1f1f;
-  --chrome: #1f1f1f;
-  --chrome-raised: #2a2a2a;
+  --chrome: #452d21;
+  --chrome-raised: #53382c;
   --radius: 0.5rem;
 }
 
@@ -39,6 +40,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

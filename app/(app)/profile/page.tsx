@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
 import { InviteForm, LogoForm } from "@/components/WorkspaceSettings";
@@ -11,6 +12,7 @@ import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
 import { SAFETY_COPY } from "@/lib/safety";
+import { BRAND } from "@/lib/brand";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
 import { listWorkspacePeople } from "@/lib/actions/calls";
@@ -63,7 +65,21 @@ export default async function ProfilePage() {
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
 
   return (
-    <main className="mx-auto w-full max-w-xl space-y-8 overflow-y-auto px-4 py-10">
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      <section className="relative h-40 overflow-hidden sm:h-52">
+        <Image
+          src={BRAND.images.office}
+          alt="A private office desk with a secure red phone, looking out on a stream of encrypted data"
+          fill
+          sizes="100vw"
+          className="object-cover object-[78%_center]"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-background/15"
+          aria-hidden="true"
+        />
+      </section>
+      <main className="mx-auto w-full max-w-xl space-y-8 px-4 py-10">
       <Card>
         <CardHeader>
           <CardTitle>Your profile</CardTitle>
@@ -198,6 +214,7 @@ export default async function ProfilePage() {
           </p>
         </CardContent>
       </Card>
-    </main>
+      </main>
+    </div>
   );
 }

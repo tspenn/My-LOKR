@@ -447,7 +447,7 @@ export function CallProvider({
     <CallContext.Provider value={{ startVideoCall, inCall }}>
       {children}
       {incoming && !session ? (
-        <div className="fixed inset-x-0 top-4 z-50 mx-auto w-[min(28rem,calc(100%-2rem))] rounded-xl border border-[#3F3F3F] bg-[#1F1F1F] p-5 shadow-xl">
+        <div className="fixed inset-x-0 top-4 z-50 mx-auto w-[min(28rem,calc(100%-2rem))] rounded-xl border border-[#3F3F3F] bg-background p-5 shadow-xl">
           <p className="font-heading text-lg text-[#F8F8F7]">Incoming call</p>
           <p className="mt-1 text-[#A39E96]">{incoming.fromName} is calling on a locked line.</p>
           <div className="mt-4 flex gap-3">
@@ -461,7 +461,7 @@ export function CallProvider({
         </div>
       ) : null}
       {session ? (
-        <div className="fixed inset-0 z-40 flex flex-col bg-[#1F1F1F]">
+        <div className="fixed inset-0 z-40 flex flex-col bg-background">
           <div className="flex items-center justify-between px-5 py-4">
             <div>
               <p className="font-heading text-xl text-[#F8F8F7]">{session.peerName}</p>

@@ -111,8 +111,8 @@ export function VideoRecorder({
         </Alert>
       ) : null}
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1F1F1F]/80 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-[#3F3F3F] bg-[#1F1F1F] p-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4">
+          <div className="w-full max-w-lg rounded-xl border border-[#3F3F3F] bg-background p-5">
             <h2 className="font-heading text-xl text-[#F8F8F7]">Record a private video</h2>
             <p className="mt-1 text-sm text-[#A39E96]">
               Up to {MAX_VIDEO_SECONDS / 60} minutes. The file stays in locked storage.

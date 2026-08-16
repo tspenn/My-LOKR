@@ -45,7 +45,7 @@ export function AttachmentPreview({
       <div className="space-y-2">
         {videoUrl ? (
           <video
-            className="max-h-72 w-full rounded-lg bg-[#1F1F1F]"
+            className="max-h-72 w-full rounded-lg bg-background"
             src={videoUrl}
             controls
             playsInline

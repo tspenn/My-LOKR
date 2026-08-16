@@ -1,4 +1,4 @@
-/** Visual branding tokens for My Lokr. Calm, secure, professional — not “hacker.” */
+/** Visual branding tokens for My Lokr. Warm wood shell, cyan actions. */
 
 export const BRAND = {
   name: "My Lokr",
@@ -9,10 +9,10 @@ export const BRAND = {
     fallback: "ui-sans-serif, system-ui, sans-serif",
   },
   darkChrome: {
-    primary: "#1F1F1F",
-    secondary: "#2A2A2A",
-    elevated: "#333333",
-    border: "#3F3F3F",
+    primary: "#452D21",
+    secondary: "#53382C",
+    elevated: "#5C3F32",
+    border: "#7A5A48",
   },
   reading: {
     pane: "#F8F8F7",
@@ -25,10 +25,14 @@ export const BRAND = {
     faint: "#6F6B66",
   },
   accent: {
-    teal: "#2A9D8F",
-    tealHover: "#21867A",
-    tealSoft: "#E6F4F1",
-    onTeal: "#F8F8F7",
+    teal: "#73CBDF",
+    tealHover: "#5EB9CD",
+    tealSoft: "#D5EFF5",
+    onTeal: "#1F1F1F",
+  },
+  images: {
+    square: "/LOKRsquare.png",
+    office: "/LOKR phone image.jpg",
   },
   feedback: {
     danger: "#C45C5C",

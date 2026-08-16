@@ -31,7 +31,7 @@ export default async function LockrsPage() {
               <input type="hidden" name="workspace_id" value={lokr.id} />
               <button
                 type="submit"
-                className="flex w-full flex-col items-center gap-3 rounded-xl border border-border bg-[#2A2A2A] px-4 py-8 text-center transition-colors hover:border-primary hover:bg-[#333333]"
+                className="flex w-full flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-8 text-center transition-colors hover:border-primary hover:bg-card"
               >
                 {lokr.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element

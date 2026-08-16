@@ -46,7 +46,7 @@ export function mixCallStreams(
   let running = true;
   const draw = () => {
     if (!running) return;
-    ctx.fillStyle = "#1F1F1F";
+    ctx.fillStyle = "#452d21";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     if (remoteVideo && remoteVideo.readyState >= 2) {
       ctx.drawImage(remoteVideo, 0, 0, 640, 720);

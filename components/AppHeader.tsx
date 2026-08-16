@@ -65,7 +65,7 @@ export function AppHeader({
     workspace?.account_type === "business" ? "Business" : "Private";
 
   return (
-    <header className="border-b border-border bg-[#1F1F1F]">
+    <header className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-5">
         <div className="flex w-full flex-col items-center gap-2">
           {logoUrl ? (
@@ -88,7 +88,7 @@ export function AppHeader({
           )}
           {workspace ? (
             <>
-              <span className="rounded-full border border-[#3F3F3F] bg-[#2A2A2A] px-3 py-0.5 text-sm text-[#C9C2B6]">
+              <span className="rounded-full border border-[#3F3F3F] bg-secondary px-3 py-0.5 text-sm text-[#C9C2B6]">
                 {accountLabel}
               </span>
               <Link
@@ -115,7 +115,7 @@ export function AppHeader({
                       "rounded-md px-4 py-2 text-base font-medium",
                       active
                         ? "bg-[#C9C2B6] text-[#1F1F1F]"
-                        : "text-foreground hover:bg-[#2A2A2A]",
+                        : "text-foreground hover:bg-secondary",
                     )}
                     aria-current={active ? "page" : undefined}
                   >

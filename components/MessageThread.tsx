@@ -56,7 +56,7 @@ export function MessageThread({
               <div
                 className={`rounded-2xl px-4 py-3 shadow-sm ${
                   mine
-                    ? "rounded-tr-sm bg-[#E6F4F1] text-[#1F1F1F]"
+                    ? "rounded-tr-sm bg-[#D5EFF5] text-[#1F1F1F]"
                     : "rounded-tl-sm border border-[#D9D6D0] bg-white text-[#1F1F1F]"
                 }`}
               >

@@ -22,7 +22,7 @@ export default async function AppLayout({
   const { workspace, logoUrl, userId, lockrCount, mark } = await getCurrentWorkspace();
 
   return (
-    <div className="flex h-dvh flex-col bg-[#1F1F1F]">
+    <div className="flex h-dvh flex-col bg-background">
       <AppHeader workspace={workspace} logoUrl={logoUrl} mark={mark} />
       <WorkspaceGate workspace={workspace} lockrCount={lockrCount}>
         <CallProvider userId={userId ?? data?.claims?.sub ?? ""} workspaceId={workspace?.id ?? null}>
