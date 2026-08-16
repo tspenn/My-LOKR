@@ -81,6 +81,7 @@ type ProfileRow = {
   full_name: string | null;
   avatar_url: string | null;
   company_name: string | null;
+  tier?: string;
   created_at?: string;
   updated_at: string;
 };
@@ -95,6 +96,7 @@ export type Database = {
           email?: string | null;
           full_name?: string | null;
           avatar_url?: string | null;
+          tier?: string;
         };
         Update: {
           email?: string | null;

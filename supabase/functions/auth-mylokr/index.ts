@@ -65,6 +65,8 @@ async function issueSession(
   return session;
 }
 
+const SIGNUP_APP = "my_lokr";
+
 async function sendMagicLink(
   admin: ReturnType<typeof adminClient>,
   email: string,
@@ -72,12 +74,18 @@ async function sendMagicLink(
   createUser: boolean,
   fullName?: string,
 ) {
+  const data: Record<string, string> = {};
+  if (createUser) data.signup_app = SIGNUP_APP;
+  if (fullName) {
+    data.full_name = fullName;
+    data.display_name = fullName;
+  }
   return admin.auth.signInWithOtp({
     email,
     options: {
       shouldCreateUser: createUser,
       emailRedirectTo: redirectTo,
-      data: fullName ? { full_name: fullName, display_name: fullName } : undefined,
+      data: Object.keys(data).length ? data : undefined,
     },
   });
 }

@@ -1,4 +1,11 @@
 export const APP_KEY = "my_lokr";
+export const SIGNUP_APP = "my_lokr";
+/** Shared profiles.tier value for a My Lokr free signup. UI label stays "Free". */
+export const LOKR_FREE_TIER = "my_lokr_free";
+
+export function isLokrFreeProfileTier(tier: string | null | undefined) {
+  return tier === LOKR_FREE_TIER;
+}
 
 export const GB = 1024 * 1024 * 1024;
 
