@@ -132,6 +132,7 @@ Deno.serve(async (req) => {
         p_full_name: fullName,
       });
       if (stageError) {
+        console.error("lokr_stage_password", stageError);
         const message = stageError.message ?? "";
         if (message.includes("already has a My Lokr password")) {
           return json({ error: "That email already has an account — sign in." }, 400);
