@@ -14,6 +14,87 @@ function vaultFromKind(kind: string | undefined) {
   return null
 }
 
+function lokrPlanName(kind: string, vault: string | null) {
+  if (kind === 'business') return 'My Lokr Business'
+  if (vault) return `My Lokr Vault ${vault} GB`
+  return 'My Lokr Free'
+}
+
+const FREE_EXPIRES = '2099-01-01T00:00:00.000Z'
+
+async function profileEmail(userId: string) {
+  const { data } = await admin().from('profiles').select('email').eq('id', userId).maybeSingle()
+  return (data?.email as string | null) ?? null
+}
+
+async function refreshUserSubscription(userId: string) {
+  const db = admin()
+  const { data: spaces } = await db
+    .from('lokr_workspaces')
+    .select('plan, vault_addon, stripe_customer_id, stripe_subscription_id, vault_subscription_id')
+    .eq('created_by', userId)
+
+  const business = spaces?.find((space) => space.plan === 'business')
+  const vaultSpace = spaces?.find((space) => space.vault_addon && space.vault_addon !== 'none')
+  const email = await profileEmail(userId)
+
+  if (business) {
+    await db.from('user_subscriptions').upsert(
+      {
+        user_id: userId,
+        app_key: 'my_lokr',
+        plan_name: 'My Lokr Business',
+        status: 'active',
+        user_email: email,
+        billing_cycle: 'monthly',
+        stripe_customer_id: business.stripe_customer_id,
+        stripe_subscription_id: business.stripe_subscription_id,
+        expires_at: FREE_EXPIRES,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id,app_key' },
+    )
+    return
+  }
+
+  if (vaultSpace) {
+    await db.from('user_subscriptions').upsert(
+      {
+        user_id: userId,
+        app_key: 'my_lokr',
+        plan_name: `My Lokr Vault ${vaultSpace.vault_addon} GB`,
+        status: 'active',
+        user_email: email,
+        billing_cycle: 'monthly',
+        stripe_customer_id: vaultSpace.stripe_customer_id,
+        stripe_subscription_id: vaultSpace.vault_subscription_id,
+        expires_at: FREE_EXPIRES,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id,app_key' },
+    )
+    return
+  }
+
+  await db.from('user_subscriptions').upsert(
+    {
+      user_id: userId,
+      app_key: 'my_lokr',
+      plan_name: 'My Lokr Free',
+      status: 'free',
+      user_email: email,
+      billing_cycle: 'none',
+      stripe_customer_id: null,
+      stripe_subscription_id: null,
+      stripe_price_id: null,
+      expires_at: FREE_EXPIRES,
+      current_period_end: null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'user_id,app_key' },
+  )
+}
+
 async function applyCheckout(
   workspaceId: string,
   userId: string,
@@ -42,17 +123,20 @@ async function applyCheckout(
   if (error) throw error
 
   const periodEnd = sub.items.data[0]?.current_period_end ?? (sub as { current_period_end?: number }).current_period_end
+  const periodEndIso = periodEnd ? new Date(periodEnd * 1000).toISOString() : null
   await db.from('user_subscriptions').upsert(
     {
       user_id: userId,
       app_key: 'my_lokr',
-      plan_name: kind === 'business' ? 'Business' : `The Vault ${vault} GB`,
+      plan_name: lokrPlanName(kind, vault),
       status: sub.status,
+      user_email: await profileEmail(userId),
       stripe_customer_id: customer,
       stripe_subscription_id: sub.id,
       stripe_price_id: sub.items.data[0]?.price?.id ?? null,
       billing_cycle: 'monthly',
-      current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+      current_period_end: periodEndIso,
+      expires_at: periodEndIso ?? FREE_EXPIRES,
       updated_at: new Date().toISOString(),
     },
     { onConflict: 'user_id,app_key' },
@@ -66,7 +150,7 @@ async function applySubscriptionChange(sub: Stripe.Subscription) {
   if (ended) {
     const { data: byPlan } = await db
       .from('lokr_workspaces')
-      .select('id')
+      .select('id, created_by')
       .eq('stripe_subscription_id', sub.id)
       .maybeSingle()
     if (byPlan?.id) {
@@ -74,11 +158,12 @@ async function applySubscriptionChange(sub: Stripe.Subscription) {
         .from('lokr_workspaces')
         .update({ plan: 'free', stripe_subscription_id: null, updated_at: new Date().toISOString() })
         .eq('id', byPlan.id)
+      if (byPlan.created_by) await refreshUserSubscription(byPlan.created_by)
       return
     }
     const { data: byVault } = await db
       .from('lokr_workspaces')
-      .select('id')
+      .select('id, created_by')
       .eq('vault_subscription_id', sub.id)
       .maybeSingle()
     if (byVault?.id) {
@@ -86,6 +171,7 @@ async function applySubscriptionChange(sub: Stripe.Subscription) {
         .from('lokr_workspaces')
         .update({ vault_addon: 'none', vault_subscription_id: null, updated_at: new Date().toISOString() })
         .eq('id', byVault.id)
+      if (byVault.created_by) await refreshUserSubscription(byVault.created_by)
     }
     return
   }
