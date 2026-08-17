@@ -41,8 +41,8 @@ export default function Home() {
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 {COPY.headline}
               </h1>
-              <p className="text-xl text-muted-foreground">{COPY.hook}</p>
-              <p className="text-lg text-muted-foreground">{COPY.hookTwo}</p>
+              <p className="text-xl">{COPY.hook}</p>
+              <p className="text-lg">{COPY.hookTwo}</p>
               <p className="text-lg">{COPY.intro}</p>
               <p className="text-lg">{COPY.notEmail}</p>
               <p className="text-lg">{COPY.locked}</p>
@@ -86,7 +86,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl space-y-16 px-4 py-12 sm:py-16">
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold tracking-tight">{COPY.whyTitle}</h2>
-            <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
+            <ul className="list-disc space-y-2 pl-5">
               {COPY.why.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -97,7 +97,7 @@ export default function Home() {
           <section className="space-y-6">
             <div className="max-w-3xl space-y-3">
               <h2 className="text-2xl font-semibold tracking-tight">{COPY.privacyTitle}</h2>
-              <p className="text-muted-foreground">{COPY.privacyLead}</p>
+              <p>{COPY.privacyLead}</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {COPY.privacy.map((item) => (
@@ -106,7 +106,7 @@ export default function Home() {
                     <CardTitle className="text-xl">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{item.body}</p>
+                    <p>{item.body}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -116,7 +116,7 @@ export default function Home() {
           <section className="space-y-6">
             <div className="max-w-3xl space-y-3">
               <h2 className="text-2xl font-semibold tracking-tight">{COPY.securityTitle}</h2>
-              <p className="text-muted-foreground">{COPY.securityLead}</p>
+              <p>{COPY.securityLead}</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {COPY.security.map((item) => (
@@ -125,7 +125,7 @@ export default function Home() {
                     <CardTitle className="text-xl">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{item.body}</p>
+                    <p>{item.body}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -134,8 +134,8 @@ export default function Home() {
 
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold tracking-tight">{COPY.vaultTitle}</h2>
-            <p className="max-w-3xl text-muted-foreground">{COPY.vaultLead}</p>
-            <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
+            <p className="max-w-3xl">{COPY.vaultLead}</p>
+            <ul className="list-disc space-y-2 pl-5">
               {COPY.vault.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -145,7 +145,7 @@ export default function Home() {
 
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold tracking-tight">{COPY.whoTitle}</h2>
-            <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
+            <ul className="list-disc space-y-2 pl-5">
               {COPY.who.map((item) => (
                 <li key={item}>{item}</li>
               ))}
