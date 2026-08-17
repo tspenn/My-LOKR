@@ -66,17 +66,15 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
-      <section className="relative h-40 overflow-hidden sm:h-52">
+      <section>
         <Image
           src={BRAND.images.office}
-          alt="A private office desk with a secure red phone, looking out on a stream of encrypted data"
-          fill
+          alt="A private office desk with a secure red phone, notebook, and pen, looking out on a stream of encrypted data"
+          width={1792}
+          height={1008}
+          unoptimized
           sizes="100vw"
-          className="object-cover object-[78%_center]"
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-background/15"
-          aria-hidden="true"
+          className="h-auto w-full"
         />
       </section>
       <main className="mx-auto w-full max-w-xl space-y-8 px-4 py-10">

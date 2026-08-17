@@ -19,9 +19,9 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-full overflow-x-hidden bg-background">
+    <div className="min-h-full bg-background">
       <header className="border-b border-border bg-background">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-5">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
           <BrandMark />
           <nav className="flex flex-wrap items-center gap-2">
             <Button asChild variant="ghost">
@@ -35,9 +35,9 @@ export default function Home() {
       </header>
 
       <main>
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-          <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(16rem,22rem)]">
-            <div className="max-w-xl space-y-5">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+          <section className="grid items-start gap-8 md:grid-cols-2 md:gap-10 lg:gap-12">
+            <div className="min-w-0 space-y-5 md:order-1">
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 {COPY.headline}
               </h1>
@@ -56,40 +56,34 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="relative mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none lg:translate-x-10 xl:translate-x-16">
-              <div className="absolute -inset-6 rounded-[2rem] bg-primary/25 blur-3xl" aria-hidden="true" />
+            <div className="order-first min-w-0 overflow-hidden rounded-2xl border border-border shadow-2xl [aspect-ratio:1200/1194] md:order-2">
               <Image
                 src={BRAND.images.square}
                 alt="Red secure desk phone with the LOKR mark, set against a stream of encrypted data"
                 width={1200}
                 height={1200}
                 preload
-                sizes="(min-width: 1024px) 22rem, 24rem"
-                className="relative rounded-2xl border border-border shadow-2xl"
+                unoptimized
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="h-full w-full object-cover object-top"
               />
             </div>
           </section>
         </div>
 
-        <section className="relative h-56 overflow-hidden sm:h-72 md:h-96">
+        <section>
           <Image
             src={BRAND.images.office}
-            alt="A private office desk with a secure red phone, looking out on a stream of encrypted data"
-            fill
+            alt="A private office desk with a secure red phone, notebook, and pen, looking out on a stream of encrypted data"
+            width={1792}
+            height={1008}
+            unoptimized
             sizes="100vw"
-            className="object-cover object-[center_42%]"
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-transparent"
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40"
-            aria-hidden="true"
+            className="h-auto w-full"
           />
         </section>
 
-        <div className="mx-auto max-w-5xl space-y-16 px-4 py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl space-y-16 px-4 py-12 sm:py-16">
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold tracking-tight">{COPY.whyTitle}</h2>
             <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
