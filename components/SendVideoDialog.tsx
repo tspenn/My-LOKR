@@ -117,7 +117,7 @@ export function SendVideoDialog({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 p-4 sm:items-center">
       <div className="w-full max-w-md rounded-xl border border-[#3F3F3F] bg-[#2A2A2A] p-5 text-[#F8F8F7] shadow-xl">
         <h2 className="font-heading text-xl">Send video</h2>
-        <p className="mt-1 text-sm text-[#A39E96]">
+        <p className="mt-1 text-sm text-muted-foreground">
           {file.name} · {formatFileSize(file.size)}. Stored in locked private storage, not email.
         </p>
         {error ? (
@@ -171,7 +171,7 @@ export function SendVideoDialog({
           </label>
           {mode === "list" ? (
             lists.length === 0 ? (
-              <p className="text-sm text-[#A39E96]">
+              <p className="text-sm text-muted-foreground">
                 Create a list in Settings, then send to several people at once.
               </p>
             ) : (

@@ -449,7 +449,7 @@ export function CallProvider({
       {incoming && !session ? (
         <div className="fixed inset-x-0 top-4 z-50 mx-auto w-[min(28rem,calc(100%-2rem))] rounded-xl border border-[#3F3F3F] bg-background p-5 shadow-xl">
           <p className="font-heading text-lg text-[#F8F8F7]">Incoming call</p>
-          <p className="mt-1 text-[#A39E96]">{incoming.fromName} is calling on a locked line.</p>
+          <p className="mt-1 text-muted-foreground">{incoming.fromName} is calling on a locked line.</p>
           <div className="mt-4 flex gap-3">
             <Button type="button" onClick={() => void acceptIncoming()}>
               Answer
@@ -465,7 +465,7 @@ export function CallProvider({
           <div className="flex items-center justify-between px-5 py-4">
             <div>
               <p className="font-heading text-xl text-[#F8F8F7]">{session.peerName}</p>
-              <p className="text-sm text-[#A39E96]">{status || (recording ? "Recording" : "Private call")}</p>
+              <p className="text-sm text-muted-foreground">{status || (recording ? "Recording" : "Private call")}</p>
             </div>
           </div>
           <div className="relative min-h-0 flex-1 px-4 pb-4">

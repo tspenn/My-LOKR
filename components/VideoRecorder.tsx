@@ -114,7 +114,7 @@ export function VideoRecorder({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4">
           <div className="w-full max-w-lg rounded-xl border border-[#3F3F3F] bg-background p-5">
             <h2 className="font-heading text-xl text-[#F8F8F7]">Record a private video</h2>
-            <p className="mt-1 text-sm text-[#A39E96]">
+            <p className="mt-1 text-sm text-muted-foreground">
               Up to {MAX_VIDEO_SECONDS / 60} minutes. The file stays in locked storage.
             </p>
             <video
@@ -124,7 +124,7 @@ export function VideoRecorder({
               muted
               playsInline
             />
-            <p className="mt-2 text-sm text-[#A39E96]">
+            <p className="mt-2 text-sm text-muted-foreground">
               {recording ? `Recording ${seconds}s` : "Camera preview"}
             </p>
             <div className="mt-4 flex flex-wrap justify-end gap-3">

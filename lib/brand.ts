@@ -21,7 +21,7 @@ export const BRAND = {
   },
   text: {
     primary: "#F8F8F7",
-    muted: "#A39E96",
+    muted: "#D4CFC6",
     faint: "#6F6B66",
   },
   accent: {
