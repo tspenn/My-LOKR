@@ -11,6 +11,10 @@ import {
 } from "@/components/ui/card";
 import { BRAND } from "@/lib/brand";
 import { COPY } from "@/lib/copy";
+import { PLANS, VAULT_ADDONS, VAULT_DESCRIPTION } from "@/lib/billing";
+
+const ENTERPRISE_EMAIL =
+  process.env.NEXT_PUBLIC_ENTERPRISE_EMAIL ?? "hello@go-i-agency.com";
 
 export const metadata = {
   title: "My Lokr",
@@ -170,6 +174,99 @@ export default function Home() {
                 <p>{COPY.itIsNot}</p>
               </CardContent>
             </Card>
+          </section>
+
+          <section className="space-y-8">
+            <div className="max-w-3xl space-y-3">
+              <h2 className="text-2xl font-semibold tracking-tight">Plans and prices</h2>
+              <p>
+                Add as many groups as you need. Each is free with 1–3 invitees (you
+                plus three). Family, work, and a friend can each be their own free
+                Lokr. People you invite do not get a bill. The 4th invitee in any one
+                group is Business for that group only — not 14 people on Free. Groups
+                others invite you into stay free for you.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{PLANS.free.name}</CardTitle>
+                  <CardDescription>{PLANS.free.priceLabel}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p>{PLANS.free.description}</p>
+                  <ul className="list-disc space-y-1 pl-5">
+                    {PLANS.free.features.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="text-sm">{PLANS.free.limitations}</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-primary">
+                <CardHeader>
+                  <CardTitle>{PLANS.business.name}</CardTitle>
+                  <CardDescription>{PLANS.business.priceLabel}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p>{PLANS.business.description}</p>
+                  <ul className="list-disc space-y-1 pl-5">
+                    {PLANS.business.features.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="text-sm">
+                    Billed per active account in this Lokr. Invitees do not get a
+                    separate bill. Start on Free, then upgrade only the group that
+                    needs more than 3 invitees.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{PLANS.enterprise.name}</CardTitle>
+                  <CardDescription>{PLANS.enterprise.priceLabel}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p>{PLANS.enterprise.description}</p>
+                  <ul className="list-disc space-y-1 pl-5">
+                    {PLANS.enterprise.features.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="text-sm">{PLANS.enterprise.limitations}</p>
+                  <Button asChild className="w-full" variant="outline">
+                    <a href={`mailto:${ENTERPRISE_EMAIL}?subject=My%20Lokr%20Enterprise`}>
+                      Contact us
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-xl font-semibold tracking-tight">The Vault</h3>
+              <p className="max-w-3xl">{VAULT_DESCRIPTION}</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {(["50", "100", "250"] as const).map((key) => {
+                const addon = VAULT_ADDONS[key];
+                return (
+                  <Card key={key}>
+                    <CardHeader>
+                      <CardTitle>+{addon.gb} GB</CardTitle>
+                      <CardDescription>${addon.priceMonthly} / month</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Extra private storage on any plan, including Free.</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </section>
 
           <section className="flex flex-wrap gap-3 pb-8">
