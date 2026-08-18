@@ -2,12 +2,13 @@
 
 export const COPY = {
   name: "LOKR",
+  meaning: "LOKR is your own encrypted information locker.",
   headline: "Private messaging for the people and information you actually care about",
   hook: "Tired of being part of the big picture?",
   hookTwo:
     "Like the internet — but not sure you want to share all your secrets with the entire World Wide Web?",
   intro:
-    "LOKR is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is built for the conversations and documents that don’t belong in regular email or everyday messaging apps — including business plans, patent ideas, and files you would never put in Gmail or Outlook.",
+    "It is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is built for the conversations and documents that don’t belong in regular email or everyday messaging apps — including business plans, patent ideas, and files you would never put in Gmail or Outlook.",
   notEmail: "It is not a replacement for normal email.",
   locked:
     "It is a locked, controlled space where your messages and files stay under your control — not sitting in Google, Microsoft, Apple, or Samsung mail, not searchable in those companies’ clouds, and not traveling the open internet as ordinary email attachments that hackers and scanners already know how to steal.",
@@ -66,7 +67,7 @@ export const COPY = {
     "Anyone who does not want Google, Microsoft, Apple, Samsung, or everyday email to hold the files that matter",
   ],
   isAndIsNotTitle: "What LOKR is — and is not",
-  itIs: "A private, secure messaging and file exchange system for the information you don’t want sitting in email, consumer clouds, or the open internet.",
+  itIs: "Your own encrypted information locker — a private, secure messaging and file exchange system for the information you don’t want sitting in email, consumer clouds, or the open internet.",
   itIsNot:
     "A full replacement for Microsoft 365, Google Workspace, or everyday email. Those tools still work well for normal communication. LOKR exists for the things that need tighter control — the files and ideas you would not trust to those companies.",
   securityTitle: "Supabase-level security — how the lock actually works",

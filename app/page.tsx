@@ -18,7 +18,7 @@ const ENTERPRISE_EMAIL =
 
 export const metadata = {
   title: "LOKR",
-  description: COPY.point,
+  description: COPY.meaning,
 };
 
 export default function Home() {
@@ -45,6 +45,7 @@ export default function Home() {
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 {COPY.headline}
               </h1>
+              <p className="text-xl font-medium">{COPY.meaning}</p>
               <p className="text-xl">{COPY.hook}</p>
               <p className="text-lg">{COPY.hookTwo}</p>
               <p className="text-lg">{COPY.intro}</p>

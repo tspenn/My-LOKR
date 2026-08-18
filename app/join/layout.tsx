@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
+import { COPY } from "@/lib/copy";
 
 export default function JoinLayout({
   children,
@@ -13,6 +14,7 @@ export default function JoinLayout({
           <Link href="/" className="rounded-md">
             <BrandMark size="lg" />
           </Link>
+          <p className="text-lg">{COPY.meaning}</p>
         </div>
       </header>
       <main className="flex flex-1 justify-center px-4 pb-12">{children}</main>
