@@ -82,7 +82,7 @@ export function AppHeader({
               {workspace ? (
                 <LokrMark letters={mark} size="sm" />
               ) : (
-                <p className="text-2xl font-semibold tracking-tight">My Lokr</p>
+                <p className="text-2xl font-semibold tracking-tight">LOKR</p>
               )}
             </Link>
           )}

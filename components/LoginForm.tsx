@@ -35,8 +35,8 @@ export function LoginForm({
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>
-          Use your My Lokr password with the email you signed up with, or the
-          phone this invite was sent to. This password is only for My Lokr — it
+          Use your LOKR password with the email you signed up with, or the
+          phone this invite was sent to. This password is only for LOKR — it
           does not change Friday Canvas or your other apps.
         </CardDescription>
       </CardHeader>
@@ -67,7 +67,7 @@ export function LoginForm({
           <PasswordField
             id="password"
             name="password"
-            label="My Lokr password"
+            label="LOKR password"
             autoComplete="current-password"
             minLength={1}
           />
@@ -78,7 +78,7 @@ export function LoginForm({
 
         <p className="text-center">
           <Link href="/forgot-password" className="text-primary underline-offset-2 hover:underline">
-            Forgot your My Lokr password?
+            Forgot your LOKR password?
           </Link>
         </p>
 
@@ -89,7 +89,7 @@ export function LoginForm({
           </Link>
           {" · "}
           <Link href="/" className="font-medium text-primary underline-offset-2 hover:underline">
-            What My Lokr is
+            What LOKR is
           </Link>
         </p>
       </CardContent>

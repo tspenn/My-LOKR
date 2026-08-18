@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
         }
         if (message.includes("at least 12")) {
           return json({
-            error: "Please choose a My Lokr password with at least 12 characters.",
+            error: "Please choose a LOKR password with at least 12 characters.",
           }, 400);
         }
         if (message.includes("valid email")) {

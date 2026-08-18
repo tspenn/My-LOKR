@@ -87,7 +87,7 @@ export function WorkspaceSetupForm() {
       </div>
 
       <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Creating your Lokr…" : "Open my Lokr"}
+        {pending ? "Creating your Lokr…" : "Open this Lokr"}
       </Button>
     </form>
   );

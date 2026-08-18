@@ -24,9 +24,9 @@ export function UpdatePasswordForm() {
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Choose your My Lokr password</CardTitle>
+        <CardTitle>Choose your LOKR password</CardTitle>
         <CardDescription>
-          Use at least 12 characters. This password is only for My Lokr. It does
+          Use at least 12 characters. This password is only for LOKR. It does
           not change Friday Canvas or your other apps.
         </CardDescription>
       </CardHeader>
@@ -36,7 +36,7 @@ export function UpdatePasswordForm() {
           <PasswordField
             id="password"
             name="password"
-            label="New My Lokr password"
+            label="New LOKR password"
             autoComplete="new-password"
           />
           <PasswordField
@@ -46,7 +46,7 @@ export function UpdatePasswordForm() {
             autoComplete="new-password"
           />
           <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Saving…" : "Save My Lokr password"}
+            {pending ? "Saving…" : "Save LOKR password"}
           </Button>
         </form>
       </CardContent>

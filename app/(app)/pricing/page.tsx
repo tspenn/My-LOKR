@@ -110,7 +110,7 @@ export default async function PricingPage() {
               <p className="text-sm font-medium text-primary">You are on Enterprise.</p>
             ) : (
               <Button asChild className="w-full" variant="outline">
-                <a href={`mailto:${ENTERPRISE_EMAIL}?subject=My%20Lokr%20Enterprise`}>
+                <a href={`mailto:${ENTERPRISE_EMAIL}?subject=LOKR%20Enterprise`}>
                   Contact us
                 </a>
               </Button>

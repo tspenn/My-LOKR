@@ -1,7 +1,7 @@
-/** Visual branding tokens for My Lokr. Warm wood shell, cyan actions. */
+/** Visual branding tokens for LOKR. Warm wood shell, cyan actions. */
 
 export const BRAND = {
-  name: "My Lokr",
+  name: "LOKR",
   font: {
     heading: "Space Grotesk",
     body: "Inter",

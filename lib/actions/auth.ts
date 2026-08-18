@@ -128,7 +128,7 @@ export async function updatePassword(formData: FormData) {
     p_password: password,
   });
   if (error) {
-    return { error: "We could not update your My Lokr password. Please try the reset link again." };
+    return { error: "We could not update your LOKR password. Please try the reset link again." };
   }
 
   redirect("/lockrs");

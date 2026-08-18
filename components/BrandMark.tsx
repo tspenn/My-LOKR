@@ -14,7 +14,7 @@ export function BrandMark({
   return (
     <span className={cn("inline-flex items-center gap-2 text-primary", className)}>
       <Lock className={icon} aria-hidden="true" />
-      <span className={cn("font-semibold tracking-tight", text)}>My Lokr</span>
+      <span className={cn("font-semibold tracking-tight", text)}>LOKR</span>
     </span>
   );
 }

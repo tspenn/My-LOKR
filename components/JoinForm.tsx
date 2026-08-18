@@ -183,7 +183,7 @@ export function JoinForm({
                 autoComplete="new-password"
               />
               <p className="text-sm text-muted-foreground">
-                Use at least 12 characters. This My Lokr password is only for
+                Use at least 12 characters. This LOKR password is only for
                 this app — it does not change Friday Canvas or your other apps.
                 After this, you can sign in with this email or this phone.
               </p>

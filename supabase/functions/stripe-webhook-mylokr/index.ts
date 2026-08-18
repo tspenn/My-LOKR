@@ -15,9 +15,9 @@ function vaultFromKind(kind: string | undefined) {
 }
 
 function lokrPlanName(kind: string, vault: string | null) {
-  if (kind === 'business') return 'My Lokr Business'
-  if (vault) return `My Lokr Vault ${vault} GB`
-  return 'My Lokr Free'
+  if (kind === 'business') return 'LOKR Business'
+  if (vault) return `LOKR Vault ${vault} GB`
+  return 'LOKR Free'
 }
 
 const FREE_EXPIRES = '2099-01-01T00:00:00.000Z'
@@ -43,7 +43,7 @@ async function refreshUserSubscription(userId: string) {
       {
         user_id: userId,
         app_key: 'my_lokr',
-        plan_name: 'My Lokr Business',
+        plan_name: 'LOKR Business',
         status: 'active',
         user_email: email,
         billing_cycle: 'monthly',
@@ -62,7 +62,7 @@ async function refreshUserSubscription(userId: string) {
       {
         user_id: userId,
         app_key: 'my_lokr',
-        plan_name: `My Lokr Vault ${vaultSpace.vault_addon} GB`,
+        plan_name: `LOKR Vault ${vaultSpace.vault_addon} GB`,
         status: 'active',
         user_email: email,
         billing_cycle: 'monthly',
@@ -80,7 +80,7 @@ async function refreshUserSubscription(userId: string) {
     {
       user_id: userId,
       app_key: 'my_lokr',
-      plan_name: 'My Lokr Free',
+      plan_name: 'LOKR Free',
       status: 'free',
       user_email: email,
       billing_cycle: 'none',

@@ -30,7 +30,7 @@ export function SignupForm() {
         <CardTitle>Create your Lokr</CardTitle>
         <CardDescription>
           For conversations and files you would not put in Gmail or Outlook —
-          including patent ideas and proprietary work. Your My Lokr password is
+          including patent ideas and proprietary work. Your LOKR password is
           only for this app. It does not change Friday Canvas or your other apps.
         </CardDescription>
       </CardHeader>
@@ -84,7 +84,7 @@ export function SignupForm() {
           </Link>
           {" · "}
           <Link href="/" className="font-medium text-primary underline-offset-2 hover:underline">
-            What My Lokr is
+            What LOKR is
           </Link>
         </p>
       </CardContent>

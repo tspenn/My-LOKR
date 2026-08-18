@@ -4,7 +4,7 @@ export const LOKR_PASSWORD_MIN = 12;
 
 export function lokrPasswordError(password: string, confirm?: string) {
   if (password.length < LOKR_PASSWORD_MIN) {
-    return `Please choose a My Lokr password with at least ${LOKR_PASSWORD_MIN} characters.`;
+    return `Please choose a LOKR password with at least ${LOKR_PASSWORD_MIN} characters.`;
   }
   if (confirm !== undefined && password !== confirm) {
     return "The two passwords do not match.";

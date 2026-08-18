@@ -35,7 +35,7 @@ export default async function JoinPage({
     <JoinForm
       token={token}
       inviterName={peek.inviter_name ?? "Someone"}
-      workspaceName={peek.workspace_name ?? "My Lokr"}
+      workspaceName={peek.workspace_name ?? "LOKR"}
       phoneLast4={peek.phone_last4 ?? "••••"}
       signedIn={signedIn}
       phoneConfirmed={phoneConfirmed}

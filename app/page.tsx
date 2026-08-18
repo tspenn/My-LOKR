@@ -17,7 +17,7 @@ const ENTERPRISE_EMAIL =
   process.env.NEXT_PUBLIC_ENTERPRISE_EMAIL ?? "hello@go-i-agency.com";
 
 export const metadata = {
-  title: "My Lokr",
+  title: "LOKR",
   description: COPY.point,
 };
 
@@ -239,7 +239,7 @@ export default function Home() {
                   </ul>
                   <p className="text-sm">{PLANS.enterprise.limitations}</p>
                   <Button asChild className="w-full" variant="outline">
-                    <a href={`mailto:${ENTERPRISE_EMAIL}?subject=My%20Lokr%20Enterprise`}>
+                    <a href={`mailto:${ENTERPRISE_EMAIL}?subject=LOKR%20Enterprise`}>
                       Contact us
                     </a>
                   </Button>
