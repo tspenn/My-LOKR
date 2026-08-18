@@ -59,7 +59,7 @@ export function PhoneInviteForm({
         {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
         <p className="text-sm text-muted-foreground">
           Invite by phone. They cannot join from a forwarded link alone — they
-          must type that same number, then a code you text to it.
+          must type that same number, then a code you send to it.
         </p>
         <div className="space-y-2">
           <Label htmlFor="phone">Send invite to this phone</Label>
@@ -80,7 +80,7 @@ export function PhoneInviteForm({
 
       {state?.notice ? (
         <div className="space-y-2">
-          <Label htmlFor="invite-notice">Text this first (no code in it)</Label>
+          <Label htmlFor="invite-notice">Send this first (no code in it)</Label>
           <Textarea id="invite-notice" readOnly rows={4} value={state.notice} />
           <Button type="button" variant="outline" onClick={() => copy(state.notice ?? "", "notice")}>
             {copied === "notice" ? "Copied" : "Copy invite text"}
@@ -118,7 +118,7 @@ export function PhoneInviteForm({
               {invite.status === "awaiting_code" && invite.otp_display ? (
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">
-                    They confirmed this number. Text this code to that same
+                    They confirmed this number. Send this code to that same
                     phone — not to anyone else:
                   </p>
                   <p className="text-2xl font-semibold tracking-widest">{invite.otp_display}</p>
