@@ -27,7 +27,7 @@ export const TERMS = {
     },
     {
       title: "Calls and third-party relays",
-      body: "Video and voice try to connect the two browsers directly. If that fails, a relay (such as Cloudflare TURN) may carry encrypted call packets so the call can complete. Relays can see that a call happened, from which networks, and for how long. They do not receive your Lokr messages or files. Google and Cloudflare STUN may also see a public IP during call setup.",
+      body: "Video and voice try to connect the two browsers directly. If that fails, a relay (such as Cloudflare TURN) may carry encrypted call packets so the call can complete. Relays can see that a call happened, from which networks, and for how long. They do not receive your LOKR messages or files. Google and Cloudflare STUN may also see a public IP during call setup.",
     },
     {
       title: "No guarantee, limited liability",

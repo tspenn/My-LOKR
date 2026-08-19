@@ -17,7 +17,7 @@ export async function createConversation(formData: FormData) {
 
   const { workspace } = await getCurrentWorkspace();
   if (!workspace) {
-    return { error: "Choose a Lokr first.", conversationId: null };
+    return { error: "Choose a LOKR first.", conversationId: null };
   }
 
   const supabase = await createClient();
@@ -28,60 +28,46 @@ export async function createConversation(formData: FormData) {
     return { error: "Please sign in again.", conversationId: null };
   }
 
-  const selectedEmails = [
-    ...new Set(
-      formData
-        .getAll("member_emails")
-        .map((value) => String(value).trim().toLowerCase())
-        .filter((value) => value.includes("@")),
-    ),
-  ];
-
-  const { data: memberRows } = await supabase
-    .from("lokr_workspace_members")
-    .select("user_id, profiles!lokr_workspace_members_user_id_fkey(email)")
-    .eq("workspace_id", workspace.id);
-
-  const others = (memberRows ?? []).flatMap((row) => {
-    if (!row.user_id || String(row.user_id).toLowerCase() === user.id.toLowerCase()) return [];
-    const profile = row.profiles as { email?: string | null } | { email?: string | null }[] | null;
-    const item = Array.isArray(profile) ? profile[0] : profile;
-    return [
+  if (selectedIds.length === 1) {
+    const { data: directId, error: directError } = await supabase.rpc(
+      "lokr_ensure_direct_conversation",
       {
-        id: String(row.user_id).toLowerCase(),
-        email: (item?.email ?? "").trim().toLowerCase(),
+        p_other_user_id: selectedIds[0],
+        p_workspace_id: workspace.id,
       },
-    ];
-  });
-
-  const selected = new Set(selectedIds.map((id) => id.toLowerCase()));
-  let recipients = others.filter((person) => selected.has(person.id)).map((person) => person.id);
-  if (recipients.length === 0 && selectedEmails.length > 0) {
-    recipients = others
-      .filter((person) => person.email && selectedEmails.includes(person.email))
-      .map((person) => person.id);
-  }
-  if (recipients.length === 0 && others.length === 1) {
-    recipients = [others[0].id];
-  }
-  if (recipients.length === 0) {
-    return {
-      error: "That person is not in this Lokr. Invite them from Settings first.",
-      conversationId: null,
-    };
+    );
+    if (directError || !directId) {
+      const raw = directError?.message ?? "";
+      if (
+        raw.includes("You can only write to people in this Lokr") ||
+        raw.includes("not in this LOKR")
+      ) {
+        return {
+          error: "That person is not in this LOKR. Invite them from this conversation.",
+          conversationId: null,
+        };
+      }
+      return { error: raw || "We could not open that conversation.", conversationId: null };
+    }
+    revalidatePath("/inbox");
+    revalidatePath(`/conversation/${directId}`);
+    return { error: null, conversationId: directId as string };
   }
 
   const { data, error } = await supabase.rpc("lokr_create_conversation", {
     p_subject: subject || null,
-    p_member_ids: recipients,
+    p_member_ids: selectedIds,
     p_workspace_id: workspace.id,
   });
 
   if (error || !data) {
     const raw = error?.message ?? "";
-    if (raw.includes("You can only write to people in this Lokr")) {
+    if (
+      raw.includes("You can only write to people in this Lokr") ||
+      raw.includes("not in this LOKR")
+    ) {
       return {
-        error: "That person is not in this Lokr. Invite them from Settings first.",
+        error: "That person is not in this LOKR. Invite them from Settings first.",
         conversationId: null,
       };
     }

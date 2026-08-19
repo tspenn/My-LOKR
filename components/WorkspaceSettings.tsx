@@ -57,7 +57,7 @@ export function InviteForm({
       {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
       {state?.message ? <Alert>{state.message}</Alert> : null}
       <p className="text-sm text-muted-foreground">
-        {memberCount} of {maxUsers ?? "custom"} people already in this Lokr
+        {memberCount} of {maxUsers ?? "custom"} people already in this LOKR
         (including you)
         {pendingCount ? `, plus ${pendingCount} open phone invite${pendingCount === 1 ? "" : "s"}` : ""}
         .
@@ -66,7 +66,7 @@ export function InviteForm({
         {maxUsers === 4 ? ", and Free cannot issue 14 invites — that needs Business (15)." : "."}
       </p>
       <p className="text-sm text-muted-foreground">
-        Already have a Lokr account? Add them by email. New people should use a
+        Already have a LOKR account? Add them by email. New people should use a
         phone invite above so join is confirmed on that number.
       </p>
       <div className="space-y-2">

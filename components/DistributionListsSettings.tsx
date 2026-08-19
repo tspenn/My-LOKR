@@ -95,7 +95,7 @@ export function DistributionListsSettings({
         <fieldset className="space-y-2">
           <legend className="text-sm font-medium">People</legend>
           {people.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Invite people to this Lokr first.</p>
+            <p className="text-sm text-muted-foreground">Invite people to this LOKR first.</p>
           ) : (
             people.map((person) => (
               <label key={person.id} className="flex items-center gap-2 text-sm">

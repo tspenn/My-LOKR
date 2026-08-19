@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const metadata = { title: "Set up your Lokr" };
+export const metadata = { title: "Set up your LOKR" };
 
 export default async function SetupPage() {
   const { ownedCount } = await listLockrs();
@@ -18,7 +18,7 @@ export default async function SetupPage() {
     <main className="mx-auto w-full max-w-lg px-4 py-10">
       <Card>
         <CardHeader>
-          <CardTitle>{ownedCount === 0 ? "Set up your Lokr" : "Create another Lokr"}</CardTitle>
+          <CardTitle>{ownedCount === 0 ? "Set up your LOKR" : "Create another LOKR"}</CardTitle>
           <CardDescription>
             Each group is free with up to 3 invitees (you plus 3). Load a logo, or
             we will use four letters (FAM, TSTP). A 4th invitee in this group is

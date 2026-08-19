@@ -167,7 +167,7 @@ export async function signUp(formData: FormData) {
     error: null,
     message:
       result.message ??
-      "Check your email for a confirmation link. Once you confirm, you will open your free Lokr.",
+      "Check your email for a confirmation link. Once you confirm, you will open your free LOKR.",
   };
 }
 

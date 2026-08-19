@@ -57,7 +57,7 @@ export async function setCallStatus(callId: string, status: "active" | "ended") 
 export async function ensureDirectConversation(otherUserId: string) {
   const { workspace } = await getCurrentWorkspace();
   if (!workspace) {
-    return { error: "Choose a Lokr first.", conversationId: null };
+    return { error: "Choose a LOKR first.", conversationId: null };
   }
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_ensure_direct_conversation", {

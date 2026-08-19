@@ -16,7 +16,7 @@ export default async function LockrsPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight">Choose a Lokr</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Choose a LOKR</h1>
         <p className="mt-3 text-lg text-muted-foreground">
           One group you own is free with up to 3 invitees. Add another group —
           family, work, a friend — and that one is free too, as long as it also
@@ -60,7 +60,7 @@ export default async function LockrsPage() {
       </ul>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         <Button asChild>
-          <Link href="/setup">Create another Lokr</Link>
+          <Link href="/setup">Create another LOKR</Link>
         </Button>
         <SignOutButton />
       </div>

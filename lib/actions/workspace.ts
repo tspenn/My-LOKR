@@ -14,7 +14,7 @@ import {
 export async function createWorkspace(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const accountType = String(formData.get("account_type") ?? "personal") as AccountType;
-  if (!name) return { error: "Please name this Lokr." };
+  if (!name) return { error: "Please name this LOKR." };
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_create_workspace", {
@@ -22,7 +22,7 @@ export async function createWorkspace(formData: FormData) {
     p_account_type: accountType === "business" ? "business" : "personal",
   });
   if (error || !data) {
-    return { error: error?.message ?? "We could not set up your Lokr." };
+    return { error: error?.message ?? "We could not set up your LOKR." };
   }
 
   const logo = formData.get("logo");
@@ -59,7 +59,7 @@ export async function selectLokr(formData: FormData) {
 
 export async function updateWorkspaceLogo(formData: FormData) {
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Set up your Lokr first." };
+  if (!workspace) return { error: "Set up your LOKR first." };
   const logo = formData.get("logo");
   if (!(logo instanceof File) || logo.size === 0) {
     return { error: "Please choose a logo image." };
@@ -93,7 +93,7 @@ export async function inviteWorkspaceMember(formData: FormData) {
   if (!email) return { error: "Enter the person’s email." };
 
   const { workspace, memberCount } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Set up your Lokr first." };
+  if (!workspace) return { error: "Set up your LOKR first." };
 
   const supabase = await createClient();
   const { count: pendingCount } = await supabase
@@ -107,7 +107,7 @@ export async function inviteWorkspaceMember(formData: FormData) {
   if (maxUsers && used >= maxUsers) {
     const planName = PLANS[workspace.plan as PlanKey].name;
     return {
-      error: `${planName} allows ${maxUsers} people in this Lokr, including you. Upgrade this group to invite more.`,
+      error: `${planName} allows ${maxUsers} people in this LOKR, including you. Upgrade this group to invite more.`,
     };
   }
   const { data: profile } = await supabase
@@ -116,7 +116,7 @@ export async function inviteWorkspaceMember(formData: FormData) {
     .eq("email", email)
     .maybeSingle();
   if (!profile) {
-    return { error: "No one with that email has a Lokr account yet." };
+    return { error: "No one with that email has a LOKR account yet." };
   }
 
   const { error } = await supabase.from("lokr_workspace_members").insert({
@@ -125,12 +125,12 @@ export async function inviteWorkspaceMember(formData: FormData) {
     role: "member",
   });
   if (error) {
-    return { error: "That person is already in this Lokr." };
+    return { error: "That person is already in this LOKR." };
   }
 
   revalidatePath("/profile");
   revalidatePath("/inbox/new");
-  return { error: null, message: "They can now write in this Lokr. They do not pay." };
+  return { error: null, message: "They can now write in this LOKR. They do not pay." };
 }
 
 export async function startCheckout(
@@ -144,7 +144,7 @@ export async function startCheckout(
 
   const { workspace } = await getCurrentWorkspace();
   const targetId = workspaceId ?? workspace?.id;
-  if (!targetId) return { error: "Choose a Lokr first.", url: null };
+  if (!targetId) return { error: "Choose a LOKR first.", url: null };
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const res = await fetch(`${url}/functions/v1/create-checkout-mylokr`, {

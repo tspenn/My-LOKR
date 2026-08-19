@@ -71,7 +71,7 @@ export function JoinForm({
     <div className="mx-auto w-full max-w-lg space-y-6">
       <div className="flex flex-col items-center gap-3 text-center">
         <LokrMark letters={mark} />
-        <h1 className="text-2xl font-semibold tracking-tight">Join this Lokr</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Join this LOKR</h1>
         <p className="text-muted-foreground">
           You have been invited by {inviterName} to {workspaceName} for
           conversations that are secure and private.
@@ -153,7 +153,7 @@ export function JoinForm({
                 <Alert variant="destructive">{enterState.error}</Alert>
               ) : null}
               <Button type="submit" className="w-full" disabled={enterPending}>
-                {enterPending ? "Opening…" : "Enter this Lokr"}
+                {enterPending ? "Opening…" : "Enter this LOKR"}
               </Button>
             </form>
           ) : (

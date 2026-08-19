@@ -44,7 +44,7 @@ export async function createDistributionList(name: string, memberIds: string[]) 
   const trimmed = name.trim();
   if (!trimmed) return { error: "Name this list.", id: null };
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Set up your Lokr first.", id: null };
+  if (!workspace) return { error: "Set up your LOKR first.", id: null };
 
   const supabase = await createClient();
   const {

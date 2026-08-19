@@ -54,7 +54,7 @@ export default function Home() {
               <p className="text-lg font-medium">{COPY.point}</p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Button asChild>
-                  <Link href="/signup">Open a Lokr</Link>
+                  <Link href="/signup">Open a LOKR</Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/login">Sign in</Link>
@@ -183,7 +183,7 @@ export default function Home() {
               <p>
                 Add as many groups as you need. Each is free with 1–3 invitees (you
                 plus three). Family, work, and a friend can each be their own free
-                Lokr. People you invite do not get a bill. The 4th invitee in any one
+                LOKR. People you invite do not get a bill. The 4th invitee in any one
                 group is Business for that group only — not 14 people on Free. Groups
                 others invite you into stay free for you.
               </p>
@@ -219,7 +219,7 @@ export default function Home() {
                     ))}
                   </ul>
                   <p className="text-sm">
-                    Billed per active account in this Lokr. Invitees do not get a
+                    Billed per active account in this LOKR. Invitees do not get a
                     separate bill. Start on Free, then upgrade only the group that
                     needs more than 3 invitees.
                   </p>
@@ -272,7 +272,7 @@ export default function Home() {
 
           <section className="flex flex-wrap gap-3 pb-8">
             <Button asChild>
-              <Link href="/signup">Create your Lokr</Link>
+              <Link href="/signup">Create your LOKR</Link>
             </Button>
             <Button asChild variant="outline">
               <Link href="/login">Sign in</Link>

@@ -7,7 +7,6 @@ import { createConversation } from "@/lib/actions/conversations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Alert } from "@/components/ui/alert";
 import { UserAvatar } from "@/components/UserAvatar";
 import type { InboxMember } from "@/types/database";
@@ -38,7 +37,7 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
   if (people.length === 0) {
     return (
       <Alert>
-        Nobody else is in this Lokr yet. Invite them from{" "}
+        Nobody else is in this LOKR yet. Invite them from{" "}
         <Link href="/profile" className="font-medium text-primary underline-offset-2 hover:underline">
           Settings
         </Link>
@@ -117,11 +116,11 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
             })
           )}
         </ul>
-        <p className="text-sm text-muted-foreground">
-          {selected.length === 0
-            ? "Select at least one person."
-            : `${selected.length} selected.`}
-        </p>
+          <p className="text-sm text-muted-foreground">
+            {selected.length === 0
+              ? "Select at least one person, then open the writing panel."
+              : `${selected.length} selected.`}
+          </p>
       </div>
 
       <div className="space-y-2">
@@ -134,20 +133,10 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="body">First message (optional)</Label>
-        <Textarea
-          id="body"
-          name="body"
-          rows={4}
-          placeholder="Say hello in a private message"
-        />
-      </div>
-
       {error ? <Alert variant="destructive">{error}</Alert> : null}
 
       <Button type="submit" disabled={isPending || selected.length === 0}>
-        {isPending ? "Starting conversation…" : "Start conversation"}
+        {isPending ? "Opening conversation…" : "Open conversation"}
       </Button>
     </form>
   );

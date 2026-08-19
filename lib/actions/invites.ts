@@ -65,7 +65,7 @@ export async function createPhoneInvite(formData: FormData) {
   if (!phone) return { error: "Enter the phone number to invite.", notice: null };
 
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Set up your Lokr first.", notice: null };
+  if (!workspace) return { error: "Set up your LOKR first.", notice: null };
 
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
@@ -212,7 +212,7 @@ export async function finishInviteJoin(formData: FormData) {
     error: null,
     message:
       result.message ??
-      "Check your email for a confirmation link. After you confirm, you will land in this Lokr — only because this phone was verified.",
+      "Check your email for a confirmation link. After you confirm, you will land in this LOKR — only because this phone was verified.",
   };
 }
 

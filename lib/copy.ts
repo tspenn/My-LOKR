@@ -84,7 +84,7 @@ export const COPY = {
     },
     {
       title: "Invited people only",
-      body: "You choose who is in your Lokr. Outsiders, search engines, and other LOKR workspaces cannot open your threads or files. If you are not invited, the system has nothing to show you.",
+      body: "You choose who is in your LOKR. Outsiders, search engines, and other LOKR workspaces cannot open your threads or files. If you are not invited, the system has nothing to show you.",
     },
     {
       title: "Encrypted in transit",

@@ -28,7 +28,7 @@ export default async function PricingPage() {
         <p className="mt-3 text-muted-foreground">
           Add as many groups as you need. Each is free with 1–3 invitees (you
           plus three). Family, work, and a friend can each be their own free
-          Lokr. People you invite do not get a bill. The 4th invitee in any one
+          LOKR. People you invite do not get a bill. The 4th invitee in any one
           group is Business for that group only — not 14 people on Free. Groups
           others invite you into stay free for you.
         </p>
@@ -63,7 +63,7 @@ export default async function PricingPage() {
             {workspace?.plan === "free" ? (
               <p className="text-sm font-medium text-primary">You are on Free.</p>
             ) : (
-              <p className="text-sm text-muted-foreground">Included when you create a Lokr.</p>
+              <p className="text-sm text-muted-foreground">Included when you create a LOKR.</p>
             )}
           </CardContent>
         </Card>
@@ -81,7 +81,7 @@ export default async function PricingPage() {
               ))}
             </ul>
             <p className="text-sm text-muted-foreground">
-              Billed per active account in this Lokr. Invitees do not get a separate
+              Billed per active account in this LOKR. Invitees do not get a separate
               bill
               {workspace ? ` (currently ${Math.max(memberCount, 1)} ${memberCount === 1 ? "person" : "people"})` : ""}.
             </p>
@@ -155,7 +155,7 @@ export default async function PricingPage() {
       <p className="mt-10 text-sm text-muted-foreground">
         Need a workspace first?{" "}
         <Link href="/setup" className="text-primary underline-offset-2 hover:underline">
-          Set up your Lokr
+          Set up your LOKR
         </Link>
         .
       </p>

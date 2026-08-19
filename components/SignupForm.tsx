@@ -27,7 +27,7 @@ export function SignupForm() {
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Create your Lokr</CardTitle>
+        <CardTitle>Create your LOKR</CardTitle>
         <CardDescription>
           For conversations and files you would not put in Gmail or Outlook —
           including patent ideas and proprietary work. Your LOKR password is

@@ -2,7 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { ConversationView } from "@/components/ConversationView";
 import { InboxShell } from "@/components/InboxShell";
 import { markConversationRead } from "@/lib/actions/conversations";
-import { profileFromRow, type ProfileRow } from "@/lib/profile";
+import { displayNameFrom, profileFromRow, type ProfileRow } from "@/lib/profile";
+import type { PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
@@ -34,22 +35,21 @@ export default async function ConversationPage({
 
   const { data: memberRows } = await supabase
     .from("lokr_conversation_members")
-    .select("user_id, profiles(id, email, full_name, avatar_url)")
+    .select("user_id, profiles!lokr_conversation_members_user_id_fkey(id, email, full_name, avatar_url)")
     .eq("conversation_id", id);
 
   const members: InboxMember[] = (memberRows ?? []).flatMap((row) => {
+    if (!row.user_id) return [];
     const profile = row.profiles as unknown as ProfileRow | ProfileRow[] | null;
-    if (!profile) return [];
-    const rows = Array.isArray(profile) ? profile : [profile];
-    return rows.map((item) => {
-      const mapped = profileFromRow(item);
-      return {
-        id: mapped.id,
-        display_name: mapped.display_name,
-        email: mapped.email,
-        avatar_url: mapped.avatar_url,
-      };
-    });
+    const item = Array.isArray(profile) ? profile[0] : profile;
+    return [
+      {
+        id: row.user_id,
+        display_name: item ? displayNameFrom(item) : "Someone",
+        email: item?.email ?? "",
+        avatar_url: item?.avatar_url ?? null,
+      },
+    ];
   });
 
   const { data: messages } = await supabase
@@ -61,6 +61,14 @@ export default async function ConversationPage({
     .order("created_at", { ascending: true });
 
   await markConversationRead(id);
+
+  const { data: inviteRows } = await supabase
+    .from("lokr_phone_invites")
+    .select("id, phone_e164, phone_last4, status, otp_display, token, created_at")
+    .eq("workspace_id", workspace.id)
+    .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
+    .order("created_at", { ascending: false });
+  const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
 
   const initialMessages: MessageWithDetails[] = (messages ?? []).map((row) => {
     const sender = row.sender as unknown as ProfileRow | ProfileRow[] | null;
@@ -88,6 +96,7 @@ export default async function ConversationPage({
         members={members}
         currentUserId={userId}
         initialMessages={initialMessages}
+        pendingInvites={pendingInvites}
       />
     </InboxShell>
   );

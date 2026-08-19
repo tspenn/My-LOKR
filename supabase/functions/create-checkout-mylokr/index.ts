@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
     }
     const { data: membership } = await membershipQuery.maybeSingle()
     if (!membership) {
-      return new Response(JSON.stringify({ error: 'Set up your Lokr first.' }), {
+      return new Response(JSON.stringify({ error: 'Set up your LOKR first.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

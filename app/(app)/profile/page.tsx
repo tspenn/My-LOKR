@@ -85,7 +85,7 @@ export default async function ProfilePage() {
         <CardHeader>
           <CardTitle>Your profile</CardTitle>
           <CardDescription>
-            This name is shown to people you write with inside this Lokr.
+            This name is shown to people you write with inside this LOKR.
             Sign in with this email
             {phoneRow?.phone_e164
               ? ` or ${formatPhoneForOwner(phoneRow.phone_e164)}`
@@ -208,7 +208,7 @@ export default async function ProfilePage() {
       ) : (
         <p className="text-muted-foreground">
           <Link href="/setup" className="text-primary underline-offset-2 hover:underline">
-            Set up your Lokr
+            Set up your LOKR
           </Link>{" "}
           to load a logo and invite people.
         </p>

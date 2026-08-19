@@ -11,7 +11,8 @@ import { profileFromRow, type ProfileRow } from "@/lib/profile";
 import { Button } from "@/components/ui/button";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
-import { Video } from "lucide-react";
+import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { UserPlus, Video } from "lucide-react";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
 type RawMessage = {
@@ -53,6 +54,7 @@ export function ConversationView({
   members,
   currentUserId,
   initialMessages,
+  pendingInvites,
 }: {
   conversationId: string;
   workspaceId: string;
@@ -62,9 +64,11 @@ export function ConversationView({
   members: InboxMember[];
   currentUserId: string;
   initialMessages: MessageWithDetails[];
+  pendingInvites: PendingPhoneInvite[];
 }) {
   const [messages, setMessages] = useState(initialMessages);
   const [callError, setCallError] = useState<string | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
   const router = useRouter();
   const title = conversationTitle(members, currentUserId, subject);
   const { startVideoCall, inCall } = useCall();
@@ -132,6 +136,14 @@ export function ConversationView({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setInviteOpen((open) => !open)}
+          >
+            <UserPlus />
+            Invite
+          </Button>
           {canCall ? (
             <Button
               type="button"
@@ -158,6 +170,15 @@ export function ConversationView({
           </form>
         </div>
       </header>
+      {inviteOpen ? (
+        <div className="border-b border-border bg-card px-4 py-4">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Invite someone new into this LOKR. After they join, they can be added
+            to conversations from New conversation.
+          </p>
+          <PhoneInviteForm pending={pendingInvites} />
+        </div>
+      ) : null}
       {callError ? (
         <Alert variant="destructive" className="mx-4 mt-3">
           {callError}

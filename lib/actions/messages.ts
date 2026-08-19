@@ -54,7 +54,7 @@ export async function createMessagePlaceholder(
   if (extraBytes > 0) {
     const { workspace } = await getCurrentWorkspace();
     if (!workspace) {
-      return { error: "Choose a Lokr first.", messageId: null };
+      return { error: "Choose a LOKR first.", messageId: null };
     }
     const { data: allowed } = await supabase.rpc("lokr_can_upload", {
       p_additional_bytes: extraBytes,

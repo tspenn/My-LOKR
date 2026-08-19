@@ -24,7 +24,7 @@ export function WorkspaceSetupForm() {
       {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
 
       <fieldset className="space-y-3">
-        <legend className="mb-1 text-sm font-medium">This Lokr is for</legend>
+        <legend className="mb-1 text-sm font-medium">This LOKR is for</legend>
         <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-[#2A2A2A] p-4">
           <input
             type="radio"
@@ -37,7 +37,7 @@ export function WorkspaceSetupForm() {
           <span>
             <span className="block font-medium">Private</span>
             <span className="block text-sm text-muted-foreground">
-              Personal use. This does not change the plan — a new Lokr still
+              Personal use. This does not change the plan — a new LOKR still
               starts on Free.
             </span>
           </span>
@@ -55,7 +55,7 @@ export function WorkspaceSetupForm() {
             <span className="block font-medium">Company or team</span>
             <span className="block text-sm text-muted-foreground">
               Load the company logo so people know they are in this group. This
-              does not change the plan — a new Lokr still starts on Free.
+              does not change the plan — a new LOKR still starts on Free.
             </span>
           </span>
         </label>
@@ -63,13 +63,13 @@ export function WorkspaceSetupForm() {
 
       <div className="space-y-2">
         <Label htmlFor="name">
-          {accountType === "business" ? "Company name" : "Name for this Lokr"}
+          {accountType === "business" ? "Company name" : "Name for this LOKR"}
         </Label>
         <Input
           id="name"
           name="name"
           required
-          placeholder={accountType === "business" ? "Acme Partners" : "Family Lokr"}
+          placeholder={accountType === "business" ? "Acme Partners" : "Family LOKR"}
         />
       </div>
 
@@ -89,7 +89,7 @@ export function WorkspaceSetupForm() {
       </div>
 
       <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Creating your Lokr…" : "Open this Lokr"}
+        {pending ? "Creating your LOKR…" : "Open this LOKR"}
       </Button>
     </form>
   );

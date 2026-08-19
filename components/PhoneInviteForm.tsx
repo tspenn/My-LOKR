@@ -141,7 +141,7 @@ export function PhoneInviteForm({
               ) : null}
               {invite.status === "accepted" ? (
                 <p className="text-sm font-medium text-primary">
-                  Invite accepted. They are in this Lokr.
+                  Invite accepted. They are in this LOKR.
                 </p>
               ) : null}
             </li>

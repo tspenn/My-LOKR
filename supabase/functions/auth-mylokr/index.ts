@@ -8,7 +8,7 @@ const corsHeaders = {
 const GENERIC_LOGIN = "That email or password did not work. Please try again.";
 const GENERIC_RESET = "If that account exists, a reset link is on its way to your email.";
 const GENERIC_SIGNUP =
-  "Check your email for a confirmation link. Once you confirm, you will open your free Lokr.";
+  "Check your email for a confirmation link. Once you confirm, you will open your free LOKR.";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -168,7 +168,7 @@ Deno.serve(async (req) => {
       return json({
         ok: true,
         message: action === "join"
-          ? "Check your email for a confirmation link. After you confirm, you will land in this Lokr — only because this phone was verified."
+          ? "Check your email for a confirmation link. After you confirm, you will land in this LOKR — only because this phone was verified."
           : GENERIC_SIGNUP,
       });
     }
