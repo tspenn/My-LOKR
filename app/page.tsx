@@ -181,11 +181,10 @@ export default function Home() {
             <div className="max-w-3xl space-y-3">
               <h2 className="text-2xl font-semibold tracking-tight">Plans and prices</h2>
               <p>
-                Add as many groups as you need. Each is free with 1–3 invitees (you
-                plus three). Family, work, and a friend can each be their own free
-                LOKR. People you invite do not get a bill. The 4th invitee in any one
-                group is Business for that group only — not 14 people on Free. Groups
-                others invite you into stay free for you.
+                Free is one locker you own: you plus 3 invitees, 1 GB, text, and
+                attachments. No ads. People you invite do not get a bill. A 4th
+                invitee is Business for that locker only. Groups others invite
+                you into stay free for you.
               </p>
             </div>
 
@@ -219,8 +218,8 @@ export default function Home() {
                     ))}
                   </ul>
                   <p className="text-sm">
-                    Only the owner pays $19 a month for this group. Invitees stay
-                    free. Start on Free, then upgrade only the group that needs
+                    Only the owner pays $19 a month for this locker. Invitees stay
+                    free. Start on Free, then upgrade only the locker that needs
                     encrypted video calls or more than 3 invitees.
                   </p>
                 </CardContent>

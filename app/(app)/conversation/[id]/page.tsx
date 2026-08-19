@@ -113,7 +113,7 @@ export default async function ConversationPage({
     <ConversationView
       conversationId={id}
       workspaceId={workspace.id}
-      usedBytes={Number(workspace.storage_used_bytes ?? 0)}
+      usedBytes={Number(usage.used)}
       limitBytes={Number(usage.limit)}
       plan={workspace.plan}
       isOwner={workspace.created_by === userId}

@@ -119,10 +119,10 @@ export default async function ProfilePage() {
             <CardHeader>
               <CardTitle>People</CardTitle>
               <CardDescription>
-                On Free, this group stays at 1–3 invitees (4 people including you).
-                A 4th invitee is Business for this group only. Only the owner
-                pays. Invitees stay free. Phone invites must be confirmed on the
-                number you sent them to — a forwarded link is not enough.
+                On Free you own one locker with 1–3 invitees (4 people including
+                you). A 4th invitee is Business for this locker only. Only the
+                owner pays. Invitees stay free. Phone invites must be confirmed
+                on the number you sent them to — a forwarded link is not enough.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
@@ -195,7 +195,7 @@ export default async function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UsageMeter usedBytes={workspace.storage_used_bytes} limitBytes={usage.limit} />
+              <UsageMeter usedBytes={usage.used} limitBytes={usage.limit} />
               <Link
                 href="/pricing"
                 className="inline-block font-medium text-primary underline-offset-2 hover:underline"

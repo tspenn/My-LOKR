@@ -5,12 +5,13 @@ import { LokrMark } from "@/components/LokrMark";
 import { Button } from "@/components/ui/button";
 import { listLockrs } from "@/lib/workspace";
 import { selectLokr } from "@/lib/actions/workspace";
+import { FREE_OWNED_LOCKRS } from "@/lib/billing";
 
 export const metadata = { title: "Your lockers" };
 export const dynamic = "force-dynamic";
 
 export default async function LockrsPage() {
-  const { lockrs } = await listLockrs();
+  const { lockrs, ownedCount } = await listLockrs();
   if (lockrs.length === 0) redirect("/setup");
 
   return (
@@ -18,10 +19,9 @@ export default async function LockrsPage() {
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-semibold tracking-tight">Choose a LOKR</h1>
         <p className="mt-3 text-lg text-muted-foreground">
-          One group you own is free with up to 3 invitees. Add another group —
-          family, work, a friend — and that one is free too, as long as it also
-          stays at 3 invitees. A 4th person in any one group is Business for
-          that group only. Tiles use the owner’s logo, or four letters.
+          {ownedCount >= FREE_OWNED_LOCKRS
+            ? "You own one locker. Tiles you were invited into stay free for you. A 4th person in a locker you own is Business for that locker only."
+            : "Lockers others invite you into stay free for you. You can still set up one locker of your own."}
         </p>
       </div>
       <ul className="grid gap-4 sm:grid-cols-2">
@@ -59,14 +59,19 @@ export default async function LockrsPage() {
         ))}
       </ul>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-        <Button asChild>
-          <Link href="/setup">Create another LOKR</Link>
-        </Button>
+        {ownedCount < FREE_OWNED_LOCKRS ? (
+          <Button asChild>
+            <Link href="/setup">Set up your LOKR</Link>
+          </Button>
+        ) : null}
         <SignOutButton />
       </div>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        Creating another group is free while each stays at 1–3 invitees.
-      </p>
+      {ownedCount >= FREE_OWNED_LOCKRS ? (
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Free is one locker you own. Need another for a company? That is
+          Enterprise.
+        </p>
+      ) : null}
     </main>
   );
 }

@@ -37,8 +37,7 @@ export function WorkspaceSetupForm() {
           <span>
             <span className="block font-medium">Private</span>
             <span className="block text-sm text-muted-foreground">
-              Personal use. This does not change the plan — a new LOKR still
-              starts on Free.
+              Personal use. This locker starts on Free: you plus 3 invitees.
             </span>
           </span>
         </label>
@@ -54,8 +53,8 @@ export function WorkspaceSetupForm() {
           <span>
             <span className="block font-medium">Company or team</span>
             <span className="block text-sm text-muted-foreground">
-              Load the company logo so people know they are in this group. This
-              does not change the plan — a new LOKR still starts on Free.
+              Load the company logo so people know they are in this locker. It
+              still starts on Free until you upgrade.
             </span>
           </span>
         </label>

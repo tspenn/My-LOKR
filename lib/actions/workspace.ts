@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeFileName } from "@/lib/files";
-import { PLANS, type AccountType, type PlanKey } from "@/lib/billing";
+import { PLANS, FREE_OWNED_LOCKRS, type AccountType, type PlanKey } from "@/lib/billing";
 import {
   getCurrentWorkspace,
   listLockrs,
@@ -15,6 +15,11 @@ export async function createWorkspace(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const accountType = String(formData.get("account_type") ?? "personal") as AccountType;
   if (!name) return { error: "Please name this LOKR." };
+
+  const { ownedCount } = await listLockrs();
+  if (ownedCount >= FREE_OWNED_LOCKRS) {
+    return { error: "You already have your LOKR. Invitees can still add you to theirs." };
+  }
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_create_workspace", {

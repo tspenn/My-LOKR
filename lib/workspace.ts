@@ -185,6 +185,7 @@ export function workspaceUsage(workspace: Workspace) {
   const limit = storageLimitBytes(plan, vault);
   const percent = usagePercent(used, limit);
   return {
+    used,
     limit,
     percent,
     warning: usageWarning(percent),

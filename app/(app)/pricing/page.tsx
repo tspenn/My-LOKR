@@ -27,12 +27,10 @@ export default async function PricingPage() {
       <header className="mb-10 max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight">Plans</h1>
         <p className="mt-3 text-muted-foreground">
-          Add as many groups as you need. Each is free with 1–3 invitees (you
-          plus three). Family, work, and a friend can each be their own free
-          LOKR. People you invite do not get a bill — only the owner pays if a
-          group is upgraded. The 4th invitee in any one
-          group is Business for that group only — not 14 people on Free. Groups
-          others invite you into stay free for you.
+          Free is one locker you own: you plus 3 invitees, 1 GB, text, and
+          attachments. No ads. People you invite do not get a bill — only the
+          owner pays if that locker is upgraded. A 4th invitee is Business for
+          that locker only. Groups others invite you into stay free for you.
         </p>
       </header>
 
@@ -44,7 +42,7 @@ export default async function PricingPage() {
             {memberCount} active {memberCount === 1 ? "account" : "accounts"}
             {usage.maxUsers ? ` (max ${usage.maxUsers})` : ""}
           </p>
-          <UsageMeter usedBytes={workspace.storage_used_bytes} limitBytes={usage.limit} />
+          <UsageMeter usedBytes={usage.used} limitBytes={usage.limit} />
         </div>
       ) : null}
 

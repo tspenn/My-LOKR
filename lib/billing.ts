@@ -14,6 +14,7 @@ export type VaultKey = "none" | "50" | "100" | "250";
 export type AccountType = "personal" | "business";
 
 export const FREE_INVITEES_PER_GROUP = 3;
+export const FREE_OWNED_LOCKRS = 1;
 
 export const PLANS = {
   free: {
@@ -24,21 +25,19 @@ export const PLANS = {
     maxUsers: 4,
     storageBytes: 1 * GB,
     storageLabel: "1 GB",
-    purpose: "Families and small groups",
+    purpose: "One private group",
     description:
       "A locked space for the people and information you actually care about. Messages and files stay under your control — not routed through Google, Microsoft, or the open internet.",
     features: [
-      "Dashboard to pick your lockers by logo or four letters",
-      "As many groups as you need — each is free with up to 3 invitees",
-      "Groups others invite you to stay free for you",
-      "You plus 3 people per free group (4 total)",
-      "A 4th invitee on a group is Business for that group only",
-      "1 GB private storage per free group",
+      "One locker you own",
+      "You plus 3 invitees (4 people total)",
+      "1 GB private storage",
       "Text messages and attachments",
+      "Groups others invite you to stay free for you",
       "No ads and no ad trackers",
     ],
     limitations:
-      "Each free group stops at 3 invitees. You cannot put 14 people in a Free group. Upgrade that group to Business for 15 seats.",
+      "Free is one private group, not an unlimited set of chats. A 4th invitee on that group is Business. Upgrade that group for 15 seats and encrypted video.",
   },
   business: {
     key: "business" as const,
@@ -53,8 +52,8 @@ export const PLANS = {
       "A quiet, secure side channel for important discussions and proprietary information that don’t belong in regular email. Full messaging, attachments, realtime, and admin basics.",
     features: [
       "Encrypted video calls",
-      "This group, upgraded past 3 invitees",
-      "Up to 15 people in this group, including you",
+      "This locker, upgraded past 3 invitees",
+      "Up to 15 people in this locker, including you",
       "Only the owner pays. Invitees stay free",
       "50 GB shared private storage",
       "Full messaging and attachments",
@@ -77,6 +76,7 @@ export const PLANS = {
       "Handled one company at a time. Users, storage, and terms are set with you. No public price list.",
     features: [
       "Encrypted video calls",
+      "More than one locker, if you need it",
       "Custom user count",
       "Custom storage",
       "Direct onboarding",
