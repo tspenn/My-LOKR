@@ -33,7 +33,10 @@ export async function createWorkspace(formData: FormData) {
       upsert: true,
     });
     if (!uploadError) {
-      await supabase.from("lokr_workspaces").update({ logo_path: path }).eq("id", data);
+      await supabase.rpc("lokr_set_workspace_logo", {
+        p_workspace_id: data,
+        p_logo_path: path,
+      });
     }
   }
 
@@ -73,14 +76,15 @@ export async function updateWorkspaceLogo(formData: FormData) {
   });
   if (uploadError) return { error: "We could not save that logo." };
 
-  const { error } = await supabase
-    .from("lokr_workspaces")
-    .update({ logo_path: path })
-    .eq("id", workspace.id);
+  const { error } = await supabase.rpc("lokr_set_workspace_logo", {
+    p_workspace_id: workspace.id,
+    p_logo_path: path,
+  });
   if (error) return { error: "We could not save that logo." };
 
   revalidatePath("/inbox");
   revalidatePath("/profile");
+  revalidatePath("/lockrs");
   return { error: null, message: "Logo saved." };
 }
 

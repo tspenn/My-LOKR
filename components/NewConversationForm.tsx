@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import { createConversation } from "@/lib/actions/conversations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert } from "@/components/ui/alert";
 import { UserAvatar } from "@/components/UserAvatar";
-import type { Profile } from "@/types/database";
+import type { InboxMember } from "@/types/database";
 
-export function NewConversationForm({ people }: { people: Profile[] }) {
+export function NewConversationForm({ people }: { people: InboxMember[] }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +36,11 @@ export function NewConversationForm({ people }: { people: Profile[] }) {
   if (people.length === 0) {
     return (
       <Alert>
-        Nobody else is in this Lokr yet. Invite them by phone above. They must
-        confirm that number before they can join — a forwarded link is not
-        enough.
+        Nobody else is in this Lokr yet. Invite them from{" "}
+        <Link href="/profile" className="font-medium text-primary underline-offset-2 hover:underline">
+          Settings
+        </Link>
+        . They must confirm the phone you sent the invite to before they can join.
       </Alert>
     );
   }

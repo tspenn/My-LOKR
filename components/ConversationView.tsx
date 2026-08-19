@@ -42,7 +42,7 @@ function mapMessages(rows: RawMessage[]): MessageWithDetails[] {
 }
 
 const MESSAGE_SELECT =
-  "id, conversation_id, sender_id, body, created_at, updated_at, sender:profiles!lokr_messages_sender_id_fkey(id, email, full_name, avatar_url, created_at, updated_at), lokr_message_attachments(*)";
+  "id, conversation_id, sender_id, body, created_at, updated_at, sender:profiles!lokr_messages_sender_id_fkey(id, email, full_name, avatar_url), lokr_message_attachments(*)";
 
 export function ConversationView({
   conversationId,

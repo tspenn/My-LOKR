@@ -395,6 +395,10 @@ export type Database = {
         Args: { p_token: string };
         Returns: Json;
       };
+      lokr_set_workspace_logo: {
+        Args: { p_workspace_id: string; p_logo_path: string };
+        Returns: Json;
+      };
       lokr_email_for_verified_phone: {
         Args: { p_phone_e164: string };
         Returns: string;

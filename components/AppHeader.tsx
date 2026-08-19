@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Settings } from "lucide-react";
 import { LokrMark } from "@/components/LokrMark";
 import { SignOutButton } from "@/components/SignOutButton";
 import { cn } from "@/lib/utils";
@@ -11,8 +12,6 @@ import type { Workspace } from "@/lib/billing";
 const links = [
   { href: "/inbox", label: "Inbox" },
   { href: "/inbox/new", label: "New message" },
-  { href: "/pricing", label: "Plans" },
-  { href: "/profile", label: "Settings" },
 ];
 
 export function WorkspaceGate({
@@ -70,7 +69,23 @@ export function AppHeader({
 
   return (
     <header className="border-b border-border bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-5">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-5">
+        <div className="absolute right-4 top-5 flex items-center gap-1">
+          {workspace ? (
+            <Link
+              href="/profile"
+              aria-label="Settings"
+              title="Settings"
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-secondary",
+                pathname === "/profile" ? "bg-[#C9C2B6] text-[#1F1F1F]" : "",
+              )}
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          ) : null}
+          <SignOutButton compact />
+        </div>
         <div className="flex w-full flex-col items-center gap-2">
           {logoUrl ? (
             <Link href="/lockrs" className="rounded-md">
@@ -104,32 +119,31 @@ export function AppHeader({
             </>
           ) : null}
         </div>
-        <nav aria-label="Main" className="flex flex-wrap items-center justify-center gap-2">
-          {workspace
-            ? links.map((link) => {
-                const active =
-                  pathname === link.href ||
-                  (link.href === "/inbox" &&
-                    (pathname === "/inbox" || pathname.startsWith("/conversation/")));
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "rounded-md px-4 py-2 text-base font-medium",
-                      active
-                        ? "bg-[#C9C2B6] text-[#1F1F1F]"
-                        : "text-foreground hover:bg-secondary",
-                    )}
-                    aria-current={active ? "page" : undefined}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })
-            : null}
-          <SignOutButton />
-        </nav>
+        {workspace ? (
+          <nav aria-label="Main" className="flex flex-wrap items-center justify-center gap-2">
+            {links.map((link) => {
+              const active =
+                pathname === link.href ||
+                (link.href === "/inbox" &&
+                  (pathname === "/inbox" || pathname.startsWith("/conversation/")));
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "rounded-md px-4 py-2 text-base font-medium",
+                    active
+                      ? "bg-[#C9C2B6] text-[#1F1F1F]"
+                      : "text-foreground hover:bg-secondary",
+                  )}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : null}
       </div>
     </header>
   );

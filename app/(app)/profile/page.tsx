@@ -34,7 +34,7 @@ export default async function ProfilePage() {
 
   const { data: row } = await supabase
     .from("profiles")
-    .select("id, email, full_name, avatar_url, created_at, updated_at")
+    .select("id, email, full_name, avatar_url, updated_at")
     .eq("id", userId)
     .single();
 
@@ -165,6 +165,24 @@ export default async function ProfilePage() {
                 people={people}
                 currentUserId={userId}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Plans</CardTitle>
+              <CardDescription>
+                You are on {PLANS[workspace.plan].name}. Change this group’s plan
+                or add Vault space from here — not from the main menu.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                href="/pricing"
+                className="inline-block font-medium text-primary underline-offset-2 hover:underline"
+              >
+                View plans
+              </Link>
             </CardContent>
           </Card>
 

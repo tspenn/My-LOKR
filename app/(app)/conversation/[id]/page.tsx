@@ -55,7 +55,7 @@ export default async function ConversationPage({
   const { data: messages } = await supabase
     .from("lokr_messages")
     .select(
-      "id, conversation_id, sender_id, body, created_at, updated_at, sender:profiles!lokr_messages_sender_id_fkey(id, email, full_name, avatar_url, created_at, updated_at), lokr_message_attachments(*)",
+      "id, conversation_id, sender_id, body, created_at, updated_at, sender:profiles!lokr_messages_sender_id_fkey(id, email, full_name, avatar_url), lokr_message_attachments(*)",
     )
     .eq("conversation_id", id)
     .order("created_at", { ascending: true });
