@@ -103,8 +103,8 @@ export default async function ProfilePage() {
                 {workspace.account_type === "business" ? "Company logo" : "Your logo"}
               </CardTitle>
               <CardDescription>
-                This mark sits front and center on the dashboard. The badge shows{" "}
-                {workspace.account_type === "business" ? "Business" : "Private"}.
+                This mark sits front and center on the dashboard. The badge shows
+                your plan: Free, Business, or Enterprise.
               </CardDescription>
             </CardHeader>
             <CardContent>

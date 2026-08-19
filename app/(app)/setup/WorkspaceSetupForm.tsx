@@ -37,7 +37,8 @@ export function WorkspaceSetupForm() {
           <span>
             <span className="block font-medium">Private</span>
             <span className="block text-sm text-muted-foreground">
-              Personal use. The badge will say Private so everyone knows this is not a company space.
+              Personal use. This does not change the plan — a new Lokr still
+              starts on Free.
             </span>
           </span>
         </label>
@@ -51,9 +52,10 @@ export function WorkspaceSetupForm() {
             className="mt-1 h-4 w-4"
           />
           <span>
-            <span className="block font-medium">Business</span>
+            <span className="block font-medium">Company or team</span>
             <span className="block text-sm text-muted-foreground">
-              Company or team. Load the company logo so people know they are in the business Lokr.
+              Load the company logo so people know they are in this group. This
+              does not change the plan — a new Lokr still starts on Free.
             </span>
           </span>
         </label>

@@ -61,8 +61,12 @@ export function AppHeader({
   mark: string;
 }) {
   const pathname = usePathname();
-  const accountLabel =
-    workspace?.account_type === "business" ? "Business" : "Private";
+  const planLabel =
+    workspace?.plan === "business"
+      ? "Business"
+      : workspace?.plan === "enterprise"
+        ? "Enterprise"
+        : "Free";
 
   return (
     <header className="border-b border-border bg-background">
@@ -89,7 +93,7 @@ export function AppHeader({
           {workspace ? (
             <>
               <span className="rounded-full border border-[#3F3F3F] bg-secondary px-3 py-0.5 text-sm text-[#C9C2B6]">
-                {accountLabel}
+                {planLabel}
               </span>
               <Link
                 href="/lockrs"
