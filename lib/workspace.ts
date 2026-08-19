@@ -6,6 +6,7 @@ import {
   usageWarning,
   type AccountType,
   type PlanKey,
+  type VaultKey,
   type Workspace,
 } from "@/lib/billing";
 import { lokrMark } from "@/lib/lokr-mark";
@@ -177,12 +178,15 @@ export async function getCurrentWorkspace() {
 }
 
 export function workspaceUsage(workspace: Workspace) {
-  const limit = storageLimitBytes(workspace.plan, workspace.vault_addon);
-  const percent = usagePercent(workspace.storage_used_bytes, limit);
+  const plan = (workspace.plan in PLANS ? workspace.plan : "free") as PlanKey;
+  const vault = (workspace.vault_addon in VAULT_ADDONS ? workspace.vault_addon : "none") as VaultKey;
+  const used = Number(workspace.storage_used_bytes ?? 0);
+  const limit = storageLimitBytes(plan, vault);
+  const percent = usagePercent(used, limit);
   return {
     limit,
     percent,
     warning: usageWarning(percent),
-    maxUsers: PLANS[workspace.plan as PlanKey].maxUsers,
+    maxUsers: PLANS[plan].maxUsers,
   };
 }

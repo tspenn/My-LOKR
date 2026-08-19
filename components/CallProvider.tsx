@@ -45,7 +45,6 @@ const CallContext = createContext<CallContextValue | null>(null);
 
 export function useCall() {
   const value = useContext(CallContext);
-  if (!value) throw new Error("useCall must be used inside CallProvider");
   return value;
 }
 

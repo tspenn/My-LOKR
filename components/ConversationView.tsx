@@ -71,7 +71,9 @@ export function ConversationView({
   const [inviteOpen, setInviteOpen] = useState(false);
   const router = useRouter();
   const title = conversationTitle(members, currentUserId, subject);
-  const { startVideoCall, inCall } = useCall();
+  const call = useCall();
+  const startVideoCall = call?.startVideoCall;
+  const inCall = call?.inCall ?? false;
   const directPeer = members.filter((member) => member.id !== currentUserId);
   const canCall = members.length === 2 && directPeer.length === 1;
 
@@ -144,7 +146,7 @@ export function ConversationView({
             <UserPlus />
             Invite
           </Button>
-          {canCall ? (
+          {canCall && startVideoCall ? (
             <Button
               type="button"
               variant="outline"

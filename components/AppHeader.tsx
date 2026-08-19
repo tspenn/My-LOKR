@@ -95,12 +95,12 @@ export function AppHeader({
         <img
           src={logoUrl}
           alt={workspace?.name ?? "Workspace logo"}
-          className="h-32 max-w-[32rem] object-contain"
+          className="h-24 max-w-[10rem] object-contain"
         />
       ) : workspace ? (
-        <LokrMark letters={mark} size="xl" />
+        <LokrMark letters={mark} size="lg" />
       ) : (
-        <p className="text-4xl font-semibold tracking-tight">LOKR</p>
+        <p className="text-2xl font-semibold tracking-tight">LOKR</p>
       )}
     </Link>
   );
@@ -137,26 +137,30 @@ export function AppHeader({
 
   return (
     <header className="border-b border-border bg-background">
-      <div className="relative px-4 py-5">
-        <div className="absolute right-4 top-5 z-10 hidden md:block">{accountControls}</div>
+      <div className="relative px-4 py-4">
+        <div className="absolute right-4 top-1/2 z-10 hidden -translate-y-1/2 md:block">
+          {accountControls}
+        </div>
         {workspace ? (
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-              <nav aria-label="Main">
-                <NavLink href="/inbox" label="Inbox" active={inboxActive} />
-              </nav>
-              {logo}
-              <nav aria-label="Compose">
-                <NavLink href="/inbox/new" label="New message" active={composeActive} />
-              </nav>
+          <>
+            <div className="flex items-center justify-center">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <nav aria-label="Main">
+                  <NavLink href="/inbox" label="Inbox" active={inboxActive} />
+                </nav>
+                {logo}
+                <nav aria-label="Compose">
+                  <NavLink href="/inbox/new" label="New message" active={composeActive} />
+                </nav>
+              </div>
             </div>
-            <div className="md:hidden">{accountControls}</div>
-          </div>
+            <div className="mt-3 flex justify-center md:hidden">{accountControls}</div>
+          </>
         ) : (
-          <div className="flex flex-col items-center gap-4">
-            {logo}
-            <div className="md:hidden">{accountControls}</div>
-          </div>
+          <>
+            <div className="flex justify-center">{logo}</div>
+            <div className="mt-3 flex justify-center md:hidden">{accountControls}</div>
+          </>
         )}
       </div>
     </header>

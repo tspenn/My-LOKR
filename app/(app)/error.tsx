@@ -1,6 +1,7 @@
 "use client";
 
 export default function AppError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -12,6 +13,9 @@ export default function AppError({
       <p className="max-w-md text-muted-foreground">
         Your messages are still safe. Please try again.
       </p>
+      {error.message ? (
+        <p className="max-w-lg text-sm text-muted-foreground">{error.message}</p>
+      ) : null}
       <button
         type="button"
         onClick={reset}

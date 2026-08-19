@@ -1,13 +1,16 @@
 import { notFound, redirect } from "next/navigation";
 import { ConversationView } from "@/components/ConversationView";
-import { markConversationRead } from "@/lib/actions/conversations";
 import { displayNameFrom, profileFromRow, type ProfileRow } from "@/lib/profile";
 import type { PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
-export const metadata = { title: "Conversation" };
+function asPlain<T>(value: T): T {
+  return JSON.parse(
+    JSON.stringify(value, (_key, item) => (typeof item === "bigint" ? Number(item) : item)),
+  ) as T;
+}
 
 export default async function ConversationPage({
   params,
@@ -78,7 +81,11 @@ export default async function ConversationPage({
     attachmentsByMessage.set(attachment.message_id, list);
   }
 
-  await markConversationRead(id);
+  await supabase
+    .from("lokr_conversation_members")
+    .update({ last_read_at: new Date().toISOString() })
+    .eq("conversation_id", id)
+    .eq("user_id", userId);
 
   const { data: inviteRows } = await supabase
     .from("lokr_phone_invites")
@@ -106,13 +113,13 @@ export default async function ConversationPage({
     <ConversationView
       conversationId={id}
       workspaceId={workspace.id}
-      usedBytes={workspace.storage_used_bytes}
-      limitBytes={usage.limit}
+      usedBytes={Number(workspace.storage_used_bytes ?? 0)}
+      limitBytes={Number(usage.limit)}
       subject={conversation.subject}
-      members={members}
+      members={asPlain(members)}
       currentUserId={userId}
-      initialMessages={initialMessages}
-      pendingInvites={pendingInvites}
+      initialMessages={asPlain(initialMessages)}
+      pendingInvites={asPlain(pendingInvites)}
     />
   );
 }
