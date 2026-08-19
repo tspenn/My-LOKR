@@ -137,10 +137,10 @@ export function AppHeader({
 
   return (
     <header className="border-b border-border bg-background">
-      <div className="relative mx-auto max-w-7xl px-4 py-5">
+      <div className="relative px-4 py-5">
         <div className="absolute right-4 top-5 z-10 hidden md:block">{accountControls}</div>
         {workspace ? (
-          <div className="flex flex-col items-center gap-4 md:pr-64">
+          <div className="flex flex-col items-center gap-4">
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
               <nav aria-label="Main">
                 <NavLink href="/inbox" label="Inbox" active={inboxActive} />
@@ -153,7 +153,7 @@ export function AppHeader({
             <div className="md:hidden">{accountControls}</div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-4 md:pr-64">
+          <div className="flex flex-col items-center gap-4">
             {logo}
             <div className="md:hidden">{accountControls}</div>
           </div>
