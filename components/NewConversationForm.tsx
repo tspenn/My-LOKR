@@ -86,7 +86,11 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
               const checked = selected.includes(person.id);
               return (
                 <li key={person.id} className="border-b border-border last:border-b-0">
-                  <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/70">
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/70 ${
+                      checked ? "bg-muted" : ""
+                    }`}
+                  >
                     <input
                       type="checkbox"
                       className="h-5 w-5"

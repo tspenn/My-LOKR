@@ -26,7 +26,11 @@ export async function createConversation(formData: FormData) {
   });
 
   if (error || !data) {
-    return { error: error?.message ?? "We could not start that conversation." };
+    const raw = error?.message ?? "";
+    if (raw.includes("You can only write to people in this Lokr")) {
+      return { error: "That person is not in this Lokr. Invite them from Settings first." };
+    }
+    return { error: raw || "We could not start that conversation." };
   }
 
   const firstMessage = String(formData.get("body") ?? "").trim();

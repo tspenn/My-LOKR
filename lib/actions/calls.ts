@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { LokrCall } from "@/lib/call-signaling";
 import type { InboxMember } from "@/types/database";
-import { profileFromRow, type ProfileRow } from "@/lib/profile";
+import { displayNameFrom, type ProfileRow } from "@/lib/profile";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
 export async function startCall(conversationId: string) {
@@ -83,21 +83,20 @@ export async function listWorkspacePeople() {
 
   const { data: rows } = await supabase
     .from("lokr_workspace_members")
-    .select("user_id, profiles(id, email, full_name, avatar_url)")
-    .eq("workspace_id", workspace.id);
+    .select("user_id, profiles!lokr_workspace_members_user_id_fkey(id, email, full_name, avatar_url)")
+    .eq("workspace_id", workspace.id)
+    .neq("user_id", user.id);
 
   const people: InboxMember[] = (rows ?? []).flatMap((row) => {
+    if (!row.user_id) return [];
     const profile = row.profiles as unknown as ProfileRow | ProfileRow[] | null;
-    if (!profile) return [];
     const item = Array.isArray(profile) ? profile[0] : profile;
-    if (!item || item.id === user.id) return [];
-    const mapped = profileFromRow(item);
     return [
       {
-        id: mapped.id,
-        display_name: mapped.display_name,
-        email: mapped.email,
-        avatar_url: mapped.avatar_url,
+        id: row.user_id,
+        display_name: item ? displayNameFrom(item) : "Someone",
+        email: item?.email ?? "",
+        avatar_url: item?.avatar_url ?? null,
       },
     ];
   });
