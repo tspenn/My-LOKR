@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { listLockrs } from "@/lib/workspace";
 import { selectLokr } from "@/lib/actions/workspace";
 
-export const metadata = { title: "Your Lockrs" };
+export const metadata = { title: "Your lockers" };
 export const dynamic = "force-dynamic";
 
 export default async function LockrsPage() {

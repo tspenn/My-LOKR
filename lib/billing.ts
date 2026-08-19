@@ -28,7 +28,7 @@ export const PLANS = {
     description:
       "A locked space for the people and information you actually care about. Messages and files stay under your control — not routed through Google, Microsoft, or the open internet.",
     features: [
-      "Dashboard to pick your Lockrs by logo or four letters",
+      "Dashboard to pick your lockers by logo or four letters",
       "As many groups as you need — each is free with up to 3 invitees",
       "Groups others invite you to stay free for you",
       "You plus 3 people per free group (4 total)",

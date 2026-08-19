@@ -19,7 +19,7 @@ export const TERMS = {
     },
     {
       title: "What you may not do",
-      body: "You may not use LOKR to share child sexual abuse material or other illegal files; threaten, stalk, or incite violence; upload malware; impersonate someone else; try to break into other people’s Lockrs; or use the service to traffic in stolen data, fraud, or anything else that is illegal where you are. We will suspend or close accounts that do this, and we may keep records and report them to law enforcement when the law requires it or when a serious report leaves us no responsible choice.",
+      body: "You may not use LOKR to share child sexual abuse material or other illegal files; threaten, stalk, or incite violence; upload malware; impersonate someone else; try to break into other people’s lockers; or use the service to traffic in stolen data, fraud, or anything else that is illegal where you are. We will suspend or close accounts that do this, and we may keep records and report them to law enforcement when the law requires it or when a serious report leaves us no responsible choice.",
     },
     {
       title: "Reports and enforcement",
