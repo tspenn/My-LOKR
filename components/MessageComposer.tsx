@@ -2,12 +2,11 @@
 
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert } from "@/components/ui/alert";
 import { UsageMeter } from "@/components/UsageMeter";
-import { VideoRecorder } from "@/components/VideoRecorder";
 import { createClient } from "@/lib/supabase/client";
 import { fileValidationMessage, sanitizeFileName } from "@/lib/files";
 import { createMessagePlaceholder } from "@/lib/actions/messages";
@@ -19,11 +18,19 @@ export function MessageComposer({
   workspaceId,
   usedBytes,
   limitBytes,
+  canVideoCall,
+  onVideoCall,
+  canJoinCall,
+  onJoinCall,
 }: {
   conversationId: string;
   workspaceId: string;
   usedBytes: number;
   limitBytes: number;
+  canVideoCall?: boolean;
+  onVideoCall?: () => Promise<void> | void;
+  canJoinCall?: boolean;
+  onJoinCall?: () => Promise<void> | void;
 }) {
   const [body, setBody] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -183,7 +190,18 @@ export function MessageComposer({
             <Paperclip />
             Attach file
           </Button>
-          <VideoRecorder workspaceId={workspaceId} conversationId={conversationId} />
+          {canJoinCall && onJoinCall ? (
+            <Button type="button" variant="outline" onClick={() => void onJoinCall()} disabled={isPending}>
+              <Video />
+              Join call
+            </Button>
+          ) : null}
+          {canVideoCall && onVideoCall ? (
+            <Button type="button" variant="outline" onClick={() => void onVideoCall()} disabled={isPending}>
+              <Video />
+              Video call
+            </Button>
+          ) : null}
         </div>
         <Button type="submit" disabled={isPending}>
           <Send />

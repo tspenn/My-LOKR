@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { LokrCall } from "@/lib/call-signaling";
+import type { CallPeer, LokrCall } from "@/lib/call-signaling";
 import type { InboxMember } from "@/types/database";
 import { displayNameFrom, type ProfileRow } from "@/lib/profile";
 import { getCurrentWorkspace } from "@/lib/workspace";
@@ -27,6 +27,31 @@ export async function startCall(conversationId: string) {
   }
 
   return { error: null, call: call as LokrCall };
+}
+
+export async function listCallPeers(conversationId: string) {
+  const supabase = await createClient();
+  const { data: memberRows } = await supabase
+    .from("lokr_conversation_members")
+    .select("user_id")
+    .eq("conversation_id", conversationId);
+  const memberIds = [...new Set((memberRows ?? []).map((row) => row.user_id).filter(Boolean))];
+  if (memberIds.length === 0) return { peers: [] as CallPeer[] };
+
+  const { data: profileRows } = await supabase
+    .from("profiles")
+    .select("id, email, full_name, avatar_url")
+    .in("id", memberIds);
+
+  const profileById = new Map((profileRows ?? []).map((row) => [row.id, row as ProfileRow]));
+  const peers: CallPeer[] = memberIds.map((id) => {
+    const profile = profileById.get(id);
+    return {
+      id,
+      display_name: profile ? displayNameFrom(profile) : "Someone",
+    };
+  });
+  return { peers };
 }
 
 export async function loadCall(callId: string) {

@@ -9,10 +9,12 @@ import { leaveConversation } from "@/lib/actions/conversations";
 import { conversationTitle } from "@/lib/utils";
 import { profileFromRow, type ProfileRow } from "@/lib/profile";
 import { Button } from "@/components/ui/button";
+import { ConversationCall } from "@/components/ConversationCall";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { UserPlus, Video } from "lucide-react";
+import type { LokrCall } from "@/lib/call-signaling";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
 type RawMessage = {
@@ -69,13 +71,15 @@ export function ConversationView({
   const [messages, setMessages] = useState(initialMessages);
   const [callError, setCallError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [liveCall, setLiveCall] = useState<LokrCall | null>(null);
   const router = useRouter();
   const title = conversationTitle(members, currentUserId, subject);
   const call = useCall();
   const startVideoCall = call?.startVideoCall;
-  const inCall = call?.inCall ?? false;
-  const directPeer = members.filter((member) => member.id !== currentUserId);
-  const canCall = members.length === 2 && directPeer.length === 1;
+  const joinVideoCall = call?.joinVideoCall;
+  const inThisCall = Boolean(call?.inCall && call.callConversationId === conversationId);
+  const peers = members.map((member) => ({ id: member.id, display_name: member.display_name }));
+  const canCall = members.length >= 2 && members.length <= 6;
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -83,6 +87,33 @@ export function ConversationView({
 
   useEffect(() => {
     const supabase = createClient();
+    async function loadLiveCall() {
+      const { data } = await supabase
+        .from("lokr_calls")
+        .select("id, conversation_id, caller_id, callee_id, status, created_at, ended_at")
+        .eq("conversation_id", conversationId)
+        .in("status", ["ringing", "active"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      setLiveCall((data as LokrCall | null) ?? null);
+    }
+    void loadLiveCall();
+    const callsChannel = supabase
+      .channel(`calls:${conversationId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "lokr_calls",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        () => {
+          void loadLiveCall();
+        },
+      )
+      .subscribe();
 
     async function loadMessages() {
       const { data } = await supabase
@@ -124,6 +155,7 @@ export function ConversationView({
       .subscribe();
 
     return () => {
+      void supabase.removeChannel(callsChannel);
       void supabase.removeChannel(channel);
     };
   }, [conversationId, router]);
@@ -146,14 +178,27 @@ export function ConversationView({
             <UserPlus />
             Invite
           </Button>
-          {canCall && startVideoCall ? (
+          {canCall && liveCall && joinVideoCall && !inThisCall ? (
             <Button
               type="button"
               variant="outline"
-              disabled={inCall}
               onClick={async () => {
                 setCallError(null);
-                const error = await startVideoCall(conversationId, directPeer[0].display_name);
+                const error = await joinVideoCall(liveCall, peers);
+                if (error) setCallError(error);
+              }}
+            >
+              <Video />
+              Join call
+            </Button>
+          ) : null}
+          {canCall && startVideoCall && !inThisCall && !liveCall ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={async () => {
+                setCallError(null);
+                const error = await startVideoCall(conversationId, peers);
                 if (error) setCallError(error);
               }}
             >
@@ -186,12 +231,33 @@ export function ConversationView({
           {callError}
         </Alert>
       ) : null}
+      <ConversationCall conversationId={conversationId} />
       <MessageThread messages={messages} currentUserId={currentUserId} />
       <MessageComposer
         conversationId={conversationId}
         workspaceId={workspaceId}
         usedBytes={usedBytes}
         limitBytes={limitBytes}
+        canVideoCall={canCall && !inThisCall && !liveCall}
+        onVideoCall={
+          startVideoCall
+            ? async () => {
+                setCallError(null);
+                const error = await startVideoCall(conversationId, peers);
+                if (error) setCallError(error);
+              }
+            : undefined
+        }
+        canJoinCall={Boolean(canCall && liveCall && joinVideoCall && !inThisCall)}
+        onJoinCall={
+          liveCall && joinVideoCall
+            ? async () => {
+                setCallError(null);
+                const error = await joinVideoCall(liveCall, peers);
+                if (error) setCallError(error);
+              }
+            : undefined
+        }
       />
     </section>
   );

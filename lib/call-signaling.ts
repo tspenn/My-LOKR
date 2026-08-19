@@ -8,13 +8,25 @@ export type LokrCall = {
   ended_at: string | null;
 };
 
+export type CallPeer = {
+  id: string;
+  display_name: string;
+};
+
+export type RemotePeer = {
+  userId: string;
+  name: string;
+  stream: MediaStream | null;
+};
+
 export type SignalMessage =
   | { type: "invite"; callId: string; conversationId: string; fromId: string }
-  | { type: "join"; callId: string }
-  | { type: "offer"; sdp: RTCSessionDescriptionInit }
-  | { type: "answer"; sdp: RTCSessionDescriptionInit }
-  | { type: "ice"; candidate: RTCIceCandidateInit }
-  | { type: "hangup"; callId: string };
+  | { type: "join"; callId: string; userId: string }
+  | { type: "hello"; callId: string; userId: string }
+  | { type: "offer"; fromId: string; toId: string; sdp: RTCSessionDescriptionInit }
+  | { type: "answer"; fromId: string; toId: string; sdp: RTCSessionDescriptionInit }
+  | { type: "ice"; fromId: string; toId: string; candidate: RTCIceCandidateInit }
+  | { type: "hangup"; callId: string; userId: string; endAll?: boolean };
 
 export function signalChannelName(userId: string) {
   return `lokr-signal:${userId}`;
