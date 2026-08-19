@@ -34,7 +34,7 @@ export function ConversationList({
   }
 
   return (
-    <ul className="divide-y divide-border">
+    <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
       {items.map((item) => {
         const href = `/conversation/${item.id}`;
         const active = pathname === href;
