@@ -13,6 +13,7 @@ export function InboxColumns({
 }) {
   const pathname = usePathname();
   const listOnly = pathname === "/inbox";
+  const composeOnly = pathname === "/inbox/new";
 
   return (
     <div className="flex min-h-0 w-full flex-1">
@@ -20,6 +21,7 @@ export function InboxColumns({
         className={cn(
           "w-full overflow-y-auto border-border bg-card md:max-w-md md:border-r",
           !listOnly && "hidden md:block",
+          composeOnly && "hidden",
         )}
       >
         <h2 className="border-b border-border px-4 py-3 text-lg font-semibold">
@@ -31,7 +33,7 @@ export function InboxColumns({
       <div
         className={cn(
           "flex min-h-0 min-w-0 flex-1 flex-col",
-          listOnly && "hidden md:flex",
+          listOnly && !composeOnly && "hidden md:flex",
         )}
       >
         {children}
