@@ -43,7 +43,8 @@ export function LoginForm({
       <CardContent className="space-y-8">
         {errorCode === "auth" ? (
           <Alert variant="destructive">
-            That sign-in link was not valid. Please try again.
+            That confirmation link could not sign you in automatically. If you
+            already confirmed, sign in here with your LOKR password.
           </Alert>
         ) : null}
 

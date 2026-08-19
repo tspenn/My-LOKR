@@ -8,7 +8,7 @@ const corsHeaders = {
 const GENERIC_LOGIN = "That email or password did not work. Please try again.";
 const GENERIC_RESET = "If that account exists, a reset link is on its way to your email.";
 const GENERIC_SIGNUP =
-  "Check your email for a confirmation link. Once you confirm, you can sign in.";
+  "Check your email for a confirmation link. Once you confirm, you will open your free Lokr.";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {

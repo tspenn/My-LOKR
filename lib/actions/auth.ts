@@ -1,11 +1,79 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { clearWorkspaceCookie } from "@/lib/workspace";
 import { normalizePhone } from "@/lib/phone";
 import { appOrigin } from "@/lib/site";
 import { callLokrAuth, lokrPasswordError } from "@/lib/lokr-auth";
+import { acceptInviteAfterAuth } from "@/lib/actions/invites";
+
+function safeNextPath(next: string | null | undefined) {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) {
+    return "/setup";
+  }
+  if (next.startsWith("/auth/callback")) {
+    return "/setup";
+  }
+  return next;
+}
+
+function otpType(raw: string | null | undefined): EmailOtpType {
+  if (raw === "recovery" || raw === "signup" || raw === "invite" || raw === "email_change" || raw === "magiclink") {
+    return raw;
+  }
+  return "email";
+}
+
+export async function completeEmailAuth(input: {
+  code?: string | null;
+  tokenHash?: string | null;
+  type?: string | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  next?: string | null;
+}): Promise<{ error: string | null; redirectTo: string | null }> {
+  const supabase = await createClient();
+  let errorMessage: string | null = null;
+
+  if (input.accessToken && input.refreshToken) {
+    const { error } = await supabase.auth.setSession({
+      access_token: input.accessToken,
+      refresh_token: input.refreshToken,
+    });
+    errorMessage = error?.message ?? null;
+  } else if (input.tokenHash) {
+    const { error } = await supabase.auth.verifyOtp({
+      type: otpType(input.type),
+      token_hash: input.tokenHash,
+    });
+    errorMessage = error?.message ?? null;
+  } else if (input.code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(input.code);
+    errorMessage = error?.message ?? null;
+  } else {
+    return { error: "That sign-in link was not valid.", redirectTo: null };
+  }
+
+  if (errorMessage) {
+    return { error: "That sign-in link was not valid. Please try again.", redirectTo: null };
+  }
+
+  await supabase.rpc("lokr_activate_pending_password");
+  const { data: hasPassword } = await supabase.rpc("lokr_has_password");
+  const accepted = await acceptInviteAfterAuth();
+  if (accepted.workspaceId) {
+    return {
+      error: null,
+      redirectTo: hasPassword ? "/inbox" : "/update-password",
+    };
+  }
+  if (!hasPassword) {
+    return { error: null, redirectTo: "/update-password" };
+  }
+  return { error: null, redirectTo: safeNextPath(input.next) };
+}
 
 export async function signInWithPassword(formData: FormData) {
   const identifier = String(formData.get("email") ?? "").trim();
@@ -82,7 +150,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     full_name: displayName,
-    redirect_to: `${appOrigin()}/auth/callback`,
+    redirect_to: `${appOrigin()}/auth/callback?next=/setup`,
   });
   if (result.error) return { error: result.error };
 
@@ -90,7 +158,7 @@ export async function signUp(formData: FormData) {
     error: null,
     message:
       result.message ??
-      "Check your email for a confirmation link. Once you confirm, you can sign in.",
+      "Check your email for a confirmation link. Once you confirm, you will open your free Lokr.",
   };
 }
 
