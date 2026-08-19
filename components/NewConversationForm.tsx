@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createConversation } from "@/lib/actions/conversations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import type { InboxMember } from "@/types/database";
 
 export function NewConversationForm({ people }: { people: InboxMember[] }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -50,26 +52,20 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
       className="space-y-6"
       onSubmit={(event) => {
         event.preventDefault();
+        setError(null);
         const formData = new FormData(event.currentTarget);
-        selected.forEach((id) => formData.append("member_ids", id));
         startTransition(async () => {
           const result = await createConversation(formData);
-          if (result?.error) setError(result.error);
+          if (result?.error) {
+            setError(result.error);
+            if (!result.conversationId) return;
+          }
+          if (result?.conversationId) {
+            router.push(`/conversation/${result.conversationId}`);
+          }
         });
       }}
     >
-      {error ? <Alert variant="destructive">{error}</Alert> : null}
-
-      <div className="space-y-2">
-        <Label htmlFor="subject">Subject (optional)</Label>
-        <Input
-          id="subject"
-          name="subject"
-          maxLength={120}
-          placeholder="For example: This week’s visit"
-        />
-      </div>
-
       <div className="space-y-2">
         <Label htmlFor="people-search">Choose people</Label>
         <Input
@@ -78,6 +74,17 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by name or email"
         />
+        {selected.map((id) => {
+          const person = people.find((item) => item.id === id);
+          return (
+            <span key={id}>
+              <input type="hidden" name="member_ids" value={id} />
+              {person?.email ? (
+                <input type="hidden" name="member_emails" value={person.email} />
+              ) : null}
+            </span>
+          );
+        })}
         <ul className="max-h-72 overflow-y-auto rounded-md border border-border bg-card">
           {filtered.length === 0 ? (
             <li className="px-4 py-3 text-muted-foreground">No matching people.</li>
@@ -118,6 +125,16 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="subject">Subject (optional)</Label>
+        <Input
+          id="subject"
+          name="subject"
+          maxLength={120}
+          placeholder="For example: This week’s visit"
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="body">First message (optional)</Label>
         <Textarea
           id="body"
@@ -126,6 +143,8 @@ export function NewConversationForm({ people }: { people: InboxMember[] }) {
           placeholder="Say hello in a private message"
         />
       </div>
+
+      {error ? <Alert variant="destructive">{error}</Alert> : null}
 
       <Button type="submit" disabled={isPending || selected.length === 0}>
         {isPending ? "Starting conversation…" : "Start conversation"}
