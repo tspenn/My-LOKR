@@ -10,10 +10,12 @@ import { conversationTitle } from "@/lib/utils";
 import { profileFromRow, type ProfileRow } from "@/lib/profile";
 import { Button } from "@/components/ui/button";
 import { ConversationCall } from "@/components/ConversationCall";
+import { CheckoutButton } from "@/components/CheckoutButton";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
 import { UserPlus, Video } from "lucide-react";
+import { planHasEncryptedCalls, type PlanKey } from "@/lib/billing";
 import type { LokrCall } from "@/lib/call-signaling";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
@@ -52,6 +54,8 @@ export function ConversationView({
   workspaceId,
   usedBytes,
   limitBytes,
+  plan,
+  isOwner,
   subject,
   members,
   currentUserId,
@@ -62,6 +66,8 @@ export function ConversationView({
   workspaceId: string;
   usedBytes: number;
   limitBytes: number;
+  plan: PlanKey;
+  isOwner: boolean;
   subject: string | null;
   members: InboxMember[];
   currentUserId: string;
@@ -72,6 +78,7 @@ export function ConversationView({
   const [callError, setCallError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [liveCall, setLiveCall] = useState<LokrCall | null>(null);
+  const [showCallUpgrade, setShowCallUpgrade] = useState(false);
   const router = useRouter();
   const title = conversationTitle(members, currentUserId, subject);
   const call = useCall();
@@ -80,6 +87,18 @@ export function ConversationView({
   const inThisCall = Boolean(call?.inCall && call.callConversationId === conversationId);
   const peers = members.map((member) => ({ id: member.id, display_name: member.display_name }));
   const canCall = members.length >= 2 && members.length <= 6;
+  const paidCalls = planHasEncryptedCalls(plan);
+
+  async function requestVideoCall() {
+    setCallError(null);
+    if (!paidCalls) {
+      setShowCallUpgrade(true);
+      return;
+    }
+    if (!startVideoCall) return;
+    const error = await startVideoCall(conversationId, peers);
+    if (error) setCallError(error);
+  }
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -178,7 +197,7 @@ export function ConversationView({
             <UserPlus />
             Invite
           </Button>
-          {canCall && liveCall && joinVideoCall && !inThisCall ? (
+          {canCall && liveCall && joinVideoCall && paidCalls && !inThisCall ? (
             <Button
               type="button"
               variant="outline"
@@ -192,16 +211,8 @@ export function ConversationView({
               Join call
             </Button>
           ) : null}
-          {canCall && startVideoCall && !inThisCall && !liveCall ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={async () => {
-                setCallError(null);
-                const error = await startVideoCall(conversationId, peers);
-                if (error) setCallError(error);
-              }}
-            >
+          {canCall && !inThisCall && !liveCall ? (
+            <Button type="button" variant="outline" onClick={() => void requestVideoCall()}>
               <Video />
               Video call
             </Button>
@@ -226,6 +237,21 @@ export function ConversationView({
           <PhoneInviteForm pending={pendingInvites} />
         </div>
       ) : null}
+      {showCallUpgrade ? (
+        <Alert className="mx-4 mt-3">
+          <p className="font-medium text-foreground">Encrypted video calls are on Business.</p>
+          <p className="mt-1">
+            {isOwner
+              ? "Upgrade this group and only you pay. Invitees stay free."
+              : "Only the owner can upgrade this group. Invitees stay free."}
+          </p>
+          {isOwner ? (
+            <div className="mt-3 max-w-xs">
+              <CheckoutButton kind="business">Upgrade this group</CheckoutButton>
+            </div>
+          ) : null}
+        </Alert>
+      ) : null}
       {callError ? (
         <Alert variant="destructive" className="mx-4 mt-3">
           {callError}
@@ -239,16 +265,8 @@ export function ConversationView({
         usedBytes={usedBytes}
         limitBytes={limitBytes}
         canVideoCall={canCall && !inThisCall && !liveCall}
-        onVideoCall={
-          startVideoCall
-            ? async () => {
-                setCallError(null);
-                const error = await startVideoCall(conversationId, peers);
-                if (error) setCallError(error);
-              }
-            : undefined
-        }
-        canJoinCall={Boolean(canCall && liveCall && joinVideoCall && !inThisCall)}
+        onVideoCall={() => void requestVideoCall()}
+        canJoinCall={Boolean(canCall && liveCall && joinVideoCall && paidCalls && !inThisCall)}
         onJoinCall={
           liveCall && joinVideoCall
             ? async () => {

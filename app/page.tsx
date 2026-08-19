@@ -219,9 +219,9 @@ export default function Home() {
                     ))}
                   </ul>
                   <p className="text-sm">
-                    Billed per active account in this LOKR. Invitees do not get a
-                    separate bill. Start on Free, then upgrade only the group that
-                    needs more than 3 invitees.
+                    Only the owner pays $19 a month for this group. Invitees stay
+                    free. Start on Free, then upgrade only the group that needs
+                    encrypted video calls or more than 3 invitees.
                   </p>
                 </CardContent>
               </Card>

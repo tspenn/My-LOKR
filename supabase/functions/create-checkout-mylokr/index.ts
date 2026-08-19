@@ -82,19 +82,20 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { count } = await admin
-      .from('lokr_workspace_members')
-      .select('*', { count: 'exact', head: true })
-      .eq('workspace_id', membership.workspace_id)
-
     const { data: workspace } = await admin
       .from('lokr_workspaces')
-      .select('stripe_customer_id')
+      .select('stripe_customer_id, created_by')
       .eq('id', membership.workspace_id)
       .single()
 
-    const seats = Math.min(15, Math.max(1, count ?? 1))
-    const quantity = kind === 'business' ? seats : 1
+    if (!workspace || workspace.created_by !== user.id) {
+      return new Response(JSON.stringify({ error: 'Only the owner can pay for this group. Invitees stay free.' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const quantity = 1
     const appUrl = (
       Deno.env.get('MYLOKR_APP_URL') ||
       Deno.env.get('NEXT_PUBLIC_SITE_URL') ||

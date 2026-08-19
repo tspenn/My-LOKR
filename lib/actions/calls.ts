@@ -5,9 +5,18 @@ import { createClient } from "@/lib/supabase/server";
 import type { CallPeer, LokrCall } from "@/lib/call-signaling";
 import type { InboxMember } from "@/types/database";
 import { displayNameFrom, type ProfileRow } from "@/lib/profile";
+import { planHasEncryptedCalls } from "@/lib/billing";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
 export async function startCall(conversationId: string) {
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace || !planHasEncryptedCalls(workspace.plan)) {
+    return {
+      error: "Encrypted video calls are on Business. Only the owner pays — invitees stay free.",
+      call: null,
+    };
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lokr_start_call", {
     p_conversation_id: conversationId,

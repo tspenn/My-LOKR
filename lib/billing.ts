@@ -43,7 +43,7 @@ export const PLANS = {
   business: {
     key: "business" as const,
     name: "Business",
-    priceLabel: "$19 / user / month",
+    priceLabel: "$19 / month",
     priceMonthly: 19,
     maxUsers: 15,
     storageBytes: 50 * GB,
@@ -52,9 +52,10 @@ export const PLANS = {
     description:
       "A quiet, secure side channel for important discussions and proprietary information that don’t belong in regular email. Full messaging, attachments, realtime, and admin basics.",
     features: [
+      "Encrypted video calls",
       "This group, upgraded past 3 invitees",
       "Up to 15 people in this group, including you",
-      "Invitees still do not pay; they count toward this group’s 15",
+      "Only the owner pays. Invitees stay free",
       "50 GB shared private storage",
       "Full messaging and attachments",
       "Realtime updates",
@@ -75,6 +76,7 @@ export const PLANS = {
     description:
       "Handled one company at a time. Users, storage, and terms are set with you. No public price list.",
     features: [
+      "Encrypted video calls",
       "Custom user count",
       "Custom storage",
       "Direct onboarding",
@@ -111,6 +113,10 @@ export const VAULT_ADDONS = {
 
 export const VAULT_DESCRIPTION =
   "The Vault is private cloud storage for important documents and attachments. Files stay inside the same secure system as your messages. Plans include storage; add more when needed.";
+
+export function planHasEncryptedCalls(plan: PlanKey) {
+  return plan === "business" || plan === "enterprise";
+}
 
 export function storageLimitBytes(plan: PlanKey, vault: VaultKey) {
   return PLANS[plan].storageBytes + VAULT_ADDONS[vault].bytes;

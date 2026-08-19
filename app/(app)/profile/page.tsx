@@ -120,9 +120,9 @@ export default async function ProfilePage() {
               <CardTitle>People</CardTitle>
               <CardDescription>
                 On Free, this group stays at 1–3 invitees (4 people including you).
-                A 4th invitee is Business for this group only. Invitees never get
-                a bill. Phone invites must be confirmed on the number you sent
-                them to — a forwarded link is not enough.
+                A 4th invitee is Business for this group only. Only the owner
+                pays. Invitees stay free. Phone invites must be confirmed on the
+                number you sent them to — a forwarded link is not enough.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">

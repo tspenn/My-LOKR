@@ -18,8 +18,9 @@ const ENTERPRISE_EMAIL =
   process.env.NEXT_PUBLIC_ENTERPRISE_EMAIL ?? "hello@go-i-agency.com";
 
 export default async function PricingPage() {
-  const { workspace, memberCount } = await getCurrentWorkspace();
+  const { workspace, memberCount, userId } = await getCurrentWorkspace();
   const usage = workspace ? workspaceUsage(workspace) : null;
+  const isOwner = Boolean(workspace && userId && workspace.created_by === userId);
 
   return (
     <main className="mx-auto w-full max-w-5xl overflow-y-auto px-4 py-10">
@@ -28,7 +29,8 @@ export default async function PricingPage() {
         <p className="mt-3 text-muted-foreground">
           Add as many groups as you need. Each is free with 1–3 invitees (you
           plus three). Family, work, and a friend can each be their own free
-          LOKR. People you invite do not get a bill. The 4th invitee in any one
+          LOKR. People you invite do not get a bill — only the owner pays if a
+          group is upgraded. The 4th invitee in any one
           group is Business for that group only — not 14 people on Free. Groups
           others invite you into stay free for you.
         </p>
@@ -81,15 +83,17 @@ export default async function PricingPage() {
               ))}
             </ul>
             <p className="text-sm text-muted-foreground">
-              Billed per active account in this LOKR. Invitees do not get a separate
-              bill
-              {workspace ? ` (currently ${Math.max(memberCount, 1)} ${memberCount === 1 ? "person" : "people"})` : ""}.
+              Only the owner pays $19 a month for this group. Invitees stay free.
             </p>
             {workspace?.plan === "business" ? (
               <p className="text-sm font-medium text-primary">You are on Business.</p>
-            ) : (
+            ) : isOwner ? (
               <CheckoutButton kind="business">Upgrade this group</CheckoutButton>
-            )}
+            ) : workspace ? (
+              <p className="text-sm text-muted-foreground">
+                Only the owner can upgrade this group.
+              </p>
+            ) : null}
           </CardContent>
         </Card>
 
@@ -140,11 +144,15 @@ export default async function PricingPage() {
                   </p>
                   {current ? (
                     <p className="text-sm font-medium text-primary">This Vault size is active.</p>
-                  ) : (
+                  ) : isOwner ? (
                     <CheckoutButton kind={kind} variant="outline">
                       Add +{addon.gb} GB
                     </CheckoutButton>
-                  )}
+                  ) : workspace ? (
+                    <p className="text-sm text-muted-foreground">
+                      Only the owner can add Vault space.
+                    </p>
+                  ) : null}
                 </CardContent>
               </Card>
             );

@@ -115,6 +115,8 @@ export default async function ConversationPage({
       workspaceId={workspace.id}
       usedBytes={Number(workspace.storage_used_bytes ?? 0)}
       limitBytes={Number(usage.limit)}
+      plan={workspace.plan}
+      isOwner={workspace.created_by === userId}
       subject={conversation.subject}
       members={asPlain(members)}
       currentUserId={userId}
