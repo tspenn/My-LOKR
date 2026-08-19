@@ -34,7 +34,7 @@ export default async function NewMessagePage() {
     .from("lokr_phone_invites")
     .select("id, phone_e164, phone_last4, status, otp_display, token, created_at")
     .eq("workspace_id", workspace.id)
-    .in("status", ["pending", "awaiting_code", "confirmed"])
+        .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
     .order("created_at", { ascending: false });
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
 

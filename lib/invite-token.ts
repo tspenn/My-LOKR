@@ -8,4 +8,15 @@ export function newInviteToken() {
   return Buffer.from(bytes).toString("base64url");
 }
 
+export function joinTokenFromPath(next: string | null | undefined) {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return null;
+  const match = next.match(/^\/join\/([^/?#]+)/);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
 export { JOIN_TICKET_COOKIE, appOrigin, joinUrl };

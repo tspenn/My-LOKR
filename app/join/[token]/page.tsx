@@ -29,7 +29,7 @@ export default async function JoinPage({
   const { data } = await supabase.auth.getClaims();
   const signedIn = Boolean(data?.claims);
   const ticket = await readJoinTicket();
-  const phoneConfirmed = Boolean(ticket);
+  const phoneConfirmed = Boolean(ticket) || (signedIn && peek.status === "confirmed");
 
   return (
     <JoinForm

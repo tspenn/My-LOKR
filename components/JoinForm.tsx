@@ -61,7 +61,7 @@ export function JoinForm({
   );
 
   const [enterState, enterAction, enterPending] = useActionState(
-    async (_prev: AuthResult) => finishInviteIfSignedIn(),
+    async (_prev: AuthResult, formData: FormData) => finishInviteIfSignedIn(formData),
     null,
   );
 
@@ -148,6 +148,7 @@ export function JoinForm({
           </Alert>
           {signedIn ? (
             <form action={enterAction} className="space-y-4">
+              <input type="hidden" name="token" value={token} />
               {enterState?.error ? (
                 <Alert variant="destructive">{enterState.error}</Alert>
               ) : null}

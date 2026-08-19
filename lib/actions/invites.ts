@@ -138,18 +138,36 @@ export async function verifyInviteCode(formData: FormData) {
   return { error: null, confirmed: true };
 }
 
-export async function acceptInviteAfterAuth() {
+export async function acceptInviteAfterAuth(token?: string | null) {
   const ticket = await readJoinTicket();
-  if (!ticket) return { error: "Confirm the invited phone first.", workspaceId: null };
+  const joinToken = token?.trim() || null;
+  if (!ticket && !joinToken) {
+    return { error: "Confirm the invited phone first.", workspaceId: null };
+  }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("lokr_accept_phone_invite", {
-    p_ticket: ticket,
-  });
-  const result = data as RpcBag | null;
-  if (error || !result?.ok || !result.workspace_id) {
+  let result: RpcBag | null = null;
+  let errorMessage: string | null = null;
+
+  if (ticket) {
+    const { data, error } = await supabase.rpc("lokr_accept_phone_invite", {
+      p_ticket: ticket,
+    });
+    result = data as RpcBag | null;
+    errorMessage = error?.message ?? null;
+  }
+
+  if ((!result?.ok || !result.workspace_id) && joinToken) {
+    const { data, error } = await supabase.rpc("lokr_accept_phone_invite_by_token", {
+      p_token: joinToken,
+    });
+    result = data as RpcBag | null;
+    errorMessage = error?.message ?? null;
+  }
+
+  if (!result?.ok || !result.workspace_id) {
     return {
-      error: error?.message ?? "This join was not confirmed from the invited phone.",
+      error: errorMessage ?? "This join was not confirmed from the invited phone.",
       workspaceId: null,
     };
   }
@@ -157,6 +175,8 @@ export async function acceptInviteAfterAuth() {
   await writeWorkspaceCookie(result.workspace_id);
   await clearJoinTicketCookie();
   revalidatePath("/inbox");
+  revalidatePath("/inbox/new");
+  revalidatePath("/profile");
   revalidatePath("/lockrs");
   return { error: null, workspaceId: result.workspace_id };
 }
@@ -196,9 +216,10 @@ export async function finishInviteJoin(formData: FormData) {
   };
 }
 
-export async function finishInviteIfSignedIn() {
+export async function finishInviteIfSignedIn(formData?: FormData) {
+  const token = String(formData?.get("token") ?? "").trim();
   const ticket = await readJoinTicket();
-  if (!ticket) {
+  if (!ticket && !token) {
     return { error: "Confirm the invited phone first." };
   }
   const supabase = await createClient();
@@ -206,7 +227,7 @@ export async function finishInviteIfSignedIn() {
   if (!data?.claims) {
     return { error: "Sign in after the phone is confirmed." };
   }
-  const accepted = await acceptInviteAfterAuth();
+  const accepted = await acceptInviteAfterAuth(token || null);
   if (accepted.error) return { error: accepted.error };
   redirect("/inbox");
 }

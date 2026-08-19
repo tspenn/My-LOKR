@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { clearWorkspaceCookie } from "@/lib/workspace";
 import { normalizePhone } from "@/lib/phone";
 import { appOrigin } from "@/lib/site";
+import { joinTokenFromPath } from "@/lib/invite-token";
 import { callLokrAuth, lokrPasswordError } from "@/lib/lokr-auth";
 import { acceptInviteAfterAuth } from "@/lib/actions/invites";
 
@@ -62,7 +63,7 @@ export async function completeEmailAuth(input: {
 
   await supabase.rpc("lokr_activate_pending_password");
   const { data: hasPassword } = await supabase.rpc("lokr_has_password");
-  const accepted = await acceptInviteAfterAuth();
+  const accepted = await acceptInviteAfterAuth(joinTokenFromPath(input.next));
   if (accepted.workspaceId) {
     return {
       error: null,
@@ -128,6 +129,14 @@ export async function signInWithPassword(formData: FormData) {
         ...(name ? { full_name: name } : {}),
       })
       .eq("id", user.id);
+  }
+
+  const joinToken = joinTokenFromPath(next);
+  if (joinToken) {
+    const accepted = await acceptInviteAfterAuth(joinToken);
+    if (accepted.workspaceId) {
+      redirect("/inbox");
+    }
   }
 
   redirect(next.startsWith("/") ? next : "/lockrs");

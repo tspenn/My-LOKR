@@ -59,10 +59,13 @@ export default async function ProfilePage() {
         .from("lokr_phone_invites")
         .select("id, phone_e164, phone_last4, status, otp_display, token, created_at")
         .eq("workspace_id", workspace.id)
-        .in("status", ["pending", "awaiting_code", "confirmed"])
+        .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
         .order("created_at", { ascending: false })
     : { data: [] as PendingPhoneInvite[] };
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
+  const openInviteCount = pendingInvites.filter(
+    (invite) => invite.status !== "accepted",
+  ).length;
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
@@ -123,10 +126,27 @@ export default async function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
+              {people.length > 0 || profile ? (
+                <ul className="space-y-3">
+                  <li className="rounded-md border border-border bg-card px-4 py-3">
+                    <p className="font-medium">{profile.display_name} (you)</p>
+                    <p className="text-sm text-muted-foreground">{profile.email}</p>
+                  </li>
+                  {people.map((person) => (
+                    <li
+                      key={person.id}
+                      className="rounded-md border border-border bg-card px-4 py-3"
+                    >
+                      <p className="font-medium">{person.display_name}</p>
+                      <p className="text-sm text-muted-foreground">{person.email}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
               <PhoneInviteForm pending={pendingInvites} />
               <InviteForm
                 memberCount={memberCount}
-                pendingCount={pendingInvites.length}
+                pendingCount={openInviteCount}
                 maxUsers={usage.maxUsers}
               />
             </CardContent>

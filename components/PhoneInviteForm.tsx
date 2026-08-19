@@ -41,7 +41,10 @@ export function PhoneInviteForm({
 
   useEffect(() => {
     const open = pending.some(
-      (invite) => invite.status === "pending" || invite.status === "awaiting_code",
+      (invite) =>
+        invite.status === "pending" ||
+        invite.status === "awaiting_code" ||
+        invite.status === "confirmed",
     );
     if (!open) return;
     const timer = window.setInterval(() => router.refresh(), 8000);
@@ -134,6 +137,11 @@ export function PhoneInviteForm({
               {invite.status === "confirmed" ? (
                 <p className="text-sm text-muted-foreground">
                   Phone confirmed. They can finish creating their account.
+                </p>
+              ) : null}
+              {invite.status === "accepted" ? (
+                <p className="text-sm font-medium text-primary">
+                  Invite accepted. They are in this Lokr.
                 </p>
               ) : null}
             </li>

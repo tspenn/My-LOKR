@@ -391,6 +391,10 @@ export type Database = {
         Args: { p_ticket: string };
         Returns: Json;
       };
+      lokr_accept_phone_invite_by_token: {
+        Args: { p_token: string };
+        Returns: Json;
+      };
       lokr_email_for_verified_phone: {
         Args: { p_phone_e164: string };
         Returns: string;

@@ -21,7 +21,7 @@ export default function AuthCallbackPage() {
       next: search.get("next") ?? hash.get("next"),
     }).then((result) => {
       if (result.redirectTo) {
-        setStatus("Opening your free Lokr…");
+        setStatus("Opening LOKR…");
         router.replace(result.redirectTo);
         return;
       }
