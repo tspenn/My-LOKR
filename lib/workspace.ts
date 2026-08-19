@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import {
   PLANS,
+  VAULT_ADDONS,
   storageLimitBytes,
   usagePercent,
   usageWarning,
