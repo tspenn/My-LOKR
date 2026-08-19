@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 import { ConversationView } from "@/components/ConversationView";
-import { InboxShell } from "@/components/InboxShell";
 import { markConversationRead } from "@/lib/actions/conversations";
 import { displayNameFrom, profileFromRow, type ProfileRow } from "@/lib/profile";
 import type { PendingPhoneInvite } from "@/components/PhoneInviteForm";
@@ -35,30 +34,49 @@ export default async function ConversationPage({
 
   const { data: memberRows } = await supabase
     .from("lokr_conversation_members")
-    .select("user_id, profiles!lokr_conversation_members_user_id_fkey(id, email, full_name, avatar_url)")
+    .select("user_id")
     .eq("conversation_id", id);
 
-  const members: InboxMember[] = (memberRows ?? []).flatMap((row) => {
-    if (!row.user_id) return [];
-    const profile = row.profiles as unknown as ProfileRow | ProfileRow[] | null;
-    const item = Array.isArray(profile) ? profile[0] : profile;
-    return [
-      {
-        id: row.user_id,
-        display_name: item ? displayNameFrom(item) : "Someone",
-        email: item?.email ?? "",
-        avatar_url: item?.avatar_url ?? null,
-      },
-    ];
+  const memberIds = [...new Set((memberRows ?? []).map((row) => row.user_id).filter(Boolean))];
+  const { data: profileRows } = memberIds.length
+    ? await supabase
+        .from("profiles")
+        .select("id, email, full_name, avatar_url")
+        .in("id", memberIds)
+    : { data: [] as ProfileRow[] };
+
+  const profileById = new Map(
+    (profileRows ?? []).map((row) => [row.id, row as ProfileRow]),
+  );
+
+  const members: InboxMember[] = memberIds.map((memberId) => {
+    const profile = profileById.get(memberId);
+    return {
+      id: memberId,
+      display_name: profile ? displayNameFrom(profile) : "Someone",
+      email: profile?.email ?? "",
+      avatar_url: profile?.avatar_url ?? null,
+    };
   });
 
-  const { data: messages } = await supabase
+  const { data: messageRows } = await supabase
     .from("lokr_messages")
-    .select(
-      "id, conversation_id, sender_id, body, created_at, updated_at, sender:profiles!lokr_messages_sender_id_fkey(id, email, full_name, avatar_url), lokr_message_attachments(*)",
-    )
+    .select("id, conversation_id, sender_id, body, created_at, updated_at")
     .eq("conversation_id", id)
     .order("created_at", { ascending: true });
+
+  const messages = messageRows ?? [];
+  const messageIds = messages.map((row) => row.id);
+  const { data: attachmentRows } = messageIds.length
+    ? await supabase.from("lokr_message_attachments").select("*").in("message_id", messageIds)
+    : { data: [] as MessageAttachment[] };
+
+  const attachmentsByMessage = new Map<string, MessageAttachment[]>();
+  for (const attachment of attachmentRows ?? []) {
+    const list = attachmentsByMessage.get(attachment.message_id) ?? [];
+    list.push(attachment as MessageAttachment);
+    attachmentsByMessage.set(attachment.message_id, list);
+  }
 
   await markConversationRead(id);
 
@@ -70,9 +88,8 @@ export default async function ConversationPage({
     .order("created_at", { ascending: false });
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
 
-  const initialMessages: MessageWithDetails[] = (messages ?? []).map((row) => {
-    const sender = row.sender as unknown as ProfileRow | ProfileRow[] | null;
-    const senderRow = Array.isArray(sender) ? sender[0] : sender;
+  const initialMessages: MessageWithDetails[] = messages.map((row) => {
+    const senderRow = profileById.get(row.sender_id) ?? null;
     return {
       id: row.id,
       conversation_id: row.conversation_id,
@@ -81,23 +98,21 @@ export default async function ConversationPage({
       created_at: row.created_at,
       updated_at: row.updated_at,
       sender: senderRow ? profileFromRow(senderRow) : null,
-      message_attachments: (row.lokr_message_attachments ?? []) as unknown as MessageAttachment[],
+      message_attachments: attachmentsByMessage.get(row.id) ?? [],
     };
   });
 
   return (
-    <InboxShell currentUserId={userId}>
-      <ConversationView
-        conversationId={id}
-        workspaceId={workspace.id}
-        usedBytes={workspace.storage_used_bytes}
-        limitBytes={usage.limit}
-        subject={conversation.subject}
-        members={members}
-        currentUserId={userId}
-        initialMessages={initialMessages}
-        pendingInvites={pendingInvites}
-      />
-    </InboxShell>
+    <ConversationView
+      conversationId={id}
+      workspaceId={workspace.id}
+      usedBytes={workspace.storage_used_bytes}
+      limitBytes={usage.limit}
+      subject={conversation.subject}
+      members={members}
+      currentUserId={userId}
+      initialMessages={initialMessages}
+      pendingInvites={pendingInvites}
+    />
   );
 }

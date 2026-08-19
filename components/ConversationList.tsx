@@ -18,7 +18,7 @@ export function ConversationList({
 
   if (items.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 px-6 py-12 text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
         <p className="text-lg font-medium">Your inbox is empty</p>
         <p className="text-muted-foreground">
           Start a private conversation when you are ready.
@@ -38,8 +38,9 @@ export function ConversationList({
       {items.map((item) => {
         const href = `/conversation/${item.id}`;
         const active = pathname === href;
-        const title = conversationTitle(item.members, currentUserId, item.subject);
-        const others = item.members.filter((member) => member.id !== currentUserId);
+        const people = Array.isArray(item.members) ? item.members : [];
+        const title = conversationTitle(people, currentUserId, item.subject);
+        const others = people.filter((member) => member.id !== currentUserId);
         const previewName = others[0]?.display_name ?? "You";
 
         return (

@@ -1,25 +1,18 @@
 import { ConversationList } from "@/components/ConversationList";
-import { InboxColumns } from "@/components/InboxColumns";
 import { InboxRealtime } from "@/components/InboxRealtime";
+import { LokrFooter } from "@/components/LokrFooter";
 import { getInbox } from "@/lib/actions/conversations";
 
-export async function InboxShell({
-  currentUserId,
-  children,
-}: {
-  currentUserId: string;
-  children: React.ReactNode;
-}) {
+export async function InboxShell({ currentUserId }: { currentUserId: string }) {
   const { items } = await getInbox();
 
   return (
     <>
       <InboxRealtime />
-      <InboxColumns
-        list={<ConversationList items={items} currentUserId={currentUserId} />}
-      >
-        {children}
-      </InboxColumns>
+      <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto bg-card">
+        <ConversationList items={items} currentUserId={currentUserId} />
+        <LokrFooter />
+      </div>
     </>
   );
 }
