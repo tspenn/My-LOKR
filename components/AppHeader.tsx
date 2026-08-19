@@ -105,49 +105,58 @@ export function AppHeader({
     </Link>
   );
 
+  const accountControls = (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      {workspace ? (
+        <>
+          <span className="rounded-full border border-[#3F3F3F] bg-secondary px-3 py-0.5 text-sm text-[#C9C2B6]">
+            {planLabel}
+          </span>
+          <Link
+            href="/lockrs"
+            className="whitespace-nowrap px-1 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+          >
+            Switch LOKR
+          </Link>
+          <Link
+            href="/profile"
+            aria-label="Settings"
+            title="Settings"
+            className={cn(
+              "inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-secondary",
+              pathname === "/profile" ? "bg-[#C9C2B6] text-[#1F1F1F]" : "",
+            )}
+          >
+            <Settings className="h-5 w-5" />
+          </Link>
+        </>
+      ) : null}
+      <SignOutButton compact />
+    </div>
+  );
+
   return (
     <header className="border-b border-border bg-background">
       <div className="relative mx-auto max-w-7xl px-4 py-5">
-        <div className="absolute right-4 top-5 z-10 flex items-center gap-1">
-          {workspace ? (
-            <Link
-              href="/profile"
-              aria-label="Settings"
-              title="Settings"
-              className={cn(
-                "inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-secondary",
-                pathname === "/profile" ? "bg-[#C9C2B6] text-[#1F1F1F]" : "",
-              )}
-            >
-              <Settings className="h-5 w-5" />
-            </Link>
-          ) : null}
-          <SignOutButton compact />
-        </div>
-
+        <div className="absolute right-4 top-5 z-10 hidden md:block">{accountControls}</div>
         {workspace ? (
-          <div className="flex flex-wrap items-center justify-center gap-3 pr-16 sm:gap-8">
-            <nav aria-label="Main" className="flex shrink-0">
-              <NavLink href="/inbox" label="Inbox" active={inboxActive} />
-            </nav>
-            <div className="flex min-w-0 flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-4 md:pr-64">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+              <nav aria-label="Main">
+                <NavLink href="/inbox" label="Inbox" active={inboxActive} />
+              </nav>
               {logo}
-              <span className="rounded-full border border-[#3F3F3F] bg-secondary px-3 py-0.5 text-sm text-[#C9C2B6]">
-                {planLabel}
-              </span>
-              <Link
-                href="/lockrs"
-                className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-              >
-                Switch LOKR
-              </Link>
+              <nav aria-label="Compose">
+                <NavLink href="/inbox/new" label="New message" active={composeActive} />
+              </nav>
             </div>
-            <nav aria-label="Compose" className="flex shrink-0">
-              <NavLink href="/inbox/new" label="New message" active={composeActive} />
-            </nav>
+            <div className="md:hidden">{accountControls}</div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-2 pr-16">{logo}</div>
+          <div className="flex flex-col items-center gap-4 md:pr-64">
+            {logo}
+            <div className="md:hidden">{accountControls}</div>
+          </div>
         )}
       </div>
     </header>
