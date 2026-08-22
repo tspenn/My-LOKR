@@ -23,8 +23,8 @@ export default async function NewMessagePage() {
         <h1 className="mb-2 text-2xl font-semibold">New conversation</h1>
         <p className="mb-8 text-muted-foreground">
           Choose who should be in this thread. That opens the writing panel —
-          messages, files, and video. You can invite someone new from inside
-          the conversation.
+          messages, files, and a live call that is not saved. You can invite
+          someone new from inside the conversation.
         </p>
         <NewConversationForm people={people} />
       </div>

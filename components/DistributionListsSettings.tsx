@@ -57,8 +57,8 @@ export function DistributionListsSettings({
     <div className="space-y-5">
       {error ? <Alert variant="destructive">{error}</Alert> : null}
       <p className="text-sm text-muted-foreground">
-        Send a recorded video to several people at once. Each person receives it as a private
-        message in their own thread.
+        Send the same private message to several people at once. Each person
+        receives it in their own thread.
       </p>
       {lists.length === 0 ? (
         <p className="text-muted-foreground">No lists yet.</p>

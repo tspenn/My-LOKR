@@ -29,8 +29,9 @@ export default async function PricingPage() {
         <p className="mt-3 text-muted-foreground">
           Free is one locker you own: you plus 3 invitees, 1 GB, text, and
           attachments. No ads. People you invite do not get a bill — only the
-          owner pays if that locker is upgraded. A 4th invitee is Business for
-          that locker only. Groups others invite you into stay free for you.
+          owner pays if that locker is upgraded. Invitees can join that locker’s
+          live video on Free. A 4th invitee, or video in a locker you own, is
+          Business for that locker only.
         </p>
       </header>
 

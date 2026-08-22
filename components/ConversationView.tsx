@@ -239,11 +239,11 @@ export function ConversationView({
       ) : null}
       {showCallUpgrade ? (
         <Alert className="mx-4 mt-3">
-          <p className="font-medium text-foreground">Encrypted video calls are on Business.</p>
+          <p className="font-medium text-foreground">Live video in this locker is on Business.</p>
           <p className="mt-1">
             {isOwner
-              ? "Upgrade this group and only you pay. Invitees stay free."
-              : "Only the owner can upgrade this group. Invitees stay free."}
+              ? "Upgrade this locker and people you invite join the call on Free. The call is encrypted and not saved. Only you pay."
+              : "Ask the owner to upgrade this locker. If you were invited into someone else’s Business locker, you can already take that call on Free."}
           </p>
           {isOwner ? (
             <div className="mt-3 max-w-xs">

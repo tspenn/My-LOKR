@@ -15,7 +15,7 @@ export const TERMS = {
     },
     {
       title: "Your content is yours — and your problem if it is illegal",
-      body: "Messages, files, recordings, and calls in LOKR are created by users, not by Skyland. You are responsible for what you send and store. Skyland does not routinely read private messages. That privacy is not a license to commit crimes, threaten people, or share illegal material.",
+      body: "Messages, files, and calls in LOKR are created by users, not by Skyland. You are responsible for what you send and store. Skyland does not routinely read private messages. That privacy is not a license to commit crimes, threaten people, or share illegal material.",
     },
     {
       title: "What you may not do",
@@ -27,7 +27,7 @@ export const TERMS = {
     },
     {
       title: "Calls and third-party relays",
-      body: "Video and voice try to connect the two browsers directly. If that fails, a relay (such as Cloudflare TURN) may carry encrypted call packets so the call can complete. Relays can see that a call happened, from which networks, and for how long. They do not receive your LOKR messages or files. Google and Cloudflare STUN may also see a public IP during call setup.",
+      body: "Video and voice try to connect the browsers on the call directly. The picture is encrypted between those browsers. LOKR does not keep a recording, so a stolen copy of the locker does not contain your face. If a direct connection fails, a relay (such as Cloudflare TURN) may carry those encrypted packets so the call can complete. Relays can see that a call happened, from which networks, and for how long. They do not receive your LOKR messages or files, and they do not get a usable copy of the picture. Google and Cloudflare STUN may also see a public IP during call setup.",
     },
     {
       title: "No guarantee, limited liability",

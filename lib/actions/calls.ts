@@ -12,7 +12,7 @@ export async function startCall(conversationId: string) {
   const { workspace } = await getCurrentWorkspace();
   if (!workspace || !planHasEncryptedCalls(workspace.plan)) {
     return {
-      error: "Encrypted video calls are on Business. Only the owner pays — invitees stay free.",
+      error: "Live video in this locker is on Business. People you invite join on Free. Only the owner pays.",
       call: null,
     };
   }

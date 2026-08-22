@@ -10,6 +10,8 @@ export const COPY = {
   intro:
     "It is a private communication tool for families, small teams, and businesses who want a safer place to talk and share files. It is built for the conversations and documents that don’t belong in regular email or everyday messaging apps — including business plans, patent ideas, and files you would never put in Gmail or Outlook.",
   notEmail: "It is not a replacement for normal email.",
+  noStore:
+    "It is a Skyland PWA. You open it in the browser. There is nothing to download from Apple or Google, and it does not bloat your phone.",
   locked:
     "It is a locked, controlled space where your messages and files stay under your control — not sitting in Google, Microsoft, Apple, or Samsung mail, not searchable in those companies’ clouds, and not traveling the open internet as ordinary email attachments that hackers and scanners already know how to steal.",
   point:
@@ -22,6 +24,7 @@ export const COPY = {
     "Share files between trusted people without putting them into regular email, where they can be forwarded, scanned, or stolen",
     "Give small teams a quiet, secure place for important discussions, patent ideas, and proprietary work",
     "Avoid mixing sensitive information with everyday mail and phone clouds that Google, Microsoft, Apple, and Samsung can read",
+    "Use it from the browser — no App Store, no Play Store, no extra app sitting on the phone",
   ],
   privacyTitle: "Where the privacy actually comes from",
   privacyLead: "Privacy in LOKR is built into the system:",
@@ -65,11 +68,26 @@ export const COPY = {
     "Small teams that need a secure side channel",
     "Businesses handling proprietary work, patent ideas, or sensitive information",
     "Anyone who does not want Google, Microsoft, Apple, Samsung, or everyday email to hold the files that matter",
+    "People traveling abroad who want a browser locker for documents and trusted contacts — without installing Signal or WhatsApp",
   ],
+  travelTitle: "Travel — browser locker, not another app",
+  travelLead:
+    "LOKR is not a trick to avoid roaming charges. It is a good fit when you are away and do not want to download another messenger, but you do want a locked place for documents and the people you already trust.",
+  travelGood: [
+    "Open it in the browser on your phone or laptop. Nothing to install from a foreign App Store.",
+    "Keep passport copies, medical notes, itineraries, and contracts in The Vault — shared only with people you invited.",
+    "Message and send files to your LOKR circle without putting attachments in Gmail, Outlook, or consumer chat apps.",
+    "Sign in with the same account from hotel, airport, or home. Your locker follows you.",
+  ],
+  travelWifiTitle: "Hotel and airport Wi‑Fi",
+  travelWifiBody:
+    "LOKR encrypts traffic between your browser and the locker, the same way a bank site does. That protects the content on the wire — but it does not make a sketchy network safe. Fake “Free_WiFi” hotspots, odd captive-portal logins, and shoulder surfing are still real. For passport scans, money, or proprietary work, prefer your phone’s cellular hotspot or a network you trust. LOKR protects what you store and who can see it; it does not fix the hotel router.",
+  travelNot:
+    "LOKR is not a replacement for Signal or WhatsApp when you need to reach anyone in the world, and it does not reduce mobile data use. Video and files still need internet — Wi‑Fi or cellular.",
   isAndIsNotTitle: "What LOKR is — and is not",
   itIs: "Your own encrypted information locker — a private, secure messaging and file exchange system for the information you don’t want sitting in email, consumer clouds, or the open internet.",
   itIsNot:
-    "A full replacement for Microsoft 365, Google Workspace, or everyday email. Those tools still work well for normal communication. LOKR exists for the things that need tighter control — the files and ideas you would not trust to those companies.",
+    "A store app you download, like Signal or WhatsApp, or a full replacement for Microsoft 365, Google Workspace, or everyday email. Those tools still work well for normal communication. LOKR exists for the things that need tighter control — the files and ideas you would not trust to those companies — in the browser, without bloating the phone.",
   securityTitle: "Supabase-level security — how the lock actually works",
   securityLead:
     "LOKR does not use Google, Microsoft, Apple, or Samsung for mail or file storage. Messages and files live in a private Supabase system with database and storage rules that keep other people’s data out of reach.",
@@ -89,6 +107,10 @@ export const COPY = {
     {
       title: "Encrypted in transit",
       body: "Traffic between your browser and LOKR is encrypted (HTTPS). Files are not emailed as open attachments that sit on mail servers, get copied into backups, and wait for the next inbox breach.",
+    },
+    {
+      title: "Live video is not a file we keep",
+      body: "A live call is encrypted between the browsers on that call. LOKR does not save a recording. If someone stole a copy of the locker, they would not get your face. That is the point of encrypting the call instead of uploading it.",
     },
     {
       title: "What Google, Microsoft, Apple, Samsung, and Stripe never receive",

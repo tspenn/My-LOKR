@@ -11,7 +11,7 @@ import { profileFromRow } from "@/lib/profile";
 import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
-import { SAFETY_COPY } from "@/lib/safety";
+import { SAFETY_COPY, TRAVEL_COPY } from "@/lib/safety";
 import { BRAND } from "@/lib/brand";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
@@ -120,9 +120,10 @@ export default async function ProfilePage() {
               <CardTitle>People</CardTitle>
               <CardDescription>
                 On Free you own one locker with 1–3 invitees (4 people including
-                you). A 4th invitee is Business for this locker only. Only the
-                owner pays. Invitees stay free. Phone invites must be confirmed
-                on the number you sent them to — a forwarded link is not enough.
+                you). A 4th invitee, or live video in this locker, is Business —
+                only you pay. People you invite stay free and can join that
+                call. Phone invites must be confirmed on the number you sent
+                them to — a forwarded link is not enough.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
@@ -156,7 +157,9 @@ export default async function ProfilePage() {
             <CardHeader>
               <CardTitle>Distribution lists</CardTitle>
               <CardDescription>
-                Send a recorded video to several people as private messages, not a group call.
+                Send the same private message to several people at once, each in
+                their own thread. Not a group call, and not a stored video of
+                your face.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -213,6 +216,18 @@ export default async function ProfilePage() {
           to load a logo and invite people.
         </p>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{TRAVEL_COPY.title}</CardTitle>
+          <CardDescription>{TRAVEL_COPY.short}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          {TRAVEL_COPY.bullets.map((bullet) => (
+            <p key={bullet}>{bullet}</p>
+          ))}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -50,6 +50,7 @@ export default function Home() {
               <p className="text-lg">{COPY.hookTwo}</p>
               <p className="text-lg">{COPY.intro}</p>
               <p className="text-lg">{COPY.notEmail}</p>
+              <p className="text-lg font-medium">{COPY.noStore}</p>
               <p className="text-lg">{COPY.locked}</p>
               <p className="text-lg font-medium">{COPY.point}</p>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -149,6 +150,27 @@ export default function Home() {
           </section>
 
           <section className="space-y-4">
+            <div className="max-w-3xl space-y-3">
+              <h2 className="text-2xl font-semibold tracking-tight">{COPY.travelTitle}</h2>
+              <p>{COPY.travelLead}</p>
+            </div>
+            <ul className="list-disc space-y-2 pl-5">
+              {COPY.travelGood.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">{COPY.travelWifiTitle}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p>{COPY.travelWifiBody}</p>
+                <p className="text-sm text-muted-foreground">{COPY.travelNot}</p>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="space-y-4">
             <h2 className="text-2xl font-semibold tracking-tight">{COPY.whoTitle}</h2>
             <ul className="list-disc space-y-2 pl-5">
               {COPY.who.map((item) => (
@@ -182,9 +204,10 @@ export default function Home() {
               <h2 className="text-2xl font-semibold tracking-tight">Plans and prices</h2>
               <p>
                 Free is one locker you own: you plus 3 invitees, 1 GB, text, and
-                attachments. No ads. People you invite do not get a bill. A 4th
-                invitee is Business for that locker only. Groups others invite
-                you into stay free for you.
+                attachments. No ads. People you invite do not get a bill. They
+                can join live video in a locker you upgrade, still on Free. A 4th
+                invitee, or video in a locker they own, is Business for that
+                locker only.
               </p>
             </div>
 
@@ -219,8 +242,9 @@ export default function Home() {
                   </ul>
                   <p className="text-sm">
                     Only the owner pays $19 a month for this locker. Invitees stay
-                    free. Start on Free, then upgrade only the locker that needs
-                    encrypted video calls or more than 3 invitees.
+                    free, including live video in this locker. If a Free user wants
+                    video in a locker they own, they upgrade that locker. The call
+                    is encrypted and not saved.
                   </p>
                 </CardContent>
               </Card>

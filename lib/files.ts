@@ -1,6 +1,4 @@
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
-export const MAX_VIDEO_BYTES = 80 * 1024 * 1024;
-export const MAX_VIDEO_SECONDS = 180;
 export const SIGNED_URL_SECONDS = 90;
 export const VIDEO_VIEW_SECONDS = 360;
 
@@ -47,9 +45,7 @@ export function isVideoFile(file: File) {
 }
 
 export function isAllowedFile(file: File) {
-  if (isVideoFile(file)) {
-    return file.size > 0 && file.size <= MAX_VIDEO_BYTES;
-  }
+  if (isVideoFile(file)) return false;
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const mimeOk =
     file.type === "" ||
@@ -60,10 +56,10 @@ export function isAllowedFile(file: File) {
 
 export function fileValidationMessage(file: File) {
   if (file.size <= 0) return `${file.name} looks empty.`;
-  if (isVideoFile(file) && file.size > MAX_VIDEO_BYTES) {
-    return `${file.name} is larger than 80 MB.`;
+  if (isVideoFile(file)) {
+    return "Video files are not stored in LOKR. Use a live call so your face is not saved.";
   }
-  if (!isVideoFile(file) && file.size > MAX_FILE_BYTES) {
+  if (file.size > MAX_FILE_BYTES) {
     return `${file.name} is larger than 20 MB.`;
   }
   if (!isAllowedFile(file)) {

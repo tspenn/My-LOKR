@@ -71,7 +71,12 @@ export function ConversationCall({ conversationId }: { conversationId: string })
           />
         ))}
       </div>
-      <p className="mt-3 text-center text-sm text-[#C9C2B6]">{call.status || "Private call"}</p>
+      <p className="mt-3 text-center text-sm text-[#C9C2B6]">
+        {call.status || "Private call"}
+      </p>
+      <p className="mt-1 text-center text-sm text-[#C9C2B6]">
+        Encrypted between the people here. Not recorded. Not stored.
+      </p>
       <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
         <Button
           type="button"

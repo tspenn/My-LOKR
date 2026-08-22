@@ -33,11 +33,12 @@ export const PLANS = {
       "You plus 3 invitees (4 people total)",
       "1 GB private storage",
       "Text messages and attachments",
-      "Groups others invite you to stay free for you",
+      "Runs in the browser. Nothing to install. It does not bloat your phone",
+      "Lockers others invite you into stay free for you — including live video if that locker is Business",
       "No ads and no ad trackers",
     ],
     limitations:
-      "Free is one private group, not an unlimited set of chats. A 4th invitee on that group is Business. Upgrade that group for 15 seats and encrypted video.",
+      "Free is one private group, not an unlimited set of chats. A 4th invitee, or live video in a locker you own, is Business for that locker. People you invite stay free.",
   },
   business: {
     key: "business" as const,
@@ -51,7 +52,9 @@ export const PLANS = {
     description:
       "A quiet, secure side channel for important discussions and proprietary information that don’t belong in regular email. Full messaging, attachments, realtime, and admin basics.",
     features: [
-      "Encrypted video calls",
+      "Live video, encrypted between the people on the call",
+      "The call is not recorded. Your face is not stored",
+      "Invitees join that call on Free. They do not pay",
       "This locker, upgraded past 3 invitees",
       "Up to 15 people in this locker, including you",
       "Only the owner pays. Invitees stay free",
@@ -75,7 +78,7 @@ export const PLANS = {
     description:
       "Handled one company at a time. Users, storage, and terms are set with you. No public price list.",
     features: [
-      "Encrypted video calls",
+      "Live video, encrypted between the people on the call. Not saved",
       "More than one locker, if you need it",
       "Custom user count",
       "Custom storage",
@@ -114,6 +117,7 @@ export const VAULT_ADDONS = {
 export const VAULT_DESCRIPTION =
   "The Vault is private cloud storage for important documents and attachments. Files stay inside the same secure system as your messages. Plans include storage; add more when needed.";
 
+/** Live video follows the locker’s plan, not the person’s. A Free invitee on a Business locker can call. A Free locker they own cannot. */
 export function planHasEncryptedCalls(plan: PlanKey) {
   return plan === "business" || plan === "enterprise";
 }
