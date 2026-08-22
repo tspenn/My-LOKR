@@ -97,7 +97,7 @@ export async function inviteWorkspaceMember(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   if (!email) return { error: "Enter the person’s email." };
 
-  const { workspace, memberCount } = await getCurrentWorkspace();
+  const { workspace, memberCount, sample } = await getCurrentWorkspace();
   if (!workspace) return { error: "Set up your LOKR first." };
 
   const supabase = await createClient();
@@ -107,7 +107,7 @@ export async function inviteWorkspaceMember(formData: FormData) {
     .eq("workspace_id", workspace.id)
     .in("status", ["pending", "awaiting_code", "confirmed"]);
 
-  const maxUsers = PLANS[workspace.plan as PlanKey].maxUsers;
+  const maxUsers = sample ? null : PLANS[workspace.plan as PlanKey].maxUsers;
   const used = memberCount + (pendingCount ?? 0);
   if (maxUsers && used >= maxUsers) {
     const planName = PLANS[workspace.plan as PlanKey].name;

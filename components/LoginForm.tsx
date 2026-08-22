@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
+import { SAMPLE_LOCKER_COPY, SAMPLE_LOCKER_EMAIL } from "@/lib/sample-locker";
 import {
   Card,
   CardContent,
@@ -21,9 +22,11 @@ type AuthResult = { error: string | null; message?: string } | null;
 export function LoginForm({
   nextPath,
   errorCode,
+  sample = false,
 }: {
   nextPath: string;
   errorCode?: string;
+  sample?: boolean;
 }) {
   const [passwordState, passwordAction, passwordPending] = useActionState(
     async (_prev: AuthResult, formData: FormData) => signInWithPassword(formData),
@@ -33,11 +36,11 @@ export function LoginForm({
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Sign in</CardTitle>
+        <CardTitle>{sample ? SAMPLE_LOCKER_COPY.loginTitle : "Sign in"}</CardTitle>
         <CardDescription>
-          Use your LOKR password with the email you signed up with, or the
-          phone this invite was sent to. This password is only for LOKR — it
-          does not change Friday Canvas or your other apps.
+          {sample
+            ? SAMPLE_LOCKER_COPY.loginLead
+            : "Use your LOKR password with the email you signed up with, or the phone this invite was sent to. This password is only for LOKR — it does not change Friday Canvas or your other apps."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -62,6 +65,7 @@ export function LoginForm({
               inputMode="email"
               autoComplete="username"
               placeholder="you@email.com or (555) 123-4567"
+              defaultValue={sample ? SAMPLE_LOCKER_EMAIL : undefined}
               required
             />
           </div>
@@ -84,10 +88,23 @@ export function LoginForm({
         </p>
 
         <p className="text-center text-muted-foreground">
-          New here?{" "}
-          <Link href="/signup" className="font-medium text-primary underline-offset-2 hover:underline">
-            Create an account
-          </Link>
+          {sample ? (
+            <>
+              First time?{" "}
+              <Link href="/signup" className="font-medium text-primary underline-offset-2 hover:underline">
+                Create this locker
+              </Link>
+              {" "}
+              with that email, then sign in here.
+            </>
+          ) : (
+            <>
+              New here?{" "}
+              <Link href="/signup" className="font-medium text-primary underline-offset-2 hover:underline">
+                Create an account
+              </Link>
+            </>
+          )}
           {" · "}
           <Link href="/" className="font-medium text-primary underline-offset-2 hover:underline">
             What LOKR is
