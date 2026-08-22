@@ -130,7 +130,8 @@ export function EmailInviteForm({
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">
                     They confirmed this email. Send this code to that same
-                    address — not to anyone else:
+                    address — not to anyone else. The code is only to finish
+                    the invite. They still open LOKR in the app.
                   </p>
                   <p className="text-2xl font-semibold tracking-widest">{invite.otp_display}</p>
                   <Button
