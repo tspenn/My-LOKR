@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
-import { InviteForm, LogoForm } from "@/components/WorkspaceSettings";
+import { LogoForm } from "@/components/WorkspaceSettings";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { EmailInviteForm, type PendingEmailInvite } from "@/components/EmailInviteForm";
 import { UsageMeter } from "@/components/UsageMeter";
 import { DistributionListsSettings } from "@/components/DistributionListsSettings";
 import { createClient } from "@/lib/supabase/server";
@@ -12,7 +12,8 @@ import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
 import { SAFETY_COPY, TRAVEL_COPY } from "@/lib/safety";
-import { SAMPLE_LOCKER_COPY } from "@/lib/sample-locker";
+import { SAMPLE_LOCKER_COPY, shareUrl } from "@/lib/sample-locker";
+import { ShareLink } from "@/components/ShareLink";
 import { BRAND } from "@/lib/brand";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
@@ -31,15 +32,36 @@ export default async function ProfilePage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
-  if (!userId) redirect("/login");
+  if (!userId) {
+    return (
+      <div className="flex flex-1 items-center justify-center px-6 py-16 text-center text-muted-foreground">
+        Please sign in again.
+      </div>
+    );
+  }
 
   const { data: row } = await supabase
     .from("profiles")
     .select("id, email, full_name, avatar_url, updated_at")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
-  if (!row) redirect("/login");
+  if (!row) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
+        <p className="text-lg font-medium">We could not load your profile yet</p>
+        <p className="max-w-md text-muted-foreground">
+          Confirm your email, then try again. Your messages are still safe.
+        </p>
+        <Link
+          href="/setup"
+          className="rounded-md bg-primary px-5 py-3 font-medium text-primary-foreground"
+        >
+          Set up locker
+        </Link>
+      </div>
+    );
+  }
   const profile = profileFromRow(row);
 
   const { data: phoneRow } = await supabase
@@ -48,7 +70,7 @@ export default async function ProfilePage() {
     .eq("user_id", userId)
     .maybeSingle();
 
-  const { workspace, memberCount, sample } = await getCurrentWorkspace();
+  const { workspace, sample } = await getCurrentWorkspace();
   const usage = workspace ? workspaceUsage(workspace, sample) : null;
   const [{ lists }, { people }] = await Promise.all([
     listDistributionLists(),
@@ -63,10 +85,16 @@ export default async function ProfilePage() {
         .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
         .order("created_at", { ascending: false })
     : { data: [] as PendingPhoneInvite[] };
+  const { data: emailInviteRows } = workspace
+    ? await supabase
+        .from("lokr_email_invites")
+        .select("id, email, email_hint, status, otp_display, token, created_at")
+        .eq("workspace_id", workspace.id)
+        .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
+        .order("created_at", { ascending: false })
+    : { data: [] as PendingEmailInvite[] };
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
-  const openInviteCount = pendingInvites.filter(
-    (invite) => invite.status !== "accepted",
-  ).length;
+  const pendingEmailInvites = (emailInviteRows ?? []) as PendingEmailInvite[];
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
@@ -116,13 +144,25 @@ export default async function ProfilePage() {
             </CardContent>
           </Card>
 
+          {sample ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>{SAMPLE_LOCKER_COPY.shareTitle}</CardTitle>
+                <CardDescription>{SAMPLE_LOCKER_COPY.people}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ShareLink url={shareUrl()} />
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card>
             <CardHeader>
               <CardTitle>People</CardTitle>
               <CardDescription>
                 {sample
                   ? SAMPLE_LOCKER_COPY.people
-                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Phone invites must be confirmed on the number you sent them to — a forwarded link is not enough."}
+                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Private invites must be confirmed on the email or phone you sent them to, then a code — a forwarded link is not enough. Email and phone only prove the invite. They use LOKR in the app, not from their inbox."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
@@ -143,12 +183,8 @@ export default async function ProfilePage() {
                   ))}
                 </ul>
               ) : null}
-              <PhoneInviteForm pending={pendingInvites} />
-              <InviteForm
-                memberCount={memberCount}
-                pendingCount={openInviteCount}
-                maxUsers={usage.maxUsers}
-              />
+              {sample ? null : <EmailInviteForm pending={pendingEmailInvites} />}
+              {sample ? null : <PhoneInviteForm pending={pendingInvites} />}
             </CardContent>
           </Card>
 

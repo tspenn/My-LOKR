@@ -9,13 +9,18 @@ import { appOrigin } from "@/lib/site";
 import { joinTokenFromPath } from "@/lib/invite-token";
 import { callLokrAuth, lokrPasswordError } from "@/lib/lokr-auth";
 import { acceptInviteAfterAuth } from "@/lib/actions/invites";
+import { openLockerAfterAuth } from "@/lib/actions/share";
+import { isSharePath, SHARE_PATH } from "@/lib/sample-locker";
 
 function safeNextPath(next: string | null | undefined) {
   if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return "/setup";
+    return "/inbox";
   }
   if (next.startsWith("/auth/callback")) {
-    return "/setup";
+    return "/inbox";
+  }
+  if (next === "/setup") {
+    return "/inbox";
   }
   return next;
 }
@@ -70,16 +75,20 @@ export async function completeEmailAuth(input: {
       redirectTo: hasPassword ? "/inbox" : "/update-password",
     };
   }
+  await openLockerAfterAuth(input.next);
   if (!hasPassword) {
     return { error: null, redirectTo: "/update-password" };
   }
-  return { error: null, redirectTo: safeNextPath(input.next) };
+  return {
+    error: null,
+    redirectTo: isSharePath(input.next) ? "/inbox" : safeNextPath(input.next),
+  };
 }
 
 export async function signInWithPassword(formData: FormData) {
   const identifier = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/lockrs");
+  const next = String(formData.get("next") ?? "/inbox");
 
   if (!identifier || !password) {
     return { error: "Please enter your email or phone, and your password." };
@@ -139,17 +148,23 @@ export async function signInWithPassword(formData: FormData) {
     }
   }
 
-  redirect(next.startsWith("/") ? next : "/lockrs");
+  await openLockerAfterAuth(next);
+  redirect(isSharePath(next) ? "/inbox" : next.startsWith("/") ? next : "/inbox");
 }
 
 export async function signUp(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
-  const displayName = String(formData.get("display_name") ?? "").trim();
+  const next = String(formData.get("next") ?? "/inbox");
+  const afterConfirm = isSharePath(next) ? SHARE_PATH : "/inbox";
+  const displayName =
+    String(formData.get("display_name") ?? "").trim() ||
+    email.split("@")[0] ||
+    "Someone";
 
-  if (!email || !password || !displayName) {
-    return { error: "Please fill in your name, email, and password." };
+  if (!email || !password) {
+    return { error: "Please enter your email and a LOKR password." };
   }
   const passwordError = lokrPasswordError(password, confirm);
   if (passwordError) return { error: passwordError };
@@ -159,7 +174,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     full_name: displayName,
-    redirect_to: `${appOrigin()}/auth/callback?next=/setup`,
+    redirect_to: `${appOrigin()}/auth/callback?next=${afterConfirm}`,
   });
   if (result.error) return { error: result.error };
 
@@ -167,7 +182,7 @@ export async function signUp(formData: FormData) {
     error: null,
     message:
       result.message ??
-      "Check your email for a confirmation link. Once you confirm, you will open your free LOKR.",
+      "Check your email for a confirmation link. Once you confirm, you will open LOKR and start using it.",
   };
 }
 
@@ -208,7 +223,8 @@ export async function updatePassword(formData: FormData) {
     return { error: "We could not update your LOKR password. Please try the reset link again." };
   }
 
-  redirect("/lockrs");
+  await openLockerAfterAuth("/inbox");
+  redirect("/inbox");
 }
 
 export async function signOut() {

@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   },
   description:
     "LOKR is your own encrypted information locker. Private messaging for files and ideas you would not put in Google, Microsoft, Apple, or Samsung mail.",
+  appleWebApp: {
+    title: "LOKR",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({

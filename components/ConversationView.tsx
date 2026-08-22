@@ -14,8 +14,11 @@ import { CheckoutButton } from "@/components/CheckoutButton";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { EmailInviteForm, type PendingEmailInvite } from "@/components/EmailInviteForm";
+import { ShareLink } from "@/components/ShareLink";
 import { UserPlus, Video } from "lucide-react";
 import { planHasEncryptedCalls, type PlanKey } from "@/lib/billing";
+import { shareUrl } from "@/lib/sample-locker";
 import type { LokrCall } from "@/lib/call-signaling";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
@@ -62,6 +65,7 @@ export function ConversationView({
   currentUserId,
   initialMessages,
   pendingInvites,
+  pendingEmailInvites,
 }: {
   conversationId: string;
   workspaceId: string;
@@ -75,6 +79,7 @@ export function ConversationView({
   currentUserId: string;
   initialMessages: MessageWithDetails[];
   pendingInvites: PendingPhoneInvite[];
+  pendingEmailInvites: PendingEmailInvite[];
 }) {
   const [messages, setMessages] = useState(initialMessages);
   const [callError, setCallError] = useState<string | null>(null);
@@ -197,7 +202,7 @@ export function ConversationView({
             onClick={() => setInviteOpen((open) => !open)}
           >
             <UserPlus />
-            Invite
+            {sample ? "Share" : "Invite"}
           </Button>
           {canCall && liveCall && joinVideoCall && paidCalls && !inThisCall ? (
             <Button
@@ -232,11 +237,23 @@ export function ConversationView({
       </header>
       {inviteOpen ? (
         <div className="border-b border-border bg-card px-4 py-4">
-          <p className="mb-4 text-sm text-muted-foreground">
-            Invite someone new into this LOKR. After they join, they can be added
-            to conversations from New conversation.
-          </p>
-          <PhoneInviteForm pending={pendingInvites} />
+          {sample ? (
+            <ShareLink url={shareUrl()} />
+          ) : (
+            <>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Invite someone new into this LOKR. They must confirm the invited
+                email or phone, then a code. A forwarded link is not enough. Email
+                is only that proof — they use LOKR in the app, not from their
+                inbox. After they join, they can be added to conversations from
+                New conversation.
+              </p>
+              <div className="space-y-8">
+                <EmailInviteForm pending={pendingEmailInvites} />
+                <PhoneInviteForm pending={pendingInvites} />
+              </div>
+            </>
+          )}
         </div>
       ) : null}
       {showCallUpgrade ? (

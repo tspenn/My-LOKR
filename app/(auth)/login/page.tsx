@@ -10,7 +10,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const nextPath =
-    params.next && params.next.startsWith("/") ? params.next : "/lockrs";
+    params.next && params.next.startsWith("/") ? params.next : "/inbox";
 
   return (
     <LoginForm

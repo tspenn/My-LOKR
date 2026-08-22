@@ -61,7 +61,7 @@ export default function Home() {
                   <Link href="/login">Sign in</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/demo">Open the sample LOKR</Link>
+                  <Link href="/share">Open the shared LOKR</Link>
                 </Button>
               </div>
             </div>
@@ -304,7 +304,7 @@ export default function Home() {
               <Link href="/login">Sign in</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/demo">Open the sample LOKR</Link>
+              <Link href="/share">Open the shared LOKR</Link>
             </Button>
           </section>
         </div>

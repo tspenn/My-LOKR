@@ -42,3 +42,7 @@ export function inviteNoticeText(inviterName: string, joinUrl: string) {
 export function inviteCodeText(code: string) {
   return `Your LOKR code is ${code}. Enter it on the join page. It only works from the phone this invite was sent to.`;
 }
+
+export function inviteEmailCodeText(code: string) {
+  return `Your LOKR code is ${code}. Enter it on the join page. It only works from the email this invite was sent to.`;
+}

@@ -11,6 +11,7 @@ const PUBLIC_PREFIXES = [
   "/auth/callback",
   "/join",
   "/demo",
+  "/share",
 ];
 
 function isPublicPath(pathname: string) {
@@ -91,9 +92,25 @@ export async function updateSession(request: NextRequest) {
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 
+  const userId = typeof user?.sub === "string" ? user.sub : "";
+  let hasWorkspace = false;
+  if (userId) {
+    const { data: memberships, error: membershipError } = await supabase
+      .from("lokr_workspace_members")
+      .select("workspace_id")
+      .eq("user_id", userId)
+      .limit(1);
+    hasWorkspace = !membershipError && Boolean(memberships && memberships.length > 0);
+  }
+
+  const homePath = "/inbox";
+  const isSetup = pathname === "/setup";
+  const isUpdatePassword = pathname === "/update-password";
+  const isPricing = pathname === "/pricing";
+
   if (user && pathname === "/") {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/lockrs";
+    redirectUrl.pathname = homePath;
     redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
@@ -106,13 +123,35 @@ export async function updateSession(request: NextRequest) {
   ) {
     const next = request.nextUrl.searchParams.get("next");
     const redirectUrl = request.nextUrl.clone();
-    if (next && next.startsWith("/join/")) {
+    if (next && (next.startsWith("/join/") || next === "/share" || next.startsWith("/share/"))) {
       redirectUrl.pathname = next;
       redirectUrl.search = "";
     } else {
-      redirectUrl.pathname = "/lockrs";
+      redirectUrl.pathname = homePath;
       redirectUrl.search = "";
     }
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
+  if (user && hasWorkspace && isSetup) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/inbox";
+    redirectUrl.search = "";
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
+  if (
+    user &&
+    !hasWorkspace &&
+    !isSetup &&
+    !isUpdatePassword &&
+    !isPricing &&
+    !isPublicPath(pathname) &&
+    pathname !== "/inbox"
+  ) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/inbox";
+    redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 

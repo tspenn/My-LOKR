@@ -1,9 +1,12 @@
-import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ConversationView } from "@/components/ConversationView";
 import { displayNameFrom, profileFromRow, type ProfileRow } from "@/lib/profile";
 import type { PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import type { PendingEmailInvite } from "@/components/EmailInviteForm";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
+import { Button } from "@/components/ui/button";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
 function asPlain<T>(value: T): T {
@@ -21,10 +24,20 @@ export default async function ConversationPage({
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
-  if (!userId) redirect("/login");
-
   const { workspace, sample } = await getCurrentWorkspace();
-  if (!workspace) redirect("/lockrs");
+  if (!userId || !workspace) {
+    return (
+      <div className="mx-auto flex w-full max-w-lg flex-col items-center justify-center gap-4 px-4 py-16 text-center">
+        <h1 className="text-2xl font-semibold">Open a locker first</h1>
+        <p className="text-muted-foreground">
+          Choose or set up a LOKR before opening a conversation.
+        </p>
+        <Button asChild>
+          <Link href="/setup">Set up locker</Link>
+        </Button>
+      </div>
+    );
+  }
   const usage = workspaceUsage(workspace, sample);
 
   const { data: conversation } = await supabase
@@ -93,7 +106,14 @@ export default async function ConversationPage({
     .eq("workspace_id", workspace.id)
     .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
     .order("created_at", { ascending: false });
+  const { data: emailInviteRows } = await supabase
+    .from("lokr_email_invites")
+    .select("id, email, email_hint, status, otp_display, token, created_at")
+    .eq("workspace_id", workspace.id)
+    .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
+    .order("created_at", { ascending: false });
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
+  const pendingEmailInvites = (emailInviteRows ?? []) as PendingEmailInvite[];
 
   const initialMessages: MessageWithDetails[] = messages.map((row) => {
     const senderRow = profileById.get(row.sender_id) ?? null;
@@ -123,6 +143,7 @@ export default async function ConversationPage({
       currentUserId={userId}
       initialMessages={asPlain(initialMessages)}
       pendingInvites={asPlain(pendingInvites)}
+      pendingEmailInvites={asPlain(pendingEmailInvites)}
     />
   );
 }

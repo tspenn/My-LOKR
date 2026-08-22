@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
-import { SAMPLE_LOCKER_COPY, SAMPLE_LOCKER_EMAIL } from "@/lib/sample-locker";
+import { SAMPLE_LOCKER_COPY } from "@/lib/sample-locker";
 import {
   Card,
   CardContent,
@@ -65,9 +65,6 @@ export function LoginForm({
               inputMode="email"
               autoComplete="username"
               placeholder="you@email.com or (555) 123-4567"
-              defaultValue={
-                sample && SAMPLE_LOCKER_EMAIL ? SAMPLE_LOCKER_EMAIL : undefined
-              }
               required
             />
           </div>
@@ -92,12 +89,8 @@ export function LoginForm({
         <p className="text-center text-muted-foreground">
           {sample ? (
             <>
-              First time?{" "}
-              <Link href="/signup" className="font-medium text-primary underline-offset-2 hover:underline">
-                Create this locker
-              </Link>
-              {" "}
-              with that email, then sign in here.
+              First time? Use the form above to create your own account. You will
+              land in this locker.
             </>
           ) : (
             <>

@@ -25,6 +25,7 @@ export type LokrTile = {
   mark: string;
   owned: boolean;
   invited: boolean;
+  sample: boolean;
 };
 
 const WORKSPACE_COLUMNS =
@@ -85,10 +86,20 @@ export async function listLockrs() {
 
   const rows = workspaces ?? [];
   const owned = rows.filter((row) => row.created_by === userId);
+  const ownerIds = [...new Set(rows.map((row) => row.created_by).filter(Boolean))];
+  const { data: owners } = ownerIds.length
+    ? await supabase.from("profiles").select("id, email").in("id", ownerIds)
+    : { data: [] as { id: string; email: string | null }[] };
+  const sampleOwnerIds = new Set(
+    (owners ?? [])
+      .filter((owner) => isSampleLockerEmail(owner.email))
+      .map((owner) => owner.id),
+  );
 
   const lockrs: LokrTile[] = await Promise.all(
     rows.map(async (row) => {
       const isOwned = row.created_by === userId;
+      const sample = sampleOwnerIds.has(row.created_by);
       return {
         id: row.id,
         name: row.name,
@@ -97,7 +108,8 @@ export async function listLockrs() {
         logoUrl: await signedLogoUrl(supabase, row.logo_path),
         mark: lokrMark(row.name),
         owned: isOwned,
-        invited: !isOwned,
+        invited: !isOwned && !sample,
+        sample,
       };
     }),
   );
@@ -147,7 +159,7 @@ export async function getCurrentWorkspace() {
     .from("lokr_workspaces")
     .select(WORKSPACE_COLUMNS)
     .eq("id", selectedId)
-    .single();
+    .maybeSingle();
 
   const { count } = await supabase
     .from("lokr_workspace_members")

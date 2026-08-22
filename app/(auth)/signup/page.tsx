@@ -8,5 +8,5 @@ export default async function SignupPage({
   searchParams: Promise<{ from?: string }>;
 }) {
   const { from } = await searchParams;
-  return <SignupForm fromDemo={from === "demo"} />;
+  return <SignupForm share={from === "share" || from === "demo"} />;
 }

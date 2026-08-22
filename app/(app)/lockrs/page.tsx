@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LokrMark } from "@/components/LokrMark";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,20 @@ export const dynamic = "force-dynamic";
 
 export default async function LockrsPage() {
   const { lockrs, ownedCount } = await listLockrs();
-  if (lockrs.length === 0) redirect("/setup");
+  if (lockrs.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-lg px-4 py-10 text-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Create your first LOKR</h1>
+        <p className="mt-3 text-lg text-muted-foreground">
+          A new account starts empty. Name your locker, then you can invite people
+          and send messages.
+        </p>
+        <Button asChild className="mt-6">
+          <Link href="/setup">Set up locker</Link>
+        </Button>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
@@ -45,13 +57,17 @@ export default async function LockrsPage() {
                 )}
                 <span className="text-base font-medium">{lokr.name}</span>
                 <span className="rounded-full border border-[#3F3F3F] px-3 py-0.5 text-sm text-[#C9C2B6]">
-                  {lokr.invited
-                    ? "Invited · free"
-                    : lokr.plan === "business"
-                      ? "Yours · Business"
-                      : lokr.plan === "enterprise"
-                        ? "Yours · Enterprise"
-                        : "Yours · free (1–3 invitees)"}
+                  {lokr.sample && lokr.owned
+                    ? "Yours · Shares"
+                    : lokr.sample
+                      ? "Shared"
+                      : lokr.invited
+                        ? "Invited · free"
+                        : lokr.plan === "business"
+                          ? "Yours · Business"
+                          : lokr.plan === "enterprise"
+                            ? "Yours · Enterprise"
+                            : "Yours · free (1–3 invitees)"}
                 </span>
               </button>
             </form>
