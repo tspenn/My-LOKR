@@ -103,7 +103,7 @@ export function JoinForm({
           ) : null}
           <p className="text-sm text-muted-foreground">
             {isEmail
-              ? `This invite was sent to ${emailHint || "one email"}. Type that exact address. A forwarded link opened by someone else will not work.`
+              ? `This invite was sent to ${emailHint || "one email"}. Type that exact address so we know it is you. A forwarded link opened by someone else will not work. This does not mean you use LOKR by email — email only confirms the invite.`
               : `This invite was sent to a phone number ending in ${phoneLast4}. Type that full number. A forwarded link on a different phone will not work.`}
           </p>
           <div className="space-y-2">
@@ -182,7 +182,7 @@ export function JoinForm({
         <div className="space-y-4">
           <Alert>
             {isEmail
-              ? "That email is confirmed. This join is tied to the address the invite was sent to."
+              ? "That email is confirmed for the invite only. You use LOKR in the app with a LOKR password — not from your mail."
               : "That phone is confirmed. This join is tied to the number the invite was sent to."}
           </Alert>
           {signedIn ? (
@@ -193,7 +193,8 @@ export function JoinForm({
               ) : null}
               {isEmail ? (
                 <p className="text-sm text-muted-foreground">
-                  You must be signed in with the invited email to enter.
+                  Sign in with the LOKR account for the invited email, then enter
+                  the locker in the app.
                 </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={enterPending}>
@@ -237,7 +238,7 @@ export function JoinForm({
               />
               <p className="text-sm text-muted-foreground">
                 {isEmail
-                  ? "Use at least 12 characters. Create the account with the invited email — a different address cannot join this private locker."
+                  ? "Use at least 12 characters. That email only locked the invite to you. A LOKR password is how you open the app. Messages stay in LOKR — they are not sent by email."
                   : "Use at least 12 characters. This LOKR password is only for this app — it does not change Friday Canvas or your other apps. After this, you can sign in with this email or this phone."}
               </p>
               <Button type="submit" className="w-full" disabled={accountPending}>

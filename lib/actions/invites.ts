@@ -322,7 +322,7 @@ export async function finishInviteJoin(formData: FormData) {
     message:
       result.message ??
       (invitedEmail
-        ? "Check your email for a confirmation link. After you confirm, you will land in this LOKR — only because that email and code were verified."
+        ? "Check that inbox for the account confirmation link. After you confirm, open LOKR in the app. Messages stay in LOKR — they are not sent by email."
         : "Check your email for a confirmation link. After you confirm, you will land in this LOKR — only because that phone and code were verified."),
   };
 }

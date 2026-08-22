@@ -243,8 +243,10 @@ export function ConversationView({
             <>
               <p className="mb-4 text-sm text-muted-foreground">
                 Invite someone new into this LOKR. They must confirm the invited
-                email or phone, then a code. A forwarded link is not enough. After
-                they join, they can be added to conversations from New conversation.
+                email or phone, then a code. A forwarded link is not enough. Email
+                is only that proof — they use LOKR in the app, not from their
+                inbox. After they join, they can be added to conversations from
+                New conversation.
               </p>
               <div className="space-y-8">
                 <EmailInviteForm pending={pendingEmailInvites} />

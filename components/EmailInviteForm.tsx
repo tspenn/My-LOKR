@@ -61,9 +61,11 @@ export function EmailInviteForm({
       <form action={action} className="space-y-4">
         {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
         <p className="text-sm text-muted-foreground">
-          Invite by email. They cannot join from a forwarded link alone — they
-          must type that same email, then a confirmation code you send to that
-          address.
+          Email is only to prove they own that address. They cannot join from a
+          forwarded link alone — they type that same email, then a code you send
+          there. After that they use LOKR in the app. This is not email
+          messaging, and they do not send or receive locker messages from that
+          inbox.
         </p>
         <div className="space-y-2">
           <Label htmlFor="invite-email">Send invite to this email</Label>

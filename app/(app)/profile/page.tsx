@@ -162,7 +162,7 @@ export default async function ProfilePage() {
               <CardDescription>
                 {sample
                   ? SAMPLE_LOCKER_COPY.people
-                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Private invites must be confirmed on the email or phone you sent them to, then a code — a forwarded link is not enough."}
+                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Private invites must be confirmed on the email or phone you sent them to, then a code — a forwarded link is not enough. Email and phone only prove the invite. They use LOKR in the app, not from their inbox."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
