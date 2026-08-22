@@ -9,8 +9,8 @@ import { planHasEncryptedCalls } from "@/lib/billing";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
 export async function startCall(conversationId: string) {
-  const { workspace, demo } = await getCurrentWorkspace();
-  if (!workspace || (!demo && !planHasEncryptedCalls(workspace.plan))) {
+  const { workspace } = await getCurrentWorkspace();
+  if (!workspace || !planHasEncryptedCalls(workspace.plan)) {
     return {
       error: "Live video in this locker is on Business. People you invite join on Free. Only the owner pays.",
       call: null,

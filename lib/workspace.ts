@@ -11,7 +11,6 @@ import {
   type Workspace,
 } from "@/lib/billing";
 import { lokrMark } from "@/lib/lokr-mark";
-import { isDemoEmail } from "@/lib/demo-account";
 import { createClient } from "@/lib/supabase/server";
 
 export const WORKSPACE_COOKIE = "lokr_workspace_id";
@@ -109,23 +108,20 @@ export async function listLockrs() {
   return { userId, lockrs, ownedCount: owned.length };
 }
 
-function emptyWorkspace(userId: string | null, lockrCount = 0) {
-  return {
-    userId,
-    workspace: null as Workspace | null,
-    memberCount: 0,
-    logoUrl: null as string | null,
-    mark: "LOKR",
-    lockrCount,
-    demo: false,
-  };
-}
-
 export async function getCurrentWorkspace() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
-  if (!userId) return emptyWorkspace(null);
+  if (!userId) {
+    return {
+      userId: null,
+      workspace: null as Workspace | null,
+      memberCount: 0,
+      logoUrl: null as string | null,
+      mark: "LOKR",
+      lockrCount: 0,
+    };
+  }
 
   const { data: memberships } = await supabase
     .from("lokr_workspace_members")
@@ -134,14 +130,32 @@ export async function getCurrentWorkspace() {
 
   const ids = (memberships ?? []).map((row) => row.workspace_id);
   const lockrCount = ids.length;
-  if (lockrCount === 0) return emptyWorkspace(userId, lockrCount);
+  if (lockrCount === 0) {
+    return {
+      userId,
+      workspace: null,
+      memberCount: 0,
+      logoUrl: null,
+      mark: "LOKR",
+      lockrCount,
+    };
+  }
 
   const cookieId = await readWorkspaceCookie();
   const selectedId =
     (cookieId && ids.includes(cookieId) ? cookieId : null) ??
     (lockrCount === 1 ? ids[0] : null);
 
-  if (!selectedId) return emptyWorkspace(userId, lockrCount);
+  if (!selectedId) {
+    return {
+      userId,
+      workspace: null,
+      memberCount: 0,
+      logoUrl: null,
+      mark: "LOKR",
+      lockrCount,
+    };
+  }
 
   const { data: workspace } = await supabase
     .from("lokr_workspaces")
@@ -154,14 +168,6 @@ export async function getCurrentWorkspace() {
     .select("id", { count: "exact", head: true })
     .eq("workspace_id", selectedId);
 
-  const { data: owner } = workspace?.created_by
-    ? await supabase
-        .from("profiles")
-        .select("email")
-        .eq("id", workspace.created_by)
-        .maybeSingle()
-    : { data: null };
-
   return {
     userId,
     workspace: workspace as Workspace | null,
@@ -169,11 +175,10 @@ export async function getCurrentWorkspace() {
     logoUrl: await signedLogoUrl(supabase, workspace?.logo_path ?? null),
     mark: lokrMark(workspace?.name ?? "LOKR"),
     lockrCount,
-    demo: isDemoEmail(owner?.email),
   };
 }
 
-export function workspaceUsage(workspace: Workspace, demo = false) {
+export function workspaceUsage(workspace: Workspace) {
   const plan = (workspace.plan in PLANS ? workspace.plan : "free") as PlanKey;
   const vault = (workspace.vault_addon in VAULT_ADDONS ? workspace.vault_addon : "none") as VaultKey;
   const used = Number(workspace.storage_used_bytes ?? 0);
@@ -184,6 +189,6 @@ export function workspaceUsage(workspace: Workspace, demo = false) {
     limit,
     percent,
     warning: usageWarning(percent),
-    maxUsers: demo ? null : PLANS[plan].maxUsers,
+    maxUsers: PLANS[plan].maxUsers,
   };
 }
