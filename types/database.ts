@@ -338,6 +338,21 @@ export type Database = {
           },
         ];
       };
+      lokr_demos: {
+        Row: {
+          id: string;
+          token: string;
+          title: string;
+          payload: Json;
+          created_by: string | null;
+          expires_at: string;
+          created_at: string;
+          opened_count: number;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -413,6 +428,10 @@ export type Database = {
       };
       lokr_set_own_password: {
         Args: { p_password: string };
+        Returns: Json;
+      };
+      lokr_get_demo: {
+        Args: { p_token: string };
         Returns: Json;
       };
     };

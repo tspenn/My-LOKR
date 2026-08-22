@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
+import { DEMO_COPY } from "@/lib/demo";
 import {
   Card,
   CardContent,
@@ -18,7 +19,7 @@ import {
 
 type AuthResult = { error: string | null; message?: string } | null;
 
-export function SignupForm() {
+export function SignupForm({ fromDemo = false }: { fromDemo?: boolean }) {
   const [state, action, pending] = useActionState(
     async (_prev: AuthResult, formData: FormData) => signUp(formData),
     null,
@@ -36,6 +37,7 @@ export function SignupForm() {
       </CardHeader>
       <CardContent>
         <form action={action} className="space-y-4">
+          {fromDemo ? <Alert>{DEMO_COPY.signupNote}</Alert> : null}
           {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
           {state?.message ? <Alert>{state.message}</Alert> : null}
           <div className="space-y-2">
