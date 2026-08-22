@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import {
+  confirmInviteEmail,
   confirmInvitePhone,
   finishInviteIfSignedIn,
   finishInviteJoin,
@@ -16,31 +17,47 @@ import { PasswordField } from "@/components/PasswordField";
 import { LokrMark } from "@/components/LokrMark";
 import { lokrMark } from "@/lib/lokr-mark";
 
-type AuthResult = { error: string | null; message?: string; wait?: boolean; confirmed?: boolean } | null;
+type AuthResult = {
+  error: string | null;
+  message?: string;
+  wait?: boolean;
+  confirmed?: boolean;
+} | null;
 
 export function JoinForm({
   token,
+  kind,
   inviterName,
   workspaceName,
   phoneLast4,
+  emailHint,
   signedIn,
-  phoneConfirmed,
+  identityConfirmed,
 }: {
   token: string;
+  kind: "phone" | "email";
   inviterName: string;
   workspaceName: string;
   phoneLast4: string;
+  emailHint: string;
   signedIn: boolean;
-  phoneConfirmed: boolean;
+  identityConfirmed: boolean;
 }) {
-  const [step, setStep] = useState<"phone" | "code" | "account">(
-    phoneConfirmed ? "account" : "phone",
+  const isEmail = kind === "email";
+  const [step, setStep] = useState<"identity" | "code" | "account">(
+    identityConfirmed ? "account" : "identity",
   );
+  const [confirmedEmail, setConfirmedEmail] = useState("");
 
-  const [phoneState, phoneAction, phonePending] = useActionState(
+  const [identityState, identityAction, identityPending] = useActionState(
     async (_prev: AuthResult, formData: FormData) => {
-      const result = await confirmInvitePhone(formData);
-      if (!result.error) setStep("code");
+      const result = isEmail
+        ? await confirmInviteEmail(formData)
+        : await confirmInvitePhone(formData);
+      if (!result.error) {
+        setConfirmedEmail(String(formData.get("email") ?? "").trim().toLowerCase());
+        setStep("code");
+      }
       return result;
     },
     null,
@@ -78,29 +95,48 @@ export function JoinForm({
         </p>
       </div>
 
-      {step === "phone" ? (
-        <form action={phoneAction} className="space-y-4">
+      {step === "identity" ? (
+        <form action={identityAction} className="space-y-4">
           <input type="hidden" name="token" value={token} />
-          {phoneState?.error ? <Alert variant="destructive">{phoneState.error}</Alert> : null}
+          {identityState?.error ? (
+            <Alert variant="destructive">{identityState.error}</Alert>
+          ) : null}
           <p className="text-sm text-muted-foreground">
-            This invite was sent to a phone number {`ending in ${phoneLast4}`}.
-            Type that full number. A forwarded link on a different phone will not
-            work.
+            {isEmail
+              ? `This invite was sent to ${emailHint || "one email"}. Type that exact address. A forwarded link opened by someone else will not work.`
+              : `This invite was sent to a phone number ending in ${phoneLast4}. Type that full number. A forwarded link on a different phone will not work.`}
           </p>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone this invite was sent to</Label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="(555) 123-4567"
-              required
-            />
+            <Label htmlFor={isEmail ? "email" : "phone"}>
+              {isEmail ? "Email this invite was sent to" : "Phone this invite was sent to"}
+            </Label>
+            {isEmail ? (
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder={emailHint || "name@example.com"}
+                required
+              />
+            ) : (
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="(555) 123-4567"
+                required
+              />
+            )}
           </div>
-          <Button type="submit" className="w-full" disabled={phonePending}>
-            {phonePending ? "Checking…" : "Confirm this phone"}
+          <Button type="submit" className="w-full" disabled={identityPending}>
+            {identityPending
+              ? "Checking…"
+              : isEmail
+                ? "Confirm this email"
+                : "Confirm this phone"}
           </Button>
         </form>
       ) : null}
@@ -110,12 +146,14 @@ export function JoinForm({
           <input type="hidden" name="token" value={token} />
           {codeState?.error ? <Alert variant="destructive">{codeState.error}</Alert> : null}
           <Alert>
-            Enter the 6-digit code sent to that same number. The person who
-            invited you will text it there. It is not in the first invite message
-            on purpose — so a forwarded link is not enough.
+            {isEmail
+              ? "Enter the 6-digit code sent to that same email. The person who invited you will send it there. It is not in the first invite message on purpose — so a forwarded link is not enough."
+              : "Enter the 6-digit code sent to that same number. The person who invited you will text it there. It is not in the first invite message on purpose — so a forwarded link is not enough."}
           </Alert>
           <div className="space-y-2">
-            <Label htmlFor="otp">Code from that phone</Label>
+            <Label htmlFor="otp">
+              {isEmail ? "Code from that email" : "Code from that phone"}
+            </Label>
             <Input
               id="otp"
               name="otp"
@@ -133,9 +171,9 @@ export function JoinForm({
           <button
             type="button"
             className="w-full text-sm text-muted-foreground underline-offset-2 hover:underline"
-            onClick={() => setStep("phone")}
+            onClick={() => setStep("identity")}
           >
-            Use a different number
+            {isEmail ? "Use a different email" : "Use a different number"}
           </button>
         </form>
       ) : null}
@@ -143,14 +181,20 @@ export function JoinForm({
       {step === "account" ? (
         <div className="space-y-4">
           <Alert>
-            That phone is confirmed. This join is tied to the number the invite
-            was sent to.
+            {isEmail
+              ? "That email is confirmed. This join is tied to the address the invite was sent to."
+              : "That phone is confirmed. This join is tied to the number the invite was sent to."}
           </Alert>
           {signedIn ? (
             <form action={enterAction} className="space-y-4">
               <input type="hidden" name="token" value={token} />
               {enterState?.error ? (
                 <Alert variant="destructive">{enterState.error}</Alert>
+              ) : null}
+              {isEmail ? (
+                <p className="text-sm text-muted-foreground">
+                  You must be signed in with the invited email to enter.
+                </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={enterPending}>
                 {enterPending ? "Opening…" : "Enter this LOKR"}
@@ -168,8 +212,16 @@ export function JoinForm({
                 <Input id="display_name" name="display_name" autoComplete="name" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" autoComplete="email" required />
+                <Label htmlFor="account-email">Email</Label>
+                <Input
+                  id="account-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  defaultValue={isEmail ? confirmedEmail : ""}
+                  readOnly={isEmail && Boolean(confirmedEmail)}
+                  required
+                />
               </div>
               <PasswordField
                 id="password"
@@ -184,9 +236,9 @@ export function JoinForm({
                 autoComplete="new-password"
               />
               <p className="text-sm text-muted-foreground">
-                Use at least 12 characters. This LOKR password is only for
-                this app — it does not change Friday Canvas or your other apps.
-                After this, you can sign in with this email or this phone.
+                {isEmail
+                  ? "Use at least 12 characters. Create the account with the invited email — a different address cannot join this private locker."
+                  : "Use at least 12 characters. This LOKR password is only for this app — it does not change Friday Canvas or your other apps. After this, you can sign in with this email or this phone."}
               </p>
               <Button type="submit" className="w-full" disabled={accountPending}>
                 {accountPending ? "Creating account…" : "Create account and join"}

@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
-import { InviteForm, LogoForm } from "@/components/WorkspaceSettings";
+import { LogoForm } from "@/components/WorkspaceSettings";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { EmailInviteForm, type PendingEmailInvite } from "@/components/EmailInviteForm";
 import { UsageMeter } from "@/components/UsageMeter";
 import { DistributionListsSettings } from "@/components/DistributionListsSettings";
 import { createClient } from "@/lib/supabase/server";
@@ -69,7 +70,7 @@ export default async function ProfilePage() {
     .eq("user_id", userId)
     .maybeSingle();
 
-  const { workspace, memberCount, sample } = await getCurrentWorkspace();
+  const { workspace, sample } = await getCurrentWorkspace();
   const usage = workspace ? workspaceUsage(workspace, sample) : null;
   const [{ lists }, { people }] = await Promise.all([
     listDistributionLists(),
@@ -84,10 +85,16 @@ export default async function ProfilePage() {
         .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
         .order("created_at", { ascending: false })
     : { data: [] as PendingPhoneInvite[] };
+  const { data: emailInviteRows } = workspace
+    ? await supabase
+        .from("lokr_email_invites")
+        .select("id, email, email_hint, status, otp_display, token, created_at")
+        .eq("workspace_id", workspace.id)
+        .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
+        .order("created_at", { ascending: false })
+    : { data: [] as PendingEmailInvite[] };
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
-  const openInviteCount = pendingInvites.filter(
-    (invite) => invite.status !== "accepted",
-  ).length;
+  const pendingEmailInvites = (emailInviteRows ?? []) as PendingEmailInvite[];
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
@@ -155,7 +162,7 @@ export default async function ProfilePage() {
               <CardDescription>
                 {sample
                   ? SAMPLE_LOCKER_COPY.people
-                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Phone invites must be confirmed on the number you sent them to — a forwarded link is not enough."}
+                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Private invites must be confirmed on the email or phone you sent them to, then a code — a forwarded link is not enough."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
@@ -176,14 +183,8 @@ export default async function ProfilePage() {
                   ))}
                 </ul>
               ) : null}
+              {sample ? null : <EmailInviteForm pending={pendingEmailInvites} />}
               {sample ? null : <PhoneInviteForm pending={pendingInvites} />}
-              {sample ? null : (
-                <InviteForm
-                  memberCount={memberCount}
-                  pendingCount={openInviteCount}
-                  maxUsers={usage.maxUsers}
-                />
-              )}
             </CardContent>
           </Card>
 

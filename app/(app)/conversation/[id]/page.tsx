@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ConversationView } from "@/components/ConversationView";
 import { displayNameFrom, profileFromRow, type ProfileRow } from "@/lib/profile";
 import type { PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import type { PendingEmailInvite } from "@/components/EmailInviteForm";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,14 @@ export default async function ConversationPage({
     .eq("workspace_id", workspace.id)
     .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
     .order("created_at", { ascending: false });
+  const { data: emailInviteRows } = await supabase
+    .from("lokr_email_invites")
+    .select("id, email, email_hint, status, otp_display, token, created_at")
+    .eq("workspace_id", workspace.id)
+    .in("status", ["pending", "awaiting_code", "confirmed", "accepted"])
+    .order("created_at", { ascending: false });
   const pendingInvites = (inviteRows ?? []) as PendingPhoneInvite[];
+  const pendingEmailInvites = (emailInviteRows ?? []) as PendingEmailInvite[];
 
   const initialMessages: MessageWithDetails[] = messages.map((row) => {
     const senderRow = profileById.get(row.sender_id) ?? null;
@@ -135,6 +143,7 @@ export default async function ConversationPage({
       currentUserId={userId}
       initialMessages={asPlain(initialMessages)}
       pendingInvites={asPlain(pendingInvites)}
+      pendingEmailInvites={asPlain(pendingEmailInvites)}
     />
   );
 }

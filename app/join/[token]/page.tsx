@@ -29,16 +29,19 @@ export default async function JoinPage({
   const { data } = await supabase.auth.getClaims();
   const signedIn = Boolean(data?.claims);
   const ticket = await readJoinTicket();
-  const phoneConfirmed = Boolean(ticket) || (signedIn && peek.status === "confirmed");
+  const identityConfirmed = Boolean(ticket) || (signedIn && peek.status === "confirmed");
+  const kind = peek.kind === "email" ? "email" : "phone";
 
   return (
     <JoinForm
       token={token}
+      kind={kind}
       inviterName={peek.inviter_name ?? "Someone"}
       workspaceName={peek.workspace_name ?? "LOKR"}
       phoneLast4={peek.phone_last4 ?? "••••"}
+      emailHint={peek.email_hint ?? ""}
       signedIn={signedIn}
-      phoneConfirmed={phoneConfirmed}
+      identityConfirmed={identityConfirmed}
     />
   );
 }

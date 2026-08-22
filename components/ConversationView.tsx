@@ -14,6 +14,7 @@ import { CheckoutButton } from "@/components/CheckoutButton";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { EmailInviteForm, type PendingEmailInvite } from "@/components/EmailInviteForm";
 import { ShareLink } from "@/components/ShareLink";
 import { UserPlus, Video } from "lucide-react";
 import { planHasEncryptedCalls, type PlanKey } from "@/lib/billing";
@@ -64,6 +65,7 @@ export function ConversationView({
   currentUserId,
   initialMessages,
   pendingInvites,
+  pendingEmailInvites,
 }: {
   conversationId: string;
   workspaceId: string;
@@ -77,6 +79,7 @@ export function ConversationView({
   currentUserId: string;
   initialMessages: MessageWithDetails[];
   pendingInvites: PendingPhoneInvite[];
+  pendingEmailInvites: PendingEmailInvite[];
 }) {
   const [messages, setMessages] = useState(initialMessages);
   const [callError, setCallError] = useState<string | null>(null);
@@ -239,10 +242,14 @@ export function ConversationView({
           ) : (
             <>
               <p className="mb-4 text-sm text-muted-foreground">
-                Invite someone new into this LOKR. After they join, they can be added
-                to conversations from New conversation.
+                Invite someone new into this LOKR. They must confirm the invited
+                email or phone, then a code. A forwarded link is not enough. After
+                they join, they can be added to conversations from New conversation.
               </p>
-              <PhoneInviteForm pending={pendingInvites} />
+              <div className="space-y-8">
+                <EmailInviteForm pending={pendingEmailInvites} />
+                <PhoneInviteForm pending={pendingInvites} />
+              </div>
             </>
           )}
         </div>

@@ -1,6 +1,7 @@
 import { appOrigin, joinUrl } from "@/lib/site";
 
 const JOIN_TICKET_COOKIE = "lokr_join_ticket";
+const JOIN_EMAIL_COOKIE = "lokr_join_email";
 
 export function newInviteToken() {
   const bytes = new Uint8Array(18);
@@ -19,4 +20,4 @@ export function joinTokenFromPath(next: string | null | undefined) {
   }
 }
 
-export { JOIN_TICKET_COOKIE, appOrigin, joinUrl };
+export { JOIN_TICKET_COOKIE, JOIN_EMAIL_COOKIE, appOrigin, joinUrl };

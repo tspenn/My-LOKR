@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeFileName } from "@/lib/files";
-import { PLANS, FREE_OWNED_LOCKRS, type AccountType, type PlanKey } from "@/lib/billing";
+import { FREE_OWNED_LOCKRS, type AccountType } from "@/lib/billing";
 import {
   getCurrentWorkspace,
   listLockrs,
@@ -93,50 +93,6 @@ export async function updateWorkspaceLogo(formData: FormData) {
   return { error: null, message: "Logo saved." };
 }
 
-export async function inviteWorkspaceMember(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  if (!email) return { error: "Enter the person’s email." };
-
-  const { workspace, memberCount, sample } = await getCurrentWorkspace();
-  if (!workspace) return { error: "Set up your LOKR first." };
-
-  const supabase = await createClient();
-  const { count: pendingCount } = await supabase
-    .from("lokr_phone_invites")
-    .select("id", { count: "exact", head: true })
-    .eq("workspace_id", workspace.id)
-    .in("status", ["pending", "awaiting_code", "confirmed"]);
-
-  const maxUsers = sample ? null : PLANS[workspace.plan as PlanKey].maxUsers;
-  const used = memberCount + (pendingCount ?? 0);
-  if (maxUsers && used >= maxUsers) {
-    const planName = PLANS[workspace.plan as PlanKey].name;
-    return {
-      error: `${planName} allows ${maxUsers} people in this LOKR, including you. Upgrade this group to invite more.`,
-    };
-  }
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("email", email)
-    .maybeSingle();
-  if (!profile) {
-    return { error: "No one with that email has a LOKR account yet." };
-  }
-
-  const { error } = await supabase.from("lokr_workspace_members").insert({
-    workspace_id: workspace.id,
-    user_id: profile.id,
-    role: "member",
-  });
-  if (error) {
-    return { error: "That person is already in this LOKR." };
-  }
-
-  revalidatePath("/profile");
-  revalidatePath("/inbox/new");
-  return { error: null, message: "They can now write in this LOKR. They do not pay." };
-}
 
 export async function startCheckout(
   kind: "business" | "vault50" | "vault100" | "vault250",
