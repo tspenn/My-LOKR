@@ -1,9 +1,9 @@
 /**
  * The public sample LOKR — a real locker filled only with fake data.
- * Change the email here (or NEXT_PUBLIC_LOKR_SAMPLE_EMAIL) when you have the inbox.
+ * Leave the email empty until there is an inbox nobody else should know.
  */
 export const SAMPLE_LOCKER_EMAIL = (
-  process.env.NEXT_PUBLIC_LOKR_SAMPLE_EMAIL ?? "fred@skylandapps.com"
+  process.env.NEXT_PUBLIC_LOKR_SAMPLE_EMAIL ?? ""
 )
   .trim()
   .toLowerCase();
@@ -20,5 +20,6 @@ export const SAMPLE_LOCKER_COPY = {
 } as const;
 
 export function isSampleLockerEmail(email: string | null | undefined) {
+  if (!SAMPLE_LOCKER_EMAIL) return false;
   return (email ?? "").trim().toLowerCase() === SAMPLE_LOCKER_EMAIL;
 }

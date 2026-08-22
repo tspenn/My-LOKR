@@ -65,7 +65,9 @@ export function LoginForm({
               inputMode="email"
               autoComplete="username"
               placeholder="you@email.com or (555) 123-4567"
-              defaultValue={sample ? SAMPLE_LOCKER_EMAIL : undefined}
+              defaultValue={
+                sample && SAMPLE_LOCKER_EMAIL ? SAMPLE_LOCKER_EMAIL : undefined
+              }
               required
             />
           </div>
