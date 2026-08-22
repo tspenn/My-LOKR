@@ -14,8 +14,10 @@ import { CheckoutButton } from "@/components/CheckoutButton";
 import { useCall } from "@/components/CallProvider";
 import { Alert } from "@/components/ui/alert";
 import { PhoneInviteForm, type PendingPhoneInvite } from "@/components/PhoneInviteForm";
+import { ShareLink } from "@/components/ShareLink";
 import { UserPlus, Video } from "lucide-react";
 import { planHasEncryptedCalls, type PlanKey } from "@/lib/billing";
+import { shareUrl } from "@/lib/sample-locker";
 import type { LokrCall } from "@/lib/call-signaling";
 import type { InboxMember, MessageAttachment, MessageWithDetails } from "@/types/database";
 
@@ -197,7 +199,7 @@ export function ConversationView({
             onClick={() => setInviteOpen((open) => !open)}
           >
             <UserPlus />
-            Invite
+            {sample ? "Share" : "Invite"}
           </Button>
           {canCall && liveCall && joinVideoCall && paidCalls && !inThisCall ? (
             <Button
@@ -232,11 +234,17 @@ export function ConversationView({
       </header>
       {inviteOpen ? (
         <div className="border-b border-border bg-card px-4 py-4">
-          <p className="mb-4 text-sm text-muted-foreground">
-            Invite someone new into this LOKR. After they join, they can be added
-            to conversations from New conversation.
-          </p>
-          <PhoneInviteForm pending={pendingInvites} />
+          {sample ? (
+            <ShareLink url={shareUrl()} />
+          ) : (
+            <>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Invite someone new into this LOKR. After they join, they can be added
+                to conversations from New conversation.
+              </p>
+              <PhoneInviteForm pending={pendingInvites} />
+            </>
+          )}
         </div>
       ) : null}
       {showCallUpgrade ? (

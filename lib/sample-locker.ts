@@ -13,17 +13,17 @@ export const SAMPLE_LOCKER_EMAIL = (
 export const SHARE_PATH = "/share";
 
 export const SAMPLE_LOCKER_COPY = {
-  badge: "Sample",
+  badge: "Shares",
   banner:
-    "This is a real LOKR. The messages and people in it are fake. Share it with anyone — this locker is not private.",
+    "This is a real LOKR with fake info. Share it — do not invite. There is no secret here.",
   loginTitle: "Open the shared LOKR",
   loginLead:
     "Create your own account, then you land in this real locker. Look around, send messages, and try the app. Do not put anything secret here.",
   people:
-    "This sample locker has no invite cap. Share the link — that is a share, not a private invite. People join this locker only, not anyone’s private LOKR.",
-  shareTitle: "Share this LOKR",
+    "This locker uses shares, not invites. No seat cap. People who open the share link join this locker only — not anyone’s private LOKR.",
+  shareTitle: "Shares",
   shareLead:
-    "Copy this link. Anyone who signs up from it opens this locker and starts using the app. It does not use a private seat.",
+    "Copy this share link. Anyone who opens it signs up with their own email and starts using this locker. That is a share, not an invite, and it does not use a private seat.",
 } as const;
 
 export function isSampleLockerEmail(email: string | null | undefined) {

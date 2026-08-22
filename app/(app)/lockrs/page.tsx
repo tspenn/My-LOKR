@@ -57,13 +57,17 @@ export default async function LockrsPage() {
                 )}
                 <span className="text-base font-medium">{lokr.name}</span>
                 <span className="rounded-full border border-[#3F3F3F] px-3 py-0.5 text-sm text-[#C9C2B6]">
-                  {lokr.invited
-                    ? "Invited · free"
-                    : lokr.plan === "business"
-                      ? "Yours · Business"
-                      : lokr.plan === "enterprise"
-                        ? "Yours · Enterprise"
-                        : "Yours · free (1–3 invitees)"}
+                  {lokr.sample && lokr.owned
+                    ? "Yours · Shares"
+                    : lokr.sample
+                      ? "Shared"
+                      : lokr.invited
+                        ? "Invited · free"
+                        : lokr.plan === "business"
+                          ? "Yours · Business"
+                          : lokr.plan === "enterprise"
+                            ? "Yours · Enterprise"
+                            : "Yours · free (1–3 invitees)"}
                 </span>
               </button>
             </form>
