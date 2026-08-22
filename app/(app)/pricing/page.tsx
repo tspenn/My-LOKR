@@ -18,8 +18,8 @@ const ENTERPRISE_EMAIL =
   process.env.NEXT_PUBLIC_ENTERPRISE_EMAIL ?? "hello@go-i-agency.com";
 
 export default async function PricingPage() {
-  const { workspace, memberCount, userId } = await getCurrentWorkspace();
-  const usage = workspace ? workspaceUsage(workspace) : null;
+  const { workspace, memberCount, userId, demo } = await getCurrentWorkspace();
+  const usage = workspace ? workspaceUsage(workspace, demo) : null;
   const isOwner = Boolean(workspace && userId && workspace.created_by === userId);
 
   return (

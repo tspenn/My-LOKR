@@ -55,6 +55,7 @@ export function ConversationView({
   usedBytes,
   limitBytes,
   plan,
+  demo = false,
   isOwner,
   subject,
   members,
@@ -67,6 +68,7 @@ export function ConversationView({
   usedBytes: number;
   limitBytes: number;
   plan: PlanKey;
+  demo?: boolean;
   isOwner: boolean;
   subject: string | null;
   members: InboxMember[];
@@ -87,7 +89,7 @@ export function ConversationView({
   const inThisCall = Boolean(call?.inCall && call.callConversationId === conversationId);
   const peers = members.map((member) => ({ id: member.id, display_name: member.display_name }));
   const canCall = members.length >= 2 && members.length <= 6;
-  const paidCalls = planHasEncryptedCalls(plan);
+  const paidCalls = demo || planHasEncryptedCalls(plan);
 
   async function requestVideoCall() {
     setCallError(null);

@@ -12,6 +12,7 @@ import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
 import { SAFETY_COPY, TRAVEL_COPY } from "@/lib/safety";
+import { DEMO_LOCKER_COPY } from "@/lib/demo-account";
 import { BRAND } from "@/lib/brand";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
@@ -47,8 +48,8 @@ export default async function ProfilePage() {
     .eq("user_id", userId)
     .maybeSingle();
 
-  const { workspace, memberCount } = await getCurrentWorkspace();
-  const usage = workspace ? workspaceUsage(workspace) : null;
+  const { workspace, memberCount, demo } = await getCurrentWorkspace();
+  const usage = workspace ? workspaceUsage(workspace, demo) : null;
   const [{ lists }, { people }] = await Promise.all([
     listDistributionLists(),
     listWorkspacePeople(),
@@ -119,11 +120,9 @@ export default async function ProfilePage() {
             <CardHeader>
               <CardTitle>People</CardTitle>
               <CardDescription>
-                On Free you own one locker with 1–3 invitees (4 people including
-                you). A 4th invitee, or live video in this locker, is Business —
-                only you pay. People you invite stay free and can join that
-                call. Phone invites must be confirmed on the number you sent
-                them to — a forwarded link is not enough.
+                {demo
+                  ? DEMO_LOCKER_COPY.people
+                  : "On Free you own one locker with 1–3 invitees (4 people including you). A 4th invitee, or live video in this locker, is Business — only you pay. People you invite stay free and can join that call. Phone invites must be confirmed on the number you sent them to — a forwarded link is not enough."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">

@@ -12,7 +12,6 @@ import {
 import { BRAND } from "@/lib/brand";
 import { COPY } from "@/lib/copy";
 import { PLANS, VAULT_ADDONS, VAULT_DESCRIPTION } from "@/lib/billing";
-import { demoPath } from "@/lib/demo";
 
 const ENTERPRISE_EMAIL =
   process.env.NEXT_PUBLIC_ENTERPRISE_EMAIL ?? "hello@go-i-agency.com";
@@ -62,7 +61,7 @@ export default function Home() {
                   <Link href="/login">Sign in</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href={demoPath()}>Try a tour</Link>
+                  <Link href="/demo">Try the demo</Link>
                 </Button>
               </div>
             </div>
@@ -305,7 +304,7 @@ export default function Home() {
               <Link href="/login">Sign in</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={demoPath()}>Try a tour</Link>
+              <Link href="/demo">Try the demo</Link>
             </Button>
           </section>
         </div>

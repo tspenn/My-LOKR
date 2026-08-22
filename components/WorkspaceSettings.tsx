@@ -57,7 +57,7 @@ export function InviteForm({
       {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
       {state?.message ? <Alert>{state.message}</Alert> : null}
       <p className="text-sm text-muted-foreground">
-        {memberCount} of {maxUsers ?? "custom"} people already in this LOKR
+        {memberCount} of {maxUsers ?? "unlimited"} people already in this LOKR
         (including you)
         {pendingCount ? `, plus ${pendingCount} open phone invite${pendingCount === 1 ? "" : "s"}` : ""}
         .

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AppHeader, WorkspaceGate } from "@/components/AppHeader";
 import { CallProvider } from "@/components/CallProvider";
+import { DEMO_LOCKER_COPY } from "@/lib/demo-account";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
@@ -19,11 +20,17 @@ export default async function AppLayout({
   );
   if (!passwordError && !hasPassword) redirect("/update-password");
 
-  const { workspace, logoUrl, userId, lockrCount, mark } = await getCurrentWorkspace();
+  const { workspace, logoUrl, userId, lockrCount, mark, demo } =
+    await getCurrentWorkspace();
 
   return (
     <div className="flex h-dvh flex-col bg-background">
-      <AppHeader workspace={workspace} logoUrl={logoUrl} mark={mark} />
+      <AppHeader workspace={workspace} logoUrl={logoUrl} mark={mark} demo={demo} />
+      {demo ? (
+        <p className="border-b border-border bg-card px-4 py-2 text-center text-sm">
+          {DEMO_LOCKER_COPY.banner}
+        </p>
+      ) : null}
       <WorkspaceGate workspace={workspace} lockrCount={lockrCount}>
         <CallProvider userId={userId ?? data?.claims?.sub ?? ""} workspaceId={workspace?.id ?? null}>
           <div className="flex min-h-0 flex-1">{children}</div>

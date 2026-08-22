@@ -8,6 +8,7 @@ import { LokrMark } from "@/components/LokrMark";
 import { SignOutButton } from "@/components/SignOutButton";
 import { cn } from "@/lib/utils";
 import type { Workspace } from "@/lib/billing";
+import { DEMO_LOCKER_COPY } from "@/lib/demo-account";
 
 export function WorkspaceGate({
   workspace,
@@ -72,14 +73,17 @@ export function AppHeader({
   workspace,
   logoUrl,
   mark,
+  demo = false,
 }: {
   workspace: Workspace | null;
   logoUrl: string | null;
   mark: string;
+  demo?: boolean;
 }) {
   const pathname = usePathname();
-  const planLabel =
-    workspace?.plan === "business"
+  const planLabel = demo
+    ? DEMO_LOCKER_COPY.badge
+    : workspace?.plan === "business"
       ? "Business"
       : workspace?.plan === "enterprise"
         ? "Enterprise"

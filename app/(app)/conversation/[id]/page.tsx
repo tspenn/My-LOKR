@@ -23,9 +23,9 @@ export default async function ConversationPage({
   const userId = data?.claims?.sub;
   if (!userId) redirect("/login");
 
-  const { workspace } = await getCurrentWorkspace();
+  const { workspace, demo } = await getCurrentWorkspace();
   if (!workspace) redirect("/lockrs");
-  const usage = workspaceUsage(workspace);
+  const usage = workspaceUsage(workspace, demo);
 
   const { data: conversation } = await supabase
     .from("lokr_conversations")
@@ -116,6 +116,7 @@ export default async function ConversationPage({
       usedBytes={Number(usage.used)}
       limitBytes={Number(usage.limit)}
       plan={workspace.plan}
+      demo={demo}
       isOwner={workspace.created_by === userId}
       subject={conversation.subject}
       members={asPlain(members)}
