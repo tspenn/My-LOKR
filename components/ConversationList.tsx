@@ -10,9 +10,13 @@ import type { InboxItem } from "@/types/database";
 export function ConversationList({
   items,
   currentUserId,
+  linkPrefix = "/conversation",
+  onCompose,
 }: {
   items: InboxItem[];
   currentUserId: string;
+  linkPrefix?: string;
+  onCompose?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -23,12 +27,22 @@ export function ConversationList({
         <p className="text-muted-foreground">
           Start a private conversation when you are ready.
         </p>
-        <Link
-          href="/inbox/new"
-          className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
-        >
-          New message
-        </Link>
+        {onCompose ? (
+          <button
+            type="button"
+            onClick={onCompose}
+            className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
+          >
+            New message
+          </button>
+        ) : (
+          <Link
+            href="/inbox/new"
+            className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
+          >
+            New message
+          </Link>
+        )}
       </div>
     );
   }
@@ -36,7 +50,7 @@ export function ConversationList({
   return (
     <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
       {items.map((item) => {
-        const href = `/conversation/${item.id}`;
+        const href = `${linkPrefix}/${item.id}`;
         const active = pathname === href;
         const people = Array.isArray(item.members) ? item.members : [];
         const title = conversationTitle(people, currentUserId, item.subject);

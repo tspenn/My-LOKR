@@ -22,6 +22,7 @@ export function MessageComposer({
   onVideoCall,
   canJoinCall,
   onJoinCall,
+  onBeforeSend,
 }: {
   conversationId: string;
   workspaceId: string;
@@ -31,6 +32,7 @@ export function MessageComposer({
   onVideoCall?: () => Promise<void> | void;
   canJoinCall?: boolean;
   onJoinCall?: () => Promise<void> | void;
+  onBeforeSend?: () => boolean;
 }) {
   const [body, setBody] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -63,6 +65,7 @@ export function MessageComposer({
   }
 
   function send() {
+    if (onBeforeSend && !onBeforeSend()) return;
     const trimmed = body.trim();
     if (!trimmed && files.length === 0) {
       setError("Write a message or attach a file.");
@@ -184,20 +187,39 @@ export function MessageComposer({
           <Button
             type="button"
             variant="outline"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              if (onBeforeSend && !onBeforeSend()) return;
+              fileInputRef.current?.click();
+            }}
             disabled={isPending || blocked}
           >
             <Paperclip />
             Attach file
           </Button>
           {canJoinCall && onJoinCall ? (
-            <Button type="button" variant="outline" onClick={() => void onJoinCall()} disabled={isPending}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (onBeforeSend && !onBeforeSend()) return;
+                void onJoinCall();
+              }}
+              disabled={isPending}
+            >
               <Video />
               Join call
             </Button>
           ) : null}
           {canVideoCall && onVideoCall ? (
-            <Button type="button" variant="outline" onClick={() => void onVideoCall()} disabled={isPending}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (onBeforeSend && !onBeforeSend()) return;
+                void onVideoCall();
+              }}
+              disabled={isPending}
+            >
               <Video />
               Video call
             </Button>

@@ -1,14 +1,13 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { SignupForm } from "@/components/SignupForm";
-import { BrandMark } from "@/components/BrandMark";
+import { GuestInbox } from "@/components/GuestLocker";
 import { SAMPLE_LOCKER_COPY } from "@/lib/sample-locker";
 import { acceptSampleShare, ensureOwnLocker } from "@/lib/actions/share";
+import { peekSampleInbox } from "@/lib/share-data";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Shared LOKR",
-  description: "A real LOKR filled with fake data. Sign up and start using the app.",
+  description: "A real LOKR. Look around. Sign in only when you send or share.",
 };
 
 export const dynamic = "force-dynamic";
@@ -22,19 +21,15 @@ export default async function SharePage() {
     redirect("/inbox");
   }
 
-  return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="px-6 py-8">
-        <div className="mx-auto flex max-w-lg flex-col items-center gap-2 text-center">
-          <Link href="/" className="rounded-md">
-            <BrandMark size="lg" />
-          </Link>
-          <p className="text-lg">{SAMPLE_LOCKER_COPY.banner}</p>
-        </div>
-      </header>
-      <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-8 px-4 pb-12">
-        <SignupForm share />
+  const peeked = await peekSampleInbox();
+  if (!peeked) {
+    return (
+      <main className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center px-4 text-center">
+        <h1 className="text-2xl font-semibold">This share is not open yet</h1>
+        <p className="mt-3 text-muted-foreground">{SAMPLE_LOCKER_COPY.banner}</p>
       </main>
-    </div>
-  );
+    );
+  }
+
+  return <GuestInbox name={peeked.name} items={peeked.inbox} />;
 }

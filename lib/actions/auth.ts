@@ -156,12 +156,15 @@ export async function signUp(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
-  const displayName = String(formData.get("display_name") ?? "").trim();
   const next = String(formData.get("next") ?? "/inbox");
   const afterConfirm = isSharePath(next) ? SHARE_PATH : "/inbox";
+  const displayName =
+    String(formData.get("display_name") ?? "").trim() ||
+    email.split("@")[0] ||
+    "Someone";
 
-  if (!email || !password || !displayName) {
-    return { error: "Please fill in your name, email, and password." };
+  if (!email || !password) {
+    return { error: "Please enter your email and a LOKR password." };
   }
   const passwordError = lokrPasswordError(password, confirm);
   if (passwordError) return { error: passwordError };

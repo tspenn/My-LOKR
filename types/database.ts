@@ -355,6 +355,14 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string;
       };
+      lokr_peek_sample_inbox: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      lokr_peek_sample_conversation: {
+        Args: { p_conversation_id: string };
+        Returns: Json;
+      };
       lokr_sample_workspace_id: {
         Args: Record<PropertyKey, never>;
         Returns: string;

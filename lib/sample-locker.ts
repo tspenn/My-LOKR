@@ -18,7 +18,7 @@ export const SAMPLE_LOCKER_COPY = {
     "This is a real LOKR with fake info. Share it — do not invite. There is no secret here.",
   loginTitle: "Open the shared LOKR",
   loginLead:
-    "Create your own account, then you land in this real locker. Look around, send messages, and try the app. Do not put anything secret here.",
+    "Look around this real locker. There is no sign-in until you send a message or share it. Then save LOKR to your Home Screen, and it will ask for your email.",
   people:
     "This locker uses shares, not invites. No seat cap. People who open the share link join this locker only — not anyone’s private LOKR.",
   shareTitle: "Shares",
