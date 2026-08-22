@@ -24,9 +24,12 @@ export function WorkspaceGate({
 
   useEffect(() => {
     const allowedWithoutWorkspace =
-      pathname === "/setup" || pathname === "/pricing" || pathname === "/lockrs";
+      pathname === "/setup" ||
+      pathname === "/pricing" ||
+      pathname === "/lockrs" ||
+      pathname === "/inbox";
     if (!workspace && !allowedWithoutWorkspace) {
-      router.replace(lockrCount > 0 ? "/lockrs" : "/setup");
+      router.replace(lockrCount > 0 ? "/lockrs" : "/inbox");
     }
   }, [workspace, pathname, router, lockrCount]);
 
@@ -34,7 +37,8 @@ export function WorkspaceGate({
     !workspace &&
     pathname !== "/setup" &&
     pathname !== "/pricing" &&
-    pathname !== "/lockrs"
+    pathname !== "/lockrs" &&
+    pathname !== "/inbox"
   ) {
     return (
       <div className="flex flex-1 items-center justify-center text-muted-foreground">

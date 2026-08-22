@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordField } from "@/components/PasswordField";
 import { Alert } from "@/components/ui/alert";
-import { DEMO_COPY } from "@/lib/demo";
+import { SAMPLE_LOCKER_COPY, SHARE_PATH } from "@/lib/sample-locker";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ import {
 
 type AuthResult = { error: string | null; message?: string } | null;
 
-export function SignupForm({ fromDemo = false }: { fromDemo?: boolean }) {
+export function SignupForm({ share = false }: { share?: boolean }) {
   const [state, action, pending] = useActionState(
     async (_prev: AuthResult, formData: FormData) => signUp(formData),
     null,
@@ -28,16 +28,16 @@ export function SignupForm({ fromDemo = false }: { fromDemo?: boolean }) {
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Create your LOKR</CardTitle>
+        <CardTitle>{share ? "Create your account" : "Create your LOKR"}</CardTitle>
         <CardDescription>
-          For conversations and files you would not put in Gmail or Outlook —
-          including patent ideas and proprietary work. Your LOKR password is
-          only for this app. It does not change Friday Canvas or your other apps.
+          {share
+            ? SAMPLE_LOCKER_COPY.loginLead
+            : "For conversations and files you would not put in Gmail or Outlook — including patent ideas and proprietary work. Your LOKR password is only for this app. It does not change Friday Canvas or your other apps."}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={action} className="space-y-4">
-          {fromDemo ? <Alert>{DEMO_COPY.signupNote}</Alert> : null}
+          <input type="hidden" name="next" value={share ? SHARE_PATH : "/inbox"} />
           {state?.error ? <Alert variant="destructive">{state.error}</Alert> : null}
           {state?.message ? <Alert>{state.message}</Alert> : null}
           <div className="space-y-2">
@@ -76,12 +76,15 @@ export function SignupForm({ fromDemo = false }: { fromDemo?: boolean }) {
             Microsoft, or other mail.
           </p>
           <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Creating account…" : "Create account"}
+            {pending ? "Creating account…" : share ? "Open this LOKR" : "Create account"}
           </Button>
         </form>
         <p className="mt-6 text-center text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-primary underline-offset-2 hover:underline">
+          <Link
+            href={share ? `/login?next=${SHARE_PATH}` : "/login"}
+            className="font-medium text-primary underline-offset-2 hover:underline"
+          >
             Sign in
           </Link>
           {" · "}

@@ -11,7 +11,8 @@ import { formatPhoneForOwner } from "@/lib/phone";
 import { PLANS } from "@/lib/billing";
 import { LEGAL_CONTACT, TERMS } from "@/lib/legal";
 import { SAFETY_COPY, TRAVEL_COPY } from "@/lib/safety";
-import { SAMPLE_LOCKER_COPY } from "@/lib/sample-locker";
+import { SAMPLE_LOCKER_COPY, shareUrl } from "@/lib/sample-locker";
+import { ShareLink } from "@/components/ShareLink";
 import { BRAND } from "@/lib/brand";
 import { getCurrentWorkspace, workspaceUsage } from "@/lib/workspace";
 import { listDistributionLists } from "@/lib/actions/lists";
@@ -136,6 +137,18 @@ export default async function ProfilePage() {
             </CardContent>
           </Card>
 
+          {sample ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>{SAMPLE_LOCKER_COPY.shareTitle}</CardTitle>
+                <CardDescription>{SAMPLE_LOCKER_COPY.people}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ShareLink url={shareUrl()} />
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card>
             <CardHeader>
               <CardTitle>People</CardTitle>
@@ -163,12 +176,14 @@ export default async function ProfilePage() {
                   ))}
                 </ul>
               ) : null}
-              <PhoneInviteForm pending={pendingInvites} />
-              <InviteForm
-                memberCount={memberCount}
-                pendingCount={openInviteCount}
-                maxUsers={usage.maxUsers}
-              />
+              {sample ? null : <PhoneInviteForm pending={pendingInvites} />}
+              {sample ? null : (
+                <InviteForm
+                  memberCount={memberCount}
+                  pendingCount={openInviteCount}
+                  maxUsers={usage.maxUsers}
+                />
+              )}
             </CardContent>
           </Card>
 

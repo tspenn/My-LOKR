@@ -362,6 +362,18 @@ export type Database = {
         Args: { p_name: string; p_account_type: string };
         Returns: string;
       };
+      lokr_ensure_own_workspace: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      lokr_accept_sample_share: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      lokr_sample_workspace_id: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
       lokr_create_conversation: {
         Args: { p_subject: string | null; p_member_ids: string[]; p_workspace_id: string };
         Returns: string;

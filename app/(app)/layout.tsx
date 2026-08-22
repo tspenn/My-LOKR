@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AppHeader, WorkspaceGate } from "@/components/AppHeader";
 import { CallProvider } from "@/components/CallProvider";
 import { SAMPLE_LOCKER_COPY } from "@/lib/sample-locker";
+import { ensureOwnLocker } from "@/lib/actions/share";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
@@ -20,8 +21,13 @@ export default async function AppLayout({
   );
   if (!passwordError && !hasPassword) redirect("/update-password");
 
-  const { workspace, logoUrl, userId, lockrCount, mark, sample } =
+  let { workspace, logoUrl, userId, lockrCount, mark, sample } =
     await getCurrentWorkspace();
+  if (!workspace) {
+    await ensureOwnLocker();
+    ({ workspace, logoUrl, userId, lockrCount, mark, sample } =
+      await getCurrentWorkspace());
+  }
 
   return (
     <div className="flex h-dvh flex-col bg-background">

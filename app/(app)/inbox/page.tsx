@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { InboxShell } from "@/components/InboxShell";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
-import { Button } from "@/components/ui/button";
+import { ensureOwnLocker } from "@/lib/actions/share";
 
 export const metadata = { title: "Inbox" };
 
@@ -20,15 +20,14 @@ export default async function InboxPage() {
 
   const { workspace } = await getCurrentWorkspace();
   if (!workspace) {
+    const opened = await ensureOwnLocker();
+    if (opened.workspaceId) redirect("/inbox");
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
-        <p className="text-lg font-medium">Set up your LOKR first</p>
+        <p className="text-lg font-medium">Opening your LOKR…</p>
         <p className="max-w-md text-muted-foreground">
-          A new account starts empty. Create your locker, then you can send messages.
+          Your account is ready. Refresh this page if the inbox does not open.
         </p>
-        <Button asChild>
-          <Link href="/setup">Set up locker</Link>
-        </Button>
       </div>
     );
   }

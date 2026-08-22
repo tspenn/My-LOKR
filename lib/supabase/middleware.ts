@@ -11,6 +11,7 @@ const PUBLIC_PREFIXES = [
   "/auth/callback",
   "/join",
   "/demo",
+  "/share",
 ];
 
 function isPublicPath(pathname: string) {
@@ -102,7 +103,7 @@ export async function updateSession(request: NextRequest) {
     hasWorkspace = !membershipError && Boolean(memberships && memberships.length > 0);
   }
 
-  const homePath = hasWorkspace ? "/lockrs" : "/setup";
+  const homePath = "/inbox";
   const isSetup = pathname === "/setup";
   const isUpdatePassword = pathname === "/update-password";
   const isPricing = pathname === "/pricing";
@@ -122,7 +123,7 @@ export async function updateSession(request: NextRequest) {
   ) {
     const next = request.nextUrl.searchParams.get("next");
     const redirectUrl = request.nextUrl.clone();
-    if (next && next.startsWith("/join/")) {
+    if (next && (next.startsWith("/join/") || next === "/share" || next.startsWith("/share/"))) {
       redirectUrl.pathname = next;
       redirectUrl.search = "";
     } else {
@@ -132,23 +133,24 @@ export async function updateSession(request: NextRequest) {
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 
+  if (user && hasWorkspace && isSetup) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/inbox";
+    redirectUrl.search = "";
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
   if (
     user &&
     !hasWorkspace &&
     !isSetup &&
     !isUpdatePassword &&
     !isPricing &&
-    !isPublicPath(pathname)
+    !isPublicPath(pathname) &&
+    pathname !== "/inbox"
   ) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/setup";
-    redirectUrl.search = "";
-    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
-  }
-
-  if (user && hasWorkspace && isSetup) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/lockrs";
+    redirectUrl.pathname = "/inbox";
     redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
