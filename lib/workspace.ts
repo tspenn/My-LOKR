@@ -147,7 +147,7 @@ export async function getCurrentWorkspace() {
     .from("lokr_workspaces")
     .select(WORKSPACE_COLUMNS)
     .eq("id", selectedId)
-    .single();
+    .maybeSingle();
 
   const { count } = await supabase
     .from("lokr_workspace_members")

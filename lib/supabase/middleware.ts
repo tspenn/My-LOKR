@@ -91,9 +91,25 @@ export async function updateSession(request: NextRequest) {
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 
+  const userId = typeof user?.sub === "string" ? user.sub : "";
+  let hasWorkspace = false;
+  if (userId) {
+    const { data: memberships, error: membershipError } = await supabase
+      .from("lokr_workspace_members")
+      .select("workspace_id")
+      .eq("user_id", userId)
+      .limit(1);
+    hasWorkspace = !membershipError && Boolean(memberships && memberships.length > 0);
+  }
+
+  const homePath = hasWorkspace ? "/lockrs" : "/setup";
+  const isSetup = pathname === "/setup";
+  const isUpdatePassword = pathname === "/update-password";
+  const isPricing = pathname === "/pricing";
+
   if (user && pathname === "/") {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/lockrs";
+    redirectUrl.pathname = homePath;
     redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
@@ -110,9 +126,30 @@ export async function updateSession(request: NextRequest) {
       redirectUrl.pathname = next;
       redirectUrl.search = "";
     } else {
-      redirectUrl.pathname = "/lockrs";
+      redirectUrl.pathname = homePath;
       redirectUrl.search = "";
     }
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
+  if (
+    user &&
+    !hasWorkspace &&
+    !isSetup &&
+    !isUpdatePassword &&
+    !isPricing &&
+    !isPublicPath(pathname)
+  ) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/setup";
+    redirectUrl.search = "";
+    return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
+  }
+
+  if (user && hasWorkspace && isSetup) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/lockrs";
+    redirectUrl.search = "";
     return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl));
   }
 

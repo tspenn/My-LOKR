@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ProfileForm } from "@/components/ProfileForm";
@@ -31,15 +30,36 @@ export default async function ProfilePage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
-  if (!userId) redirect("/login");
+  if (!userId) {
+    return (
+      <div className="flex flex-1 items-center justify-center px-6 py-16 text-center text-muted-foreground">
+        Please sign in again.
+      </div>
+    );
+  }
 
   const { data: row } = await supabase
     .from("profiles")
     .select("id, email, full_name, avatar_url, updated_at")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
-  if (!row) redirect("/login");
+  if (!row) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
+        <p className="text-lg font-medium">We could not load your profile yet</p>
+        <p className="max-w-md text-muted-foreground">
+          Confirm your email, then try again. Your messages are still safe.
+        </p>
+        <Link
+          href="/setup"
+          className="rounded-md bg-primary px-5 py-3 font-medium text-primary-foreground"
+        >
+          Set up locker
+        </Link>
+      </div>
+    );
+  }
   const profile = profileFromRow(row);
 
   const { data: phoneRow } = await supabase

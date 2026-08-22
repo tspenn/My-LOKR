@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LokrMark } from "@/components/LokrMark";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,20 @@ export const dynamic = "force-dynamic";
 
 export default async function LockrsPage() {
   const { lockrs, ownedCount } = await listLockrs();
-  if (lockrs.length === 0) redirect("/setup");
+  if (lockrs.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-lg px-4 py-10 text-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Create your first LOKR</h1>
+        <p className="mt-3 text-lg text-muted-foreground">
+          A new account starts empty. Name your locker, then you can invite people
+          and send messages.
+        </p>
+        <Button asChild className="mt-6">
+          <Link href="/setup">Set up locker</Link>
+        </Button>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">

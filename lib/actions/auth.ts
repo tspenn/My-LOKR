@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import { clearWorkspaceCookie } from "@/lib/workspace";
+import { clearWorkspaceCookie, listLockrs } from "@/lib/workspace";
 import { normalizePhone } from "@/lib/phone";
 import { appOrigin } from "@/lib/site";
 import { joinTokenFromPath } from "@/lib/invite-token";
@@ -208,7 +208,8 @@ export async function updatePassword(formData: FormData) {
     return { error: "We could not update your LOKR password. Please try the reset link again." };
   }
 
-  redirect("/lockrs");
+  const { lockrs } = await listLockrs();
+  redirect(lockrs.length === 0 ? "/setup" : "/lockrs");
 }
 
 export async function signOut() {
